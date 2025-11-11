@@ -1,0 +1,32 @@
+package api_routes
+
+import (
+	"ms-genexis-pos-operaciones/domain/constants"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	cors "github.com/itsjamie/gin-cors"
+)
+
+func GinConfig() (*gin.Engine, error) {
+	gin.SetMode(gin.DebugMode)
+	router := gin.New()
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
+
+	router.Use(cors.Middleware(cors.Config{
+		Origins:         "*",
+		Methods:         "GET, PUT, POST, DELETE, PATCH",
+		RequestHeaders:  "Origin, Authorization, Content-Type",
+		ExposedHeaders:  "",
+		MaxAge:          300 * time.Second,
+		Credentials:     false,
+		ValidateHeaders: false,
+	}))
+
+	_ = router.Group(constants.API_PATH)
+
+	// Definicion de rutas
+
+	return router, nil
+}
