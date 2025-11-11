@@ -3,6 +3,9 @@ package infrastructure_db_client
 import (
 	"context"
 	"fmt"
+	"ms-genexis-pos-operaciones/domain/constants"
+	"net/url"
+	"regexp"
 	"time"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -86,10 +89,44 @@ const defaultMaxConnIdleTime = time.Minute * 30
 const defaultHealthCheckPeriod = time.Minute
 const defaultConnectTimeout = time.Second * 5
 
+func CleanConectionString(rawConn string) (string, error) {
+	re := regexp.MustCompile(`^postgres(?:ql)?://([^:@/]+):([^@]+)@([^/]+)(/[^?]+)?(\?.*)?$`)
+
+	matches := re.FindStringSubmatch(rawConn)
+	if len(matches) == 0 {
+		return "", fmt.Errorf("formato inválido de conexión")
+	}
+
+	user := matches[1]
+	pass := matches[2]
+	hostPort := matches[3]
+	dbPath := matches[4]
+	query := matches[5]
+
+	escapedUser := url.QueryEscape(user)
+	escapedPass := url.QueryEscape(pass)
+
+	finalURL := fmt.Sprintf("postgres://%s:%s@%s%s%s",
+		escapedUser,
+		escapedPass,
+		hostPort,
+		dbPath,
+		query,
+	)
+
+	return finalURL, nil
+}
+
 func InitClient(UrlConn string) (*ClientDb, error) {
+
+	urlConnection, _err := CleanConectionString(constants.DB_CON)
+	if _err != nil {
+		return nil, _err
+	}
+
 	cliente := &ClientDb{
 		contexto:    context.Background(),
-		UrlConecion: UrlConn,
+		UrlConecion: urlConnection,
 	}
 	if dbConfig, err := pgxpool.ParseConfig(cliente.UrlConecion); err != nil {
 		return nil, err

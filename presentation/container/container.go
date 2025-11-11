@@ -4,6 +4,7 @@ import (
 	"log"
 	domain_adapters_clients_db "ms-genexis-pos-operaciones/domain/adapters/clients/db"
 	domain_adapters_clients_http "ms-genexis-pos-operaciones/domain/adapters/clients/http"
+	"ms-genexis-pos-operaciones/domain/constants"
 	domain_repositories "ms-genexis-pos-operaciones/domain/repositories/db"
 	infrastructure_db_client "ms-genexis-pos-operaciones/infrastructure/db/client"
 	infrastructure_http_client "ms-genexis-pos-operaciones/infrastructure/http/client"
@@ -26,7 +27,7 @@ var err error
 func InitContainer() error {
 
 	//CLIENTS
-	client_db, err = infrastructure_db_client.InitClient("")
+	client_db, err = infrastructure_db_client.InitClient(constants.DB_CON)
 	if err != nil {
 		log.Fatal("[InitContainer] - Error init client_db", err)
 		return err

@@ -24,9 +24,10 @@ func GinConfig() (*gin.Engine, error) {
 		ValidateHeaders: false,
 	}))
 
-	_ = router.Group(constants.API_PATH)
+	api := router.Group(constants.API_PATH)
 
 	// Definicion de rutas
+	routes_shift.ShiftRoutes(api)
 
 	return router, nil
 }
