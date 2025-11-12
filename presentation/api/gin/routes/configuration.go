@@ -1,6 +1,7 @@
 package api_routes
 
 import (
+	routes_envelopes "ms-genexis-pos-operaciones/context/envelopes/presentation/routes"
 	routes_shift "ms-genexis-pos-operaciones/context/shift/presentation/routes"
 	"ms-genexis-pos-operaciones/domain/constants"
 	"time"
@@ -27,6 +28,7 @@ func GinConfig() (*gin.Engine, error) {
 
 	api := router.Group(constants.API_PATH)
 	routes_shift.LoadShiftRoutes(api)
+	routes_envelopes.LoadEnvelopesRoutes(api)
 
 	return router, nil
 }
