@@ -21,12 +21,12 @@ func ValidateBodyStruct[T any]() gin.HandlerFunc {
 				for _, fe := range ve {
 					mensajes += fe.Field() + ": " + fe.Tag() + "; "
 				}
-				c.JSON(http.StatusBadRequest, entities.NewErrorResponse("Campos inválidos en el body", errors.New(mensajes)))
+				c.JSON(http.StatusBadRequest, entities.NewErrorResponse[interface{}]("Campos inválidos en el body", errors.New(mensajes)))
 				c.Abort()
 				return
 			}
 
-			c.JSON(http.StatusBadRequest, entities.NewErrorResponse("JSON mal formado", err))
+			c.JSON(http.StatusBadRequest, entities.NewErrorResponse[interface{}]("JSON mal formado", err))
 			c.Abort()
 			return
 		}

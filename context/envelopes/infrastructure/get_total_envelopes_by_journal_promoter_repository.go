@@ -6,6 +6,7 @@ import (
 	"log"
 	"ms-genexis-pos-operaciones/context/envelopes/domain/entities"
 	"ms-genexis-pos-operaciones/context/envelopes/domain/value_object/constants"
+	entities_main "ms-genexis-pos-operaciones/domain/entities"
 	infrastructure_db_client "ms-genexis-pos-operaciones/infrastructure/db/client"
 )
 
@@ -13,7 +14,7 @@ type GetTotalEnvelopesByJournalPromoterRepository struct {
 	Connection infrastructure_db_client.DatabaseConnectionInterface
 }
 
-func (g *GetTotalEnvelopesByJournalPromoterRepository) GetTotal(envelopes_request *entities.EnvelopesTotalRequest) (*entities.ResponseEvelopesTotal, error) {
+func (g *GetTotalEnvelopesByJournalPromoterRepository) GetTotal(envelopes_request *entities.EnvelopesTotalRequest) (*entities_main.Response[entities.TotalEnvelopes], error) {
 
 	conn, err := g.Connection.GetDatabaseConnection()
 	if err != nil {
@@ -40,7 +41,7 @@ func (g *GetTotalEnvelopesByJournalPromoterRepository) GetTotal(envelopes_reques
 	}
 	log.Printf("Respuesta de la funcion: %s \n\n", jsonStrResponse)
 
-	response := &entities.ResponseEvelopesTotal{}
+	response := &entities_main.Response[entities.TotalEnvelopes]{}
 
 	err = json.Unmarshal([]byte(jsonStrResponse), &response)
 
