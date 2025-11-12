@@ -1,31 +1,31 @@
 package entities
 
-type Response struct {
-	Success bool        `json:"success"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data,omitempty"`
-	Error   string      `json:"error,omitempty"`
+import "time"
+
+type Response[T any] struct {
+	Status      int    `json:"status"`
+	Message     string `json:"message,omitempty"`
+	ProcessDate string `json:"process_date"`
+	Data        *T     `json:"data,omitempty"`
+	Error       string `json:"error,omitempty"`
 }
 
-func NewSuccessResponse(message string, data interface{}) Response {
-	return Response{
-		Success: true,
-		Message: message,
-		Data:    data,
-	}
-}
-func NewResponseDataBase(message string, data interface{}, success bool) Response {
-	return Response{
-		Success: success,
-		Message: message,
-		Data:    data,
+// Respuesta exitosa
+func NewSuccessResponse[T any](status int, message, processDate string, data *T) Response[T] {
+	return Response[T]{
+		Status:      status,
+		Message:     message,
+		ProcessDate: processDate,
+		Data:        data,
 	}
 }
 
-func NewErrorResponse(message string, err error) Response {
-	return Response{
-		Success: false,
-		Message: message,
-		Error:   err.Error(),
+// Respuesta de error
+func NewErrorResponse[T any](message string, err error) Response[T] {
+	return Response[T]{
+		Status:      400,
+		Message:     message,
+		ProcessDate: time.Now().Format("2006-01-02 15:04:05"),
+		Error:       err.Error(),
 	}
 }

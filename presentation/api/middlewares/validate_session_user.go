@@ -22,7 +22,7 @@ func SessionMiddleware() gin.HandlerFunc {
 			token := c.GetHeader("Authorization")
 
 			if token == "" {
-				c.JSON(http.StatusUnauthorized, entities.NewErrorResponse("Error Autorización", errors.New("No se ha proporcionado el token de autenticación")))
+				c.JSON(http.StatusUnauthorized, entities.NewErrorResponse[interface{}]("Error Autorización", errors.New("No se ha proporcionado el token de autenticación")))
 				c.Abort()
 				return
 			}
@@ -30,7 +30,7 @@ func SessionMiddleware() gin.HandlerFunc {
 			client := &http.Client{}
 			req, err := http.NewRequest("GET", url, nil)
 			if err != nil {
-				c.JSON(http.StatusInternalServerError, entities.NewErrorResponse("Error interno", errors.New("Error creando la solicitud")))
+				c.JSON(http.StatusInternalServerError, entities.NewErrorResponse[interface{}]("Error interno", errors.New("Error creando la solicitud")))
 				c.Abort()
 				return
 			}
@@ -39,7 +39,7 @@ func SessionMiddleware() gin.HandlerFunc {
 
 			resp, err := client.Do(req)
 			if err != nil {
-				c.JSON(http.StatusInternalServerError, entities.NewErrorResponse("Error interno", errors.New("Error conectando con el servidor de autenticación")))
+				c.JSON(http.StatusInternalServerError, entities.NewErrorResponse[interface{}]("Error interno", errors.New("Error conectando con el servidor de autenticación")))
 				c.Abort()
 				return
 			}
@@ -47,7 +47,7 @@ func SessionMiddleware() gin.HandlerFunc {
 
 			body, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
-				c.JSON(http.StatusInternalServerError, entities.NewErrorResponse("Error interno", errors.New("Error leyendo la respuesta del servidor de autenticación")))
+				c.JSON(http.StatusInternalServerError, entities.NewErrorResponse[interface{}]("Error interno", errors.New("Error leyendo la respuesta del servidor de autenticación")))
 				c.Abort()
 				return
 			}
@@ -56,13 +56,13 @@ func SessionMiddleware() gin.HandlerFunc {
 
 			err = json.Unmarshal([]byte(body), &result)
 			if err != nil {
-				c.JSON(http.StatusInternalServerError, entities.NewErrorResponse("Error interno", errors.New("Error al decodificar el cuerpo JSON")))
+				c.JSON(http.StatusInternalServerError, entities.NewErrorResponse[interface{}]("Error interno", errors.New("Error al decodificar el cuerpo JSON")))
 				c.Abort()
 				return
 			}
 
 			if resp.StatusCode != http.StatusOK {
-				c.JSON(http.StatusUnauthorized, entities.NewErrorResponse("Error Autorización", errors.New("Sesión no válida")))
+				c.JSON(http.StatusUnauthorized, entities.NewErrorResponse[interface{}]("Error Autorización", errors.New("Sesión no válida")))
 				c.Abort()
 				return
 			}
