@@ -19,8 +19,7 @@ func LoadShiftRoutes(router *gin.RouterGroup) {
 			presentation_api_middlewares.BindAndValidateQuery[entities.DailyIncomeMeasurementsQuery](),
 			handler_shift.GetDailyIncomeMeasurementsHandler,
 		)
-		shiftGroup.POST("/fuel-pumps",
-			presentation_api_middlewares.ValidateBodyStruct[entities.FuelPumpsRequest](),
+		shiftGroup.GET("/fuel-pumps",
 			handler_shift.FuelPumpsHandler,
 		)
 	}
