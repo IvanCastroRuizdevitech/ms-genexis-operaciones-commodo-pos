@@ -1,49 +1,35 @@
 package presentation_container
 
 import (
-	"log"
-	domain_adapters_clients_db "ms-genexis-pos-operaciones/domain/adapters/clients/db"
-	domain_adapters_clients_http "ms-genexis-pos-operaciones/domain/adapters/clients/http"
 	"ms-genexis-pos-operaciones/domain/constants"
-	domain_repositories "ms-genexis-pos-operaciones/domain/repositories/db"
 	infrastructure_db_client "ms-genexis-pos-operaciones/infrastructure/db/client"
-	infrastructure_http_client "ms-genexis-pos-operaciones/infrastructure/http/client"
+	infrastructure_db_client_postgres_drivers "ms-genexis-pos-operaciones/infrastructure/db/client/postgres/drivers"
+	infrastructure_external_nethttp "ms-genexis-pos-operaciones/infrastructure/externals/externalhttp"
+	infrastructure_external_nethttp_nethttp "ms-genexis-pos-operaciones/infrastructure/externals/externalhttp/nethttp"
 )
 
-// SERVICES
+var DatabaseConnectionToLecWithPgx infrastructure_db_client.DatabaseConnectionInterface
 
-// USES CASES
-
-// REPOSITORIES
-
-// GENERALS
-var _ domain_repositories.IRecoverWacher
-
-var client_http domain_adapters_clients_http.IClientHttp
-var client_db domain_adapters_clients_db.IClientDB
-
-var err error
-
-func InitContainer() error {
-
-	//CLIENTS
-	client_db, err = infrastructure_db_client.InitClient(constants.DB_CON)
-	if err != nil {
-		log.Fatal("[InitContainer] - Error init client_db", err)
-		return err
+func ResolveDatabaseConnectionToLecWithPgx() infrastructure_db_client.DatabaseConnectionInterface {
+	if DatabaseConnectionToLecWithPgx != nil {
+		return DatabaseConnectionToLecWithPgx
 	}
-
-	client_http, err = infrastructure_http_client.InitClient()
-	if err != nil {
-		log.Fatal("[InitContainer] - Error init client_http", err)
-		return err
+	return &infrastructure_db_client_postgres_drivers.ConfigConnectionPgx{
+		UrlToConnect: constants.DB_CON,
 	}
+}
 
-	// REPOSITORIES
+var ClientHttpWithNet infrastructure_external_nethttp.ClientHTTPInterface
 
-	// USES CASES
+func ResolveClientHttpWithNet() infrastructure_external_nethttp.ClientHTTPInterface {
+	if ClientHttpWithNet != nil {
+		return ClientHttpWithNet
+	} else {
+		return &infrastructure_external_nethttp_nethttp.NetHTTPClient{}
+	}
+}
 
-	// SERVICE
-
-	return nil
+func InitContainer() {
+	ClientHttpWithNet = ResolveClientHttpWithNet()
+	DatabaseConnectionToLecWithPgx = ResolveDatabaseConnectionToLecWithPgx()
 }

@@ -1,8 +1,6 @@
 package handler_shift
 
 import (
-	"encoding/json"
-	"log"
 	"ms-genexis-pos-operaciones/context/shift/domain/entities"
 	container_shift "ms-genexis-pos-operaciones/context/shift/presentation/container"
 	"net/http"
@@ -12,16 +10,10 @@ import (
 )
 
 func OpeningShiftHandler(ctx *gin.Context) {
+	rawBody := ctx.MustGet("validatedBody")
+	body := rawBody.(entities.OpeningShiftRequest)
 
-	infoClient := &entities.OpeningShiftRequest{}
-	if err := ctx.ShouldBind(infoClient); err != nil {
-
-		ctx.JSON(http.StatusBadRequest, errorMsgs(err, http.StatusBadRequest))
-		return
-	}
-	byteRequest, _ := json.MarshalIndent(infoClient, "", " ")
-	log.Println("Body ", string(byteRequest))
-	response, err := container_shift.ResolveOpeningShiftContainer().ExecuteOpeningShift(infoClient)
+	response, err := container_shift.ResolveOpeningShiftContainer().ExecuteOpeningShift(&body)
 
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorMsgs(err, http.StatusInternalServerError))

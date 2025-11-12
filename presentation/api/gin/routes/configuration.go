@@ -26,8 +26,6 @@ func GinConfig() (*gin.Engine, error) {
 	}))
 
 	api := router.Group(constants.API_PATH)
-
-	// Definicion de rutas
 	routes_shift.LoadShiftRoutes(api)
 
 	return router, nil

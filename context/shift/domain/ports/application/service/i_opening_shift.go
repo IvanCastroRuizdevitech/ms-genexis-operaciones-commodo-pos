@@ -3,5 +3,5 @@ package iservice
 import "ms-genexis-pos-operaciones/context/shift/domain/entities"
 
 type IOpeningShift interface {
-	ExecuteOpeningShift(shiftInfo *entities.OpeningShiftRequest) (*entities.ResponseShift, error)
+	ExecuteOpeningShift(shift_info *entities.OpeningShiftRequest) (*entities.ResponseShift, error)
 }
