@@ -4,4 +4,4 @@
 - Iniciar el proyecto con : air
 
 # Compilar
-- GOOS=linux GOARCH=amd64 go build -o cloud-movement-market-service
+- GOOS=linux GOARCH=arm64 go build -o ms-genexis-operaciones-pos main.go

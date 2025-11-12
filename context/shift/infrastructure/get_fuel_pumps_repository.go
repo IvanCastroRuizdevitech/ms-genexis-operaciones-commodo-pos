@@ -12,7 +12,7 @@ type GetFuelPumpsRepository struct {
     Connection infrastructure_db_client.DatabaseConnectionInterface
 }
 
-func (r *GetFuelPumpsRepository) GetFuelPumps(turnoId int64, equiposid int64) ([]map[string]interface{}, error) {
+func (r *GetFuelPumpsRepository) GetFuelPumps() ([]map[string]interface{}, error) {
     conn, err := r.Connection.GetDatabaseConnection()
     if err != nil {
         return nil, err
@@ -20,10 +20,8 @@ func (r *GetFuelPumpsRepository) GetFuelPumps(turnoId int64, equiposid int64) ([
     defer conn.PgxConn.Release()
 
     log.Println("CONSULTANDO:", constants.QUERY_GET_FUEL_PUMPS)
-    log.Println("ARGUMENTO 1:", turnoId)
-    log.Println("ARGUMENTO 2:", equiposid)
 
-    rows, err := conn.PgxConn.Query(context.Background(), constants.QUERY_GET_FUEL_PUMPS, turnoId, equiposid)
+    rows, err := conn.PgxConn.Query(context.Background(), constants.QUERY_GET_FUEL_PUMPS)
     if err != nil {
         return nil, err
     }

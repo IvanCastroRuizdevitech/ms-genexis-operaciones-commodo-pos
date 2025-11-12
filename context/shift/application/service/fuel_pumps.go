@@ -10,8 +10,8 @@ type FuelPumpsClient struct {
     GetFuelPumps iusecase.IGetFuelPumps
 }
 
-func (s *FuelPumpsClient) ExecuteFuelPumps(q *entities.FuelPumpsRequest) (*entities.ResponseShift, error) {
-    data, err := s.GetFuelPumps.Execute(q)
+func (s *FuelPumpsClient) ExecuteFuelPumps() (*entities.ResponseShift, error) {
+    data, err := s.GetFuelPumps.Execute()
     if err != nil {
         return nil, err
     }
