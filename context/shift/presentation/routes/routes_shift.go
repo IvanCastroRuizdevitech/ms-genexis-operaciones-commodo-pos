@@ -9,11 +9,15 @@ import (
 )
 
 func LoadShiftRoutes(router *gin.RouterGroup) {
-	shiftGroup := router.Group("/shift")
-	{
-		shiftGroup.POST("/opening",
-			presentation_api_middlewares.ValidateBodyStruct[entities.OpeningShiftRequest](),
-			handler_shift.OpeningShiftHandler,
-		)
-	}
+    shiftGroup := router.Group("/shift")
+    {
+        shiftGroup.POST("/opening",
+            presentation_api_middlewares.ValidateBodyStruct[entities.OpeningShiftRequest](),
+            handler_shift.OpeningShiftHandler,
+        )
+        shiftGroup.GET("/daily-income-measurements",
+            presentation_api_middlewares.BindAndValidateQuery[entities.DailyIncomeMeasurementsQuery](),
+            handler_shift.GetDailyIncomeMeasurementsHandler,
+        )
+    }
 }
