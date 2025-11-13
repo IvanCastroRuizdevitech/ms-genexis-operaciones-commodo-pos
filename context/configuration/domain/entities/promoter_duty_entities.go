@@ -1,0 +1,10 @@
+package entities
+
+type PromoterDuty struct {
+    PersonasID  int    `json:"personas_id"`
+    Nombre      string `json:"nombre"`
+    Estado      string `json:"estado"`
+    IdPerfiles  int    `json:"id_perfiles"`
+    Descripcion string `json:"descripcion"`
+}
+
