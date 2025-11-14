@@ -14,16 +14,19 @@ import (
 var CheckPendingSalesRepository irepositories.ICheckPendingSalesRepository
 var CheckReadySalesRepository irepositories.ICheckReadySalesRepository
 var CheckDatafonoCancellationsInProgressRepository irepositories.ICheckDatafonoCancellationsInProgressRepository
+var GetUnresolvedSaleAttributesRepository irepositories.IGetUnresolvedSaleAttributesRepository
 
 // USECASE
 var CheckPendingSalesUseCase iusecase.ICheckPendingSales
 var CheckReadySalesUseCase iusecase.ICheckReadySales
 var CheckDatafonoCancellationsInProgressUseCase iusecase.ICheckDatafonoCancellationsInProgress
+var GetUnresolvedSaleAttributesUseCase iusecase.IGetUnresolvedSaleAttributes
 
 // SERVICE
 var CheckPendingSalesClient iservice.ICheckPendingSales
 var CheckReadySalesClient iservice.ICheckReadySales
 var CheckDatafonoCancellationsInProgressClient iservice.ICheckDatafonoCancellationsInProgress
+var GetUnresolvedSaleAttributesClient iservice.IGetUnresolvedSaleAttributes
 
 func initializes() {
     CheckPendingSalesRepository = &repositories.CheckPendingSalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
@@ -37,6 +40,10 @@ func initializes() {
     CheckDatafonoCancellationsInProgressRepository = &repositories.CheckDatafonoCancellationsInProgressRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
     CheckDatafonoCancellationsInProgressUseCase = &usecase.CheckDatafonoCancellationsInProgress{Repository: CheckDatafonoCancellationsInProgressRepository}
     CheckDatafonoCancellationsInProgressClient = &service.CheckDatafonoCancellationsInProgressClient{UseCase: CheckDatafonoCancellationsInProgressUseCase}
+
+    GetUnresolvedSaleAttributesRepository = &repositories.GetUnresolvedSaleAttributesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+    GetUnresolvedSaleAttributesUseCase = &usecase.GetUnresolvedSaleAttributes{Repository: GetUnresolvedSaleAttributesRepository}
+    GetUnresolvedSaleAttributesClient = &service.GetUnresolvedSaleAttributesClient{UseCase: GetUnresolvedSaleAttributesUseCase}
 }
 
 func ResolveSalesContainer() iservice.ICheckPendingSales {
@@ -58,5 +65,12 @@ func ResolveDatafonoCancellationsInProgressContainer() iservice.ICheckDatafonoCa
         initializes()
     }
     return CheckDatafonoCancellationsInProgressClient
+}
+
+func ResolveGetUnresolvedSaleAttributesContainer() iservice.IGetUnresolvedSaleAttributes {
+    if GetUnresolvedSaleAttributesClient == nil {
+        initializes()
+    }
+    return GetUnresolvedSaleAttributesClient
 }
 
