@@ -44,3 +44,7 @@ type PendingSale struct {
 type DatafonoCancellationsInProgress struct {
     InProgress bool `json:"in_progress" db:"in_progress"`
 }
+
+type UnresolvedSaleAttributes struct {
+    Atributos any `json:"atributos" db:"atributos"`
+}
