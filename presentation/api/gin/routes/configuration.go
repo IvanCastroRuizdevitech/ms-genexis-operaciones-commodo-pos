@@ -5,6 +5,7 @@ import (
 	routes_configuration "ms-genexis-pos-operaciones/context/configuration/presentation/routes"
 	routes_shift "ms-genexis-pos-operaciones/context/shift/presentation/routes"
 	routes_reports "ms-genexis-pos-operaciones/context/reports/presentation/routes"
+	routes_sales "ms-genexis-pos-operaciones/context/sales/presentation/routes"
 	"ms-genexis-pos-operaciones/domain/constants"
 	"time"
 
@@ -33,6 +34,7 @@ func GinConfig() (*gin.Engine, error) {
 	routes_envelopes.LoadEnvelopesRoutes(api)
 	routes_configuration.LoadConfigurationRoutes(api)
 	routes_reports.LoadReportsRoutes(api)
+	routes_sales.LoadSalesRoutes(api)
 
 	return router, nil
 }
