@@ -11,3 +11,9 @@ type CheckReadySalesRequest struct {
     PromoterId  int `json:"promoter_id" binding:"required"`
     Limit       int `json:"limit" binding:"required"`
 }
+
+type DatafonoCancellationsInProgressRequest struct {
+    MovementId             int `json:"id_movimiento" binding:"required"`
+    TransactionOperationId int `json:"id_transaccion_operacion" binding:"required"`
+    TransactionStatusId    int `json:"id_transaccion_estado" binding:"required"`
+}

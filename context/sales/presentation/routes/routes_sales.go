@@ -21,6 +21,11 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
             presentation_api_middlewares.ValidateBodyStruct[entities_sales.CheckReadySalesRequest](),
             handler_sales.CheckReadySalesHandler,
         )
+        salesGroup.POST(
+            "/datafono-cancellations-in-progress",
+            presentation_api_middlewares.ValidateBodyStruct[entities_sales.DatafonoCancellationsInProgressRequest](),
+            handler_sales.CheckDatafonoCancellationsInProgressHandler,
+        )
     }
 }
 

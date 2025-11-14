@@ -13,14 +13,17 @@ import (
 // REPOSITORIES DB
 var CheckPendingSalesRepository irepositories.ICheckPendingSalesRepository
 var CheckReadySalesRepository irepositories.ICheckReadySalesRepository
+var CheckDatafonoCancellationsInProgressRepository irepositories.ICheckDatafonoCancellationsInProgressRepository
 
 // USECASE
 var CheckPendingSalesUseCase iusecase.ICheckPendingSales
 var CheckReadySalesUseCase iusecase.ICheckReadySales
+var CheckDatafonoCancellationsInProgressUseCase iusecase.ICheckDatafonoCancellationsInProgress
 
 // SERVICE
 var CheckPendingSalesClient iservice.ICheckPendingSales
 var CheckReadySalesClient iservice.ICheckReadySales
+var CheckDatafonoCancellationsInProgressClient iservice.ICheckDatafonoCancellationsInProgress
 
 func initializes() {
     CheckPendingSalesRepository = &repositories.CheckPendingSalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
@@ -30,6 +33,10 @@ func initializes() {
     CheckReadySalesRepository = &repositories.CheckReadySalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
     CheckReadySalesUseCase = &usecase.CheckReadySales{Repository: CheckReadySalesRepository}
     CheckReadySalesClient = &service.CheckReadySalesClient{UseCase: CheckReadySalesUseCase}
+
+    CheckDatafonoCancellationsInProgressRepository = &repositories.CheckDatafonoCancellationsInProgressRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+    CheckDatafonoCancellationsInProgressUseCase = &usecase.CheckDatafonoCancellationsInProgress{Repository: CheckDatafonoCancellationsInProgressRepository}
+    CheckDatafonoCancellationsInProgressClient = &service.CheckDatafonoCancellationsInProgressClient{UseCase: CheckDatafonoCancellationsInProgressUseCase}
 }
 
 func ResolveSalesContainer() iservice.ICheckPendingSales {
@@ -44,5 +51,12 @@ func ResolveReadySalesContainer() iservice.ICheckReadySales {
         initializes()
     }
     return CheckReadySalesClient
+}
+
+func ResolveDatafonoCancellationsInProgressContainer() iservice.ICheckDatafonoCancellationsInProgress {
+    if CheckDatafonoCancellationsInProgressClient == nil {
+        initializes()
+    }
+    return CheckDatafonoCancellationsInProgressClient
 }
 
