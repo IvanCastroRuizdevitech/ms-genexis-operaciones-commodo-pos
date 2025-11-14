@@ -16,6 +16,11 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
             presentation_api_middlewares.ValidateBodyStruct[entities_sales.CheckPendingSalesRequest](),
             handler_sales.CheckPendingSalesHandler,
         )
+        salesGroup.POST(
+            "/check-ready-sales",
+            presentation_api_middlewares.ValidateBodyStruct[entities_sales.CheckReadySalesRequest](),
+            handler_sales.CheckReadySalesHandler,
+        )
     }
 }
 

@@ -12,17 +12,24 @@ import (
 
 // REPOSITORIES DB
 var CheckPendingSalesRepository irepositories.ICheckPendingSalesRepository
+var CheckReadySalesRepository irepositories.ICheckReadySalesRepository
 
 // USECASE
 var CheckPendingSalesUseCase iusecase.ICheckPendingSales
+var CheckReadySalesUseCase iusecase.ICheckReadySales
 
 // SERVICE
 var CheckPendingSalesClient iservice.ICheckPendingSales
+var CheckReadySalesClient iservice.ICheckReadySales
 
 func initializes() {
     CheckPendingSalesRepository = &repositories.CheckPendingSalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
     CheckPendingSalesUseCase = &usecase.CheckPendingSales{Repository: CheckPendingSalesRepository}
     CheckPendingSalesClient = &service.CheckPendingSalesClient{UseCase: CheckPendingSalesUseCase}
+
+    CheckReadySalesRepository = &repositories.CheckReadySalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+    CheckReadySalesUseCase = &usecase.CheckReadySales{Repository: CheckReadySalesRepository}
+    CheckReadySalesClient = &service.CheckReadySalesClient{UseCase: CheckReadySalesUseCase}
 }
 
 func ResolveSalesContainer() iservice.ICheckPendingSales {
@@ -30,5 +37,12 @@ func ResolveSalesContainer() iservice.ICheckPendingSales {
         initializes()
     }
     return CheckPendingSalesClient
+}
+
+func ResolveReadySalesContainer() iservice.ICheckReadySales {
+    if CheckReadySalesClient == nil {
+        initializes()
+    }
+    return CheckReadySalesClient
 }
 
