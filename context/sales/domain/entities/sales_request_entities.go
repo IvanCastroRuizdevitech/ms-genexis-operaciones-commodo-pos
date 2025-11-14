@@ -17,3 +17,7 @@ type DatafonoCancellationsInProgressRequest struct {
     TransactionOperationId int `json:"id_transaccion_operacion" binding:"required"`
     TransactionStatusId    int `json:"id_transaccion_estado" binding:"required"`
 }
+
+type UpdateMovementStateRequest struct {
+    EstadoDianId int `json:"estado_dian_id" binding:"required"`
+}

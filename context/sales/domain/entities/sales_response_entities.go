@@ -48,3 +48,7 @@ type DatafonoCancellationsInProgress struct {
 type UnresolvedSaleAttributes struct {
     Atributos any `json:"atributos" db:"atributos"`
 }
+
+type UpdateMovementStateResult struct {
+    Updated bool `json:"updated" db:"updated"`
+}

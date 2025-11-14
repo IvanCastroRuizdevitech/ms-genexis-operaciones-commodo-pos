@@ -30,5 +30,10 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			"/unresolved/attributes/:movementId",
 			handler_sales.GetUnresolvedSaleAttributesHandler,
 		)
+		salesGroup.PATCH(
+			"/movements/state/:movementId",
+			presentation_api_middlewares.ValidateBodyStruct[entities_sales.UpdateMovementStateRequest](),
+			handler_sales.UpdateMovementStateHandler,
+		)
 	}
 }

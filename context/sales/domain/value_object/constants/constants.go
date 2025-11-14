@@ -5,4 +5,5 @@ const (
     QUERY_CHECK_READY_SALES   = "select * from public.fnc_consultar_ventas(i_id_jornada => $1, i_id_responsable => $2, i_numero_registros => $3);"
     QUERY_CHECK_DATAFONO_CANCELLATIONS_IN_PROGRESS = "SELECT EXISTS (SELECT 1 FROM datafonos.transacciones AS t WHERE t.id_movimiento = $1 AND t.id_transaccion_operacion = $2 AND t.id_transaccion_estado = $3) AS in_progress;"
     QUERY_GET_UNRESOLVED_SALE_ATTRIBUTES = "select atributos from ct_movimientos cm where id = $1;"
+    QUERY_UPDATE_MOVEMENT_STATE = "update facturacion_electronica.tbl_movimientos_facturas_electronicas SET estado_dian_id = $1, estado_descripcion = (select tede.descripcion from facturacion_electronica.tbl_estados_documentos_electronicos tede where tede.id = $2) where pos_movimiento_id = $3;"
 )
