@@ -15,18 +15,21 @@ var CheckPendingSalesRepository irepositories.ICheckPendingSalesRepository
 var CheckReadySalesRepository irepositories.ICheckReadySalesRepository
 var CheckDatafonoCancellationsInProgressRepository irepositories.ICheckDatafonoCancellationsInProgressRepository
 var GetUnresolvedSaleAttributesRepository irepositories.IGetUnresolvedSaleAttributesRepository
+var UpdateMovementStateRepository irepositories.IUpdateMovementStateRepository
 
 // USECASE
 var CheckPendingSalesUseCase iusecase.ICheckPendingSales
 var CheckReadySalesUseCase iusecase.ICheckReadySales
 var CheckDatafonoCancellationsInProgressUseCase iusecase.ICheckDatafonoCancellationsInProgress
 var GetUnresolvedSaleAttributesUseCase iusecase.IGetUnresolvedSaleAttributes
+var UpdateMovementStateUseCase iusecase.IUpdateMovementState
 
 // SERVICE
 var CheckPendingSalesClient iservice.ICheckPendingSales
 var CheckReadySalesClient iservice.ICheckReadySales
 var CheckDatafonoCancellationsInProgressClient iservice.ICheckDatafonoCancellationsInProgress
 var GetUnresolvedSaleAttributesClient iservice.IGetUnresolvedSaleAttributes
+var UpdateMovementStateClient iservice.IUpdateMovementState
 
 func initializes() {
     CheckPendingSalesRepository = &repositories.CheckPendingSalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
@@ -44,6 +47,10 @@ func initializes() {
     GetUnresolvedSaleAttributesRepository = &repositories.GetUnresolvedSaleAttributesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
     GetUnresolvedSaleAttributesUseCase = &usecase.GetUnresolvedSaleAttributes{Repository: GetUnresolvedSaleAttributesRepository}
     GetUnresolvedSaleAttributesClient = &service.GetUnresolvedSaleAttributesClient{UseCase: GetUnresolvedSaleAttributesUseCase}
+
+    UpdateMovementStateRepository = &repositories.UpdateMovementStateRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+    UpdateMovementStateUseCase = &usecase.UpdateMovementState{Repository: UpdateMovementStateRepository}
+    UpdateMovementStateClient = &service.UpdateMovementStateClient{UseCase: UpdateMovementStateUseCase}
 }
 
 func ResolveSalesContainer() iservice.ICheckPendingSales {
@@ -74,3 +81,9 @@ func ResolveGetUnresolvedSaleAttributesContainer() iservice.IGetUnresolvedSaleAt
     return GetUnresolvedSaleAttributesClient
 }
 
+func ResolveUpdateMovementStateContainer() iservice.IUpdateMovementState {
+    if UpdateMovementStateClient == nil {
+        initializes()
+    }
+    return UpdateMovementStateClient
+}
