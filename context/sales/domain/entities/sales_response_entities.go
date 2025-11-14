@@ -41,3 +41,6 @@ type PendingSale struct {
     Integracion                          int64       `json:"integracion" db:"integracion"`
 }
 
+type DatafonoCancellationsInProgress struct {
+    InProgress bool `json:"in_progress" db:"in_progress"`
+}
