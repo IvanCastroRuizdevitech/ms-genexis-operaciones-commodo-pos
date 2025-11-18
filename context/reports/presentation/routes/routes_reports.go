@@ -21,5 +21,9 @@ func LoadReportsRoutes(router *gin.RouterGroup) {
 			"/closing-novelties",
 			handler_reports.GetDailyNoveltiesHandler,
 		)
+		reportsGroup.POST(
+			"/tanks/print-event",
+			handler_reports.CreateTankPrintEventHandler,
+		)
 	}
 }

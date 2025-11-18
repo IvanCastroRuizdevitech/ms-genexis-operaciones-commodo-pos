@@ -14,29 +14,35 @@ import (
 var GetDayClosingReportRepository irepositories.IGetDayClosingReportRepository
 var GetFuelReportRepository irepositories.IGetFuelReportRepository
 var GetDailyNoveltiesRepository irepositories.IGetDailyNoveltiesRepository
+var CreateTankPrintEventRepository irepositories.ICreateTankPrintEventRepository
 
 // USECASE
 var GetDayClosingReportUseCase iusecase.IGetDayClosingReport
 var GetFuelReportUseCase iusecase.IGetFuelReport
 var GetDailyNoveltiesUseCase iusecase.IGetDailyNovelties
+var CreateTankPrintEventUseCase iusecase.ICreateTankPrintEvent
 
 // SERVICE
 var DayClosingReportClient iservice.IDayClosingReport
 var FuelReportClient iservice.IFuelReport
 var DailyNoveltiesClient iservice.IDailyNovelties
+var TankPrintEventClient iservice.ITankPrintEvent
 
 func initializes() {
 	GetDayClosingReportRepository = &repositories.GetDayClosingReportRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
 	GetFuelReportRepository = &repositories.GetFuelReportRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
 	GetDailyNoveltiesRepository = &repositories.GetDailyNoveltiesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+	CreateTankPrintEventRepository = &repositories.CreateTankPrintEventRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
 
 	GetDayClosingReportUseCase = &usecase.GetDayClosingReport{Repository: GetDayClosingReportRepository}
 	GetFuelReportUseCase = &usecase.GetFuelReport{Repository: GetFuelReportRepository}
 	GetDailyNoveltiesUseCase = &usecase.GetDailyNovelties{Repository: GetDailyNoveltiesRepository}
+	CreateTankPrintEventUseCase = &usecase.CreateTankPrintEvent{Repository: CreateTankPrintEventRepository}
 
 	DayClosingReportClient = &service.DayClosingReportClient{GetDayClosingReport: GetDayClosingReportUseCase}
 	FuelReportClient = &service.FuelReportClient{GetFuelReport: GetFuelReportUseCase}
 	DailyNoveltiesClient = &service.DailyNoveltiesClient{GetDailyNovelties: GetDailyNoveltiesUseCase}
+	TankPrintEventClient = &service.TankPrintEventClient{CreateTankPrintEvent: CreateTankPrintEventUseCase}
 }
 
 func ResolveDayClosingReportContainer() iservice.IDayClosingReport {
@@ -58,4 +64,11 @@ func ResolveDailyNoveltiesContainer() iservice.IDailyNovelties {
 		initializes()
 	}
 	return DailyNoveltiesClient
+}
+
+func ResolveTankPrintEventContainer() iservice.ITankPrintEvent {
+	if TankPrintEventClient == nil {
+		initializes()
+	}
+	return TankPrintEventClient
 }
