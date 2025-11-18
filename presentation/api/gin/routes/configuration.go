@@ -13,6 +13,10 @@ import (
 	cors "github.com/itsjamie/gin-cors"
 )
 
+// enableSwaggerDocs controla la exposición de rutas de documentación Swagger.
+// Debe permanecer en true para ambientes de desarrollo y deshabilitarse para PR/producción.
+const enableSwaggerDocs = true
+
 func GinConfig() (*gin.Engine, error) {
     gin.SetMode(gin.DebugMode)
     router := gin.New()
@@ -29,10 +33,12 @@ func GinConfig() (*gin.Engine, error) {
         ValidateHeaders: false,
     }))
     // Documentación de APIs por contexto usando Swagger (OpenAPI)
-    // Expone:
+    // Expone (solo si enableSwaggerDocs == true):
     //  - GET /docs              -> UI de Swagger (via CDN)
-    //  - GET /docs/swagger.json -> Documento OpenAPI con rutas agrupadas por contexto
-    registerSwaggerRoutes(router)
+    //  - GET /docs/swagger.json -> Documento OpenAPI agrupado por contexto
+    if enableSwaggerDocs {
+        registerSwaggerRoutes(router)
+    }
     api := router.Group(constants.API_PATH)
     routes_shift.LoadShiftRoutes(api)
     routes_envelopes.LoadEnvelopesRoutes(api)
