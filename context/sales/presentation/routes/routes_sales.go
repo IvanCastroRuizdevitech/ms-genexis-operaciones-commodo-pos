@@ -35,5 +35,10 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			presentation_api_middlewares.ValidateBodyStruct[entities_sales.UpdateMovementStateRequest](),
 			handler_sales.UpdateMovementStateHandler,
 		)
+		salesGroup.POST(
+			"/assign-customer-data",
+			presentation_api_middlewares.ValidateBodyStruct[entities_sales.AssignCustomerDataRequest](),
+			handler_sales.AssignCustomerDataHandler,
+		)
 	}
 }
