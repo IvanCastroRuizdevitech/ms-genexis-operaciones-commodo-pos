@@ -65,3 +65,25 @@ type AssignCustomerDataResult struct {
 type UpdateClientMovementResult struct {
     Json any `json:"o_json_respuesta" db:"o_json_respuesta"`
 }
+
+// PendingSaleDatafono maps the pending sale status for a datafono transaction
+// returned by the query over datafonos.transacciones and related tables.
+type PendingSaleDatafono struct {
+    IdTransaccionEstado int    `json:"id_transaccion_estado" db:"id_transaccion_estado"`
+    Descripcion         string `json:"descripcion" db:"descripcion"`
+    IdAdquiriente       int    `json:"id_adquiriente" db:"id_adquiriente"`
+    Proveedor           string `json:"proveedor" db:"proveedor"`
+}
+
+// UpdatePaymentMethodsResult maps the boolean result aliased as "info"
+// from fnc_actualizar_medios_de_pagos($1::json) and includes
+// the movement identifier and the payment methods payload shape.
+type UpdatePaymentMethodsResult struct {
+    // Database function result (true/false)
+    Info any `json:"info" db:"info"`
+}
+
+
+
+
+ 

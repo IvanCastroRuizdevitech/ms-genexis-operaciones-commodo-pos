@@ -13,24 +13,30 @@ import (
 // REPOSITORIES DB
 var GetDayClosingReportRepository irepositories.IGetDayClosingReportRepository
 var GetFuelReportRepository irepositories.IGetFuelReportRepository
+var GetDailyNoveltiesRepository irepositories.IGetDailyNoveltiesRepository
 
 // USECASE
 var GetDayClosingReportUseCase iusecase.IGetDayClosingReport
 var GetFuelReportUseCase iusecase.IGetFuelReport
+var GetDailyNoveltiesUseCase iusecase.IGetDailyNovelties
 
 // SERVICE
 var DayClosingReportClient iservice.IDayClosingReport
 var FuelReportClient iservice.IFuelReport
+var DailyNoveltiesClient iservice.IDailyNovelties
 
 func initializes() {
 	GetDayClosingReportRepository = &repositories.GetDayClosingReportRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
 	GetFuelReportRepository = &repositories.GetFuelReportRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+	GetDailyNoveltiesRepository = &repositories.GetDailyNoveltiesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
 
 	GetDayClosingReportUseCase = &usecase.GetDayClosingReport{Repository: GetDayClosingReportRepository}
 	GetFuelReportUseCase = &usecase.GetFuelReport{Repository: GetFuelReportRepository}
+	GetDailyNoveltiesUseCase = &usecase.GetDailyNovelties{Repository: GetDailyNoveltiesRepository}
 
 	DayClosingReportClient = &service.DayClosingReportClient{GetDayClosingReport: GetDayClosingReportUseCase}
 	FuelReportClient = &service.FuelReportClient{GetFuelReport: GetFuelReportUseCase}
+	DailyNoveltiesClient = &service.DailyNoveltiesClient{GetDailyNovelties: GetDailyNoveltiesUseCase}
 }
 
 func ResolveDayClosingReportContainer() iservice.IDayClosingReport {
@@ -45,4 +51,11 @@ func ResolveFuelReportContainer() iservice.IFuelReport {
 		initializes()
 	}
 	return FuelReportClient
+}
+
+func ResolveDailyNoveltiesContainer() iservice.IDailyNovelties {
+	if DailyNoveltiesClient == nil {
+		initializes()
+	}
+	return DailyNoveltiesClient
 }

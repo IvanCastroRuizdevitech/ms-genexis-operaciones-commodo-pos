@@ -18,4 +18,5 @@ WHERE datos IS NOT NULL
         )::date = $1::date
       );
 `
+	QUERY_GET_DAILY_NOVELTIES = "SELECT * FROM reporteria_cierres.obtener_novedades($1, $2, $3);"
 )

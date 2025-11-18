@@ -35,3 +35,18 @@ type UpdateClientMovementRequest struct {
     TransmissionId int64 `json:"i_id_transmision" binding:"required"`
     Synchronization int  `json:"i_sinconizacion" binding:"required"`
 }
+
+type UpdatePaymentMethodsRequest struct {
+    IdMovimiento int64                 `json:"identificadorMovimiento,omitempty"`
+    MediosPago   []PaymentMethodItem   `json:"mediosDePagos,omitempty"`
+}
+
+type PaymentMethodItem struct {
+    IngPagoDatafono   bool    `json:"ing_pago_datafono"`
+    IdMedio           int64   `json:"ct_medios_pagos_id"`
+    ValorRecibido     float64 `json:"valor_recibido"`
+    ValorCambio       float64 `json:"valor_cambio"`
+    ValorTotal        float64 `json:"valor_total"`
+    NumeroComprobante string  `json:"numero_comprobante"`
+    ConfirmacionBono  bool    `json:"confirmacionBono"`
+}

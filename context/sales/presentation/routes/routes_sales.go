@@ -45,5 +45,14 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			presentation_api_middlewares.ValidateBodyStruct[entities_sales.UpdateClientMovementRequest](),
 			handler_sales.UpdateClientMovementHandler,
 		)
+		salesGroup.GET(
+			"/get-pending-sale-datafono/:id_transaccion",
+			handler_sales.GetPendingSaleDatafonoHandler,
+		)
+		salesGroup.PATCH(
+			"/update-payment-methods",
+			presentation_api_middlewares.ValidateBodyStruct[entities_sales.UpdatePaymentMethodsRequest](),
+			handler_sales.UpdatePaymentMethodsHandler,
+		)
 	}
 }

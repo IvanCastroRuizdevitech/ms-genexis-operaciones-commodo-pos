@@ -16,8 +16,10 @@ var CheckReadySalesRepository irepositories.ICheckReadySalesRepository
 var CheckDatafonoCancellationsInProgressRepository irepositories.ICheckDatafonoCancellationsInProgressRepository
 var GetUnresolvedSaleAttributesRepository irepositories.IGetUnresolvedSaleAttributesRepository
 var UpdateMovementStateRepository irepositories.IUpdateMovementStateRepository
-    var AssignCustomerDataRepository irepositories.IAssignCustomerDataRepository
-    var UpdateClientMovementRepository irepositories.IUpdateClientMovementRepository
+var AssignCustomerDataRepository irepositories.IAssignCustomerDataRepository
+var UpdateClientMovementRepository irepositories.IUpdateClientMovementRepository
+var GetPendingSaleDatafonoRepository irepositories.IGetPendingSaleDatafonoRepository
+var UpdatePaymentMethodsRepository irepositories.IUpdatePaymentMethodsRepository
 
 // USECASE
 var CheckPendingSalesUseCase iusecase.ICheckPendingSales
@@ -25,8 +27,10 @@ var CheckReadySalesUseCase iusecase.ICheckReadySales
 var CheckDatafonoCancellationsInProgressUseCase iusecase.ICheckDatafonoCancellationsInProgress
 var GetUnresolvedSaleAttributesUseCase iusecase.IGetUnresolvedSaleAttributes
 var UpdateMovementStateUseCase iusecase.IUpdateMovementState
-    var AssignCustomerDataUseCase iusecase.IAssignCustomerData
-    var UpdateClientMovementUseCase iusecase.IUpdateClientMovement
+var AssignCustomerDataUseCase iusecase.IAssignCustomerData
+var UpdateClientMovementUseCase iusecase.IUpdateClientMovement
+var GetPendingSaleDatafonoUseCase iusecase.IGetPendingSaleDatafono
+var UpdatePaymentMethodsUseCase iusecase.IUpdatePaymentMethods
 
 // SERVICE
 var CheckPendingSalesClient iservice.ICheckPendingSales
@@ -34,8 +38,10 @@ var CheckReadySalesClient iservice.ICheckReadySales
 var CheckDatafonoCancellationsInProgressClient iservice.ICheckDatafonoCancellationsInProgress
 var GetUnresolvedSaleAttributesClient iservice.IGetUnresolvedSaleAttributes
 var UpdateMovementStateClient iservice.IUpdateMovementState
-    var AssignCustomerDataClient iservice.IAssignCustomerData
-    var UpdateClientMovementClient iservice.IUpdateClientMovement
+var AssignCustomerDataClient iservice.IAssignCustomerData
+var UpdateClientMovementClient iservice.IUpdateClientMovement
+var GetPendingSaleDatafonoClient iservice.IGetPendingSaleDatafono
+var UpdatePaymentMethodsClient iservice.IUpdatePaymentMethods
 
 func initializes() {
     CheckPendingSalesRepository = &repositories.CheckPendingSalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
@@ -65,6 +71,14 @@ func initializes() {
     UpdateClientMovementRepository = &repositories.UpdateClientMovementRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
     UpdateClientMovementUseCase = &usecase.UpdateClientMovement{Repository: UpdateClientMovementRepository}
     UpdateClientMovementClient = &service.UpdateClientMovementClient{UseCase: UpdateClientMovementUseCase}
+
+    GetPendingSaleDatafonoRepository = &repositories.GetPendingSaleDatafonoRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+    GetPendingSaleDatafonoUseCase = &usecase.GetPendingSaleDatafono{Repository: GetPendingSaleDatafonoRepository}
+    GetPendingSaleDatafonoClient = &service.GetPendingSaleDatafonoClient{UseCase: GetPendingSaleDatafonoUseCase}
+
+    UpdatePaymentMethodsRepository = &repositories.UpdatePaymentMethodsRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+    UpdatePaymentMethodsUseCase = &usecase.UpdatePaymentMethods{Repository: UpdatePaymentMethodsRepository}
+    UpdatePaymentMethodsClient = &service.UpdatePaymentMethodsClient{UseCase: UpdatePaymentMethodsUseCase}
 }
 
 func ResolveSalesContainer() iservice.ICheckPendingSales {
@@ -114,4 +128,18 @@ func ResolveUpdateClientMovementContainer() iservice.IUpdateClientMovement {
         initializes()
     }
     return UpdateClientMovementClient
+}
+
+func ResolveGetPendingSaleDatafonoContainer() iservice.IGetPendingSaleDatafono {
+    if GetPendingSaleDatafonoClient == nil {
+        initializes()
+    }
+    return GetPendingSaleDatafonoClient
+}
+
+func ResolveUpdatePaymentMethodsContainer() iservice.IUpdatePaymentMethods {
+    if UpdatePaymentMethodsClient == nil {
+        initializes()
+    }
+    return UpdatePaymentMethodsClient
 }
