@@ -14,27 +14,31 @@ import (
 )
 
 func GinConfig() (*gin.Engine, error) {
-	gin.SetMode(gin.DebugMode)
-	router := gin.New()
-	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
+    gin.SetMode(gin.DebugMode)
+    router := gin.New()
+    router.Use(gin.Logger())
+    router.Use(gin.Recovery())
 
-	router.Use(cors.Middleware(cors.Config{
-		Origins:         "*",
-		Methods:         "GET, PUT, POST, DELETE, PATCH",
-		RequestHeaders:  "Origin, Authorization, Content-Type",
-		ExposedHeaders:  "",
-		MaxAge:          300 * time.Second,
-		Credentials:     false,
-		ValidateHeaders: false,
-	}))
+    router.Use(cors.Middleware(cors.Config{
+        Origins:         "*",
+        Methods:         "GET, PUT, POST, DELETE, PATCH",
+        RequestHeaders:  "Origin, Authorization, Content-Type",
+        ExposedHeaders:  "",
+        MaxAge:          300 * time.Second,
+        Credentials:     false,
+        ValidateHeaders: false,
+    }))
+    // Documentación de APIs por contexto usando Swagger (OpenAPI)
+    // Expone:
+    //  - GET /docs              -> UI de Swagger (via CDN)
+    //  - GET /docs/swagger.json -> Documento OpenAPI con rutas agrupadas por contexto
+    registerSwaggerRoutes(router)
+    api := router.Group(constants.API_PATH)
+    routes_shift.LoadShiftRoutes(api)
+    routes_envelopes.LoadEnvelopesRoutes(api)
+    routes_configuration.LoadConfigurationRoutes(api)
+    routes_reports.LoadReportsRoutes(api)
+    routes_sales.LoadSalesRoutes(api)
 
-	api := router.Group(constants.API_PATH)
-	routes_shift.LoadShiftRoutes(api)
-	routes_envelopes.LoadEnvelopesRoutes(api)
-	routes_configuration.LoadConfigurationRoutes(api)
-	routes_reports.LoadReportsRoutes(api)
-	routes_sales.LoadSalesRoutes(api)
-
-	return router, nil
+    return router, nil
 }
