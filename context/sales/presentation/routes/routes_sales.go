@@ -40,5 +40,10 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			presentation_api_middlewares.ValidateBodyStruct[entities_sales.AssignCustomerDataRequest](),
 			handler_sales.AssignCustomerDataHandler,
 		)
+		salesGroup.PATCH(
+			"/update-client-movement",
+			presentation_api_middlewares.ValidateBodyStruct[entities_sales.UpdateClientMovementRequest](),
+			handler_sales.UpdateClientMovementHandler,
+		)
 	}
 }

@@ -26,3 +26,12 @@ type UpdateMovementStateRequest struct {
 // that will be forwarded to the database function as a single JSON argument.
 // Using a map preserves flexibility for varying parameter sets.
 type AssignCustomerDataRequest map[string]any
+
+// UpdateClientMovementRequest payload for updating client movement through stored procedure
+// public.prc_registrar_cliente_movimiento(?,?,?,'{}'::json)
+// (IN i_id_movimiento bigint, IN i_id_transmision bigint, IN i_sinconizacion integer)
+type UpdateClientMovementRequest struct {
+    MovementId     int64 `json:"i_id_movimiento" binding:"required"`
+    TransmissionId int64 `json:"i_id_transmision" binding:"required"`
+    Synchronization int  `json:"i_sinconizacion" binding:"required"`
+}

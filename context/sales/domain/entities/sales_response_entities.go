@@ -58,3 +58,10 @@ type UpdateMovementStateResult struct {
 type AssignCustomerDataResult struct {
     Info any `json:"info" db:"info"`
 }
+
+// UpdateClientMovementResult maps the OUT/INOUT json response from the stored routine
+// prc_registrar_cliente_movimiento(...)
+// The column name is assumed as "o_json_respuesta" when selecting the routine result.
+type UpdateClientMovementResult struct {
+    Json any `json:"o_json_respuesta" db:"o_json_respuesta"`
+}
