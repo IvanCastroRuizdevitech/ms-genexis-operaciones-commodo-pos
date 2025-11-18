@@ -44,7 +44,6 @@ const swaggerHTML = `<!doctype html>
     </script>
   </body>
 </html>`
-
 // Static OpenAPI 3.0 document. Paths grouped by context via tags with accurate request/response schemas.
 const swaggerJSON = `{
   "openapi": "3.0.3",
@@ -218,6 +217,36 @@ const swaggerJSON = `{
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseUpdateClientMovementResult" } } } }
         }
       }
+    },
+    "/sales/get-pending-sale-datafono/{id_transaccion}": {
+      "get": {
+        "tags": ["Sales"],
+        "summary": "Obtiene estado de transacción de datáfono",
+        "parameters": [ { "name": "id_transaccion", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID de la transacción de datáfono" } ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponsePendingSaleDatafono" } } } }
+        }
+      }
+    },
+    "/sales/update-payment-methods": {
+      "patch": {
+        "tags": ["Sales"],
+        "summary": "Actualiza medios de pago de una venta",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdatePaymentMethodsRequest" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseUpdatePaymentMethodsResult" } } } }
+        }
+      }
+    },
+    "/reports/closing-novelties": {
+      "post": {
+        "tags": ["Reports"],
+        "summary": "Novedades de cierre diario",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DailyNoveltiesRequest" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseDailyNovelties" } } } }
+        }
+      }
     }
   },
   "components": {
@@ -340,12 +369,47 @@ const swaggerJSON = `{
       "AssignCustomerDataResult": { "type": "object", "properties": { "info": { "type": "object" } } },
       "UpdateClientMovementResult": { "type": "object", "properties": { "o_json_respuesta": { "type": "object" } } },
 
+      "PendingSaleDatafono": {
+        "type": "object",
+        "properties": {
+          "id_transaccion_estado": { "type": "integer" },
+          "descripcion": { "type": "string" },
+          "id_adquiriente": { "type": "integer" },
+          "proveedor": { "type": "string" }
+        }
+      },
+      "UpdatePaymentMethodsRequest": {
+        "type": "object",
+        "properties": {
+          "identificadorMovimiento": { "type": "integer", "format": "int64" },
+          "mediosDePagos": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/PaymentMethodItem" }
+          }
+        }
+      },
+      "PaymentMethodItem": {
+        "type": "object",
+        "properties": {
+          "ing_pago_datafono": { "type": "boolean" },
+          "ct_medios_pagos_id": { "type": "integer", "format": "int64" },
+          "valor_recibido": { "type": "number" },
+          "valor_cambio": { "type": "number" },
+          "valor_total": { "type": "number" },
+          "numero_comprobante": { "type": "string" },
+          "confirmacionBono": { "type": "boolean" }
+        }
+      },
+      "UpdatePaymentMethodsResult": { "type": "object", "properties": { "info": { "type": "object" } } },
+
       "ResponsePendingSalesList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/PendingSale" } } } } ] },
       "ResponseDatafonoCancellationsInProgress": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/DatafonoCancellationsInProgress" } } } ] },
       "ResponseUnresolvedSaleAttributes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UnresolvedSaleAttributes" } } } ] },
       "ResponseUpdateMovementStateResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdateMovementStateResult" } } } ] },
       "ResponseAssignCustomerDataResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/AssignCustomerDataResult" } } } ] },
       "ResponseUpdateClientMovementResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdateClientMovementResult" } } } ] },
+      "ResponsePendingSaleDatafono": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/PendingSaleDatafono" } } } ] },
+      "ResponseUpdatePaymentMethodsResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdatePaymentMethodsResult" } } } ] },
 
       "EnvelopesTotalRequest": {
         "type": "object",
@@ -376,6 +440,21 @@ const swaggerJSON = `{
       "ReporteMedio": { "type": "object", "properties": { "id": { "type": "integer" }, "descripcion": { "type": "string" }, "total": { "type": "number" }, "cantidad": { "type": "integer" } } },
       "ResponseFuelReport": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/FuelReport" } } } ] },
       "ResponseDayClosingReport": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/DayClosingReport" } } } ] },
+
+      "DailyNoveltiesRequest": {
+        "type": "object",
+        "properties": {
+          "ano": { "type": "integer" },
+          "mes": { "type": "integer" },
+          "dia": { "type": "integer" }
+        },
+        "required": ["ano", "mes", "dia"]
+      },
+      "DailyNovelties": {
+        "type": "array",
+        "items": { "type": "object", "additionalProperties": true }
+      },
+      "ResponseDailyNovelties": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/DailyNovelties" } } } ] },
 
       "OpeningShiftRequest": {
         "type": "object",
