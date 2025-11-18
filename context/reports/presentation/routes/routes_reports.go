@@ -29,5 +29,9 @@ func LoadReportsRoutes(router *gin.RouterGroup) {
 			"/movement-types",
 			handler_reports.GetMovementTypesHandler,
 		)
+		reportsGroup.GET(
+			"/tanks",
+			handler_reports.GetTanksHandler,
+		)
 	}
 }
