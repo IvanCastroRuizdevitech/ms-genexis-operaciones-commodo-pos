@@ -21,4 +21,5 @@ WHERE datos IS NOT NULL
 	QUERY_GET_DAILY_NOVELTIES     = "SELECT * FROM reporteria_cierres.obtener_novedades($1, $2, $3);"
 	QUERY_CREATE_TANK_PRINT_EVENT = "CALL reporteria.insert_evento_impresion_lecturas_tanques($1::int[], NULL);"
 	QUERY_GET_MOVEMENT_TYPES      = "select tm.id_tipo_movimiento as id, tm.descripcion from tipos_movimiento tm;"
+	QUERY_GET_TANKS               = "select cb.id, cb.bodega from ct_bodegas cb;"
 )

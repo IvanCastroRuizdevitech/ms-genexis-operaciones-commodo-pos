@@ -16,6 +16,7 @@ var GetFuelReportRepository irepositories.IGetFuelReportRepository
 var GetDailyNoveltiesRepository irepositories.IGetDailyNoveltiesRepository
 var CreateTankPrintEventRepository irepositories.ICreateTankPrintEventRepository
 var GetMovementTypesRepository irepositories.IGetMovementTypesRepository
+var GetTanksRepository irepositories.IGetTanksRepository
 
 // USECASE
 var GetDayClosingReportUseCase iusecase.IGetDayClosingReport
@@ -23,6 +24,7 @@ var GetFuelReportUseCase iusecase.IGetFuelReport
 var GetDailyNoveltiesUseCase iusecase.IGetDailyNovelties
 var CreateTankPrintEventUseCase iusecase.ICreateTankPrintEvent
 var GetMovementTypesUseCase iusecase.IGetMovementTypes
+var GetTanksUseCase iusecase.IGetTanks
 
 // SERVICE
 var DayClosingReportClient iservice.IDayClosingReport
@@ -30,6 +32,7 @@ var FuelReportClient iservice.IFuelReport
 var DailyNoveltiesClient iservice.IDailyNovelties
 var TankPrintEventClient iservice.ITankPrintEvent
 var MovementTypesClient iservice.IMovementTypes
+var TanksClient iservice.ITanks
 
 func initializes() {
 	GetDayClosingReportRepository = &repositories.GetDayClosingReportRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
@@ -37,18 +40,21 @@ func initializes() {
 	GetDailyNoveltiesRepository = &repositories.GetDailyNoveltiesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
 	CreateTankPrintEventRepository = &repositories.CreateTankPrintEventRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
 	GetMovementTypesRepository = &repositories.GetMovementTypesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+	GetTanksRepository = &repositories.GetTanksRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
 
 	GetDayClosingReportUseCase = &usecase.GetDayClosingReport{Repository: GetDayClosingReportRepository}
 	GetFuelReportUseCase = &usecase.GetFuelReport{Repository: GetFuelReportRepository}
 	GetDailyNoveltiesUseCase = &usecase.GetDailyNovelties{Repository: GetDailyNoveltiesRepository}
 	CreateTankPrintEventUseCase = &usecase.CreateTankPrintEvent{Repository: CreateTankPrintEventRepository}
 	GetMovementTypesUseCase = &usecase.GetMovementTypes{Repository: GetMovementTypesRepository}
+	GetTanksUseCase = &usecase.GetTanks{Repository: GetTanksRepository}
 
 	DayClosingReportClient = &service.DayClosingReportClient{GetDayClosingReport: GetDayClosingReportUseCase}
 	FuelReportClient = &service.FuelReportClient{GetFuelReport: GetFuelReportUseCase}
 	DailyNoveltiesClient = &service.DailyNoveltiesClient{GetDailyNovelties: GetDailyNoveltiesUseCase}
 	TankPrintEventClient = &service.TankPrintEventClient{CreateTankPrintEvent: CreateTankPrintEventUseCase}
 	MovementTypesClient = &service.MovementTypesClient{GetMovementTypes: GetMovementTypesUseCase}
+	TanksClient = &service.TanksClient{GetTanks: GetTanksUseCase}
 }
 
 func ResolveDayClosingReportContainer() iservice.IDayClosingReport {
@@ -84,4 +90,11 @@ func ResolveMovementTypesContainer() iservice.IMovementTypes {
 		initializes()
 	}
 	return MovementTypesClient
+}
+
+func ResolveTanksContainer() iservice.ITanks {
+	if TanksClient == nil {
+		initializes()
+	}
+	return TanksClient
 }
