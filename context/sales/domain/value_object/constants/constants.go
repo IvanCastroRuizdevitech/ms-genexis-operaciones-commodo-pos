@@ -10,4 +10,5 @@ const (
     QUERY_UPDATE_CLIENT_MOVEMENT = "select * from public.prc_registrar_cliente_movimiento($1,$2,$3,'{}'::json);"
     QUERY_GET_PENDING_SALE_DATAFONO = "SELECT td.id_transaccion_estado, td.descripcion, d.id_adquiriente, a.descripcion AS proveedor FROM datafonos.transacciones AS t INNER JOIN datafonos.transacciones_estado AS td ON t.id_transaccion_estado = td.id_transaccion_estado INNER JOIN datafonos.datafonos AS d ON t.id_datafono = d.id_datafono INNER JOIN datafonos.adquirientes AS a ON a.id_adquiriente = d.id_adquiriente WHERE t.id_transaccion = $1;"
     QUERY_UPDATE_PAYMENT_METHODS = "select * from public.fnc_actualizar_medios_de_pagos($1::json) as info;"
+    QUERY_REPRINT_SALE = "select * from public.reimpresion($1) as info;"
 )

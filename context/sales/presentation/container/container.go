@@ -20,6 +20,7 @@ var AssignCustomerDataRepository irepositories.IAssignCustomerDataRepository
 var UpdateClientMovementRepository irepositories.IUpdateClientMovementRepository
 var GetPendingSaleDatafonoRepository irepositories.IGetPendingSaleDatafonoRepository
 var UpdatePaymentMethodsRepository irepositories.IUpdatePaymentMethodsRepository
+var ReprintSaleRepository irepositories.IReprintSaleRepository
 
 // USECASE
 var CheckPendingSalesUseCase iusecase.ICheckPendingSales
@@ -31,6 +32,7 @@ var AssignCustomerDataUseCase iusecase.IAssignCustomerData
 var UpdateClientMovementUseCase iusecase.IUpdateClientMovement
 var GetPendingSaleDatafonoUseCase iusecase.IGetPendingSaleDatafono
 var UpdatePaymentMethodsUseCase iusecase.IUpdatePaymentMethods
+var ReprintSaleUseCase iusecase.IReprintSale
 
 // SERVICE
 var CheckPendingSalesClient iservice.ICheckPendingSales
@@ -42,6 +44,7 @@ var AssignCustomerDataClient iservice.IAssignCustomerData
 var UpdateClientMovementClient iservice.IUpdateClientMovement
 var GetPendingSaleDatafonoClient iservice.IGetPendingSaleDatafono
 var UpdatePaymentMethodsClient iservice.IUpdatePaymentMethods
+var ReprintSaleClient iservice.IReprintSale
 
 func initializes() {
     CheckPendingSalesRepository = &repositories.CheckPendingSalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
@@ -79,6 +82,10 @@ func initializes() {
     UpdatePaymentMethodsRepository = &repositories.UpdatePaymentMethodsRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
     UpdatePaymentMethodsUseCase = &usecase.UpdatePaymentMethods{Repository: UpdatePaymentMethodsRepository}
     UpdatePaymentMethodsClient = &service.UpdatePaymentMethodsClient{UseCase: UpdatePaymentMethodsUseCase}
+
+    ReprintSaleRepository = &repositories.ReprintSaleRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+    ReprintSaleUseCase = &usecase.ReprintSale{Repository: ReprintSaleRepository}
+    ReprintSaleClient = &service.ReprintSaleClient{UseCase: ReprintSaleUseCase}
 }
 
 func ResolveSalesContainer() iservice.ICheckPendingSales {
@@ -142,4 +149,11 @@ func ResolveUpdatePaymentMethodsContainer() iservice.IUpdatePaymentMethods {
         initializes()
     }
     return UpdatePaymentMethodsClient
+}
+
+func ResolveReprintSaleContainer() iservice.IReprintSale {
+    if ReprintSaleClient == nil {
+        initializes()
+    }
+    return ReprintSaleClient
 }
