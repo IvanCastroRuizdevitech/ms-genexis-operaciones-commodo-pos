@@ -17,5 +17,9 @@ func LoadReportsRoutes(router *gin.RouterGroup) {
 			"/fuel-report/:fecha",
 			handler_reports.GetFuelReportHandler,
 		)
+		reportsGroup.POST(
+			"/closing-novelties",
+			handler_reports.GetDailyNoveltiesHandler,
+		)
 	}
 }
