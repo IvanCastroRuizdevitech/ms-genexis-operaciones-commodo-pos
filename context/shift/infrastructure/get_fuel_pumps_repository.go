@@ -50,4 +50,3 @@ func (r *GetFuelPumpsRepository) GetFuelPumps() ([]map[string]interface{}, error
 
     return results, nil
 }
-
