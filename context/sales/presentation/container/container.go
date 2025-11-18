@@ -16,6 +16,7 @@ var CheckReadySalesRepository irepositories.ICheckReadySalesRepository
 var CheckDatafonoCancellationsInProgressRepository irepositories.ICheckDatafonoCancellationsInProgressRepository
 var GetUnresolvedSaleAttributesRepository irepositories.IGetUnresolvedSaleAttributesRepository
 var UpdateMovementStateRepository irepositories.IUpdateMovementStateRepository
+var AssignCustomerDataRepository irepositories.IAssignCustomerDataRepository
 
 // USECASE
 var CheckPendingSalesUseCase iusecase.ICheckPendingSales
@@ -23,6 +24,7 @@ var CheckReadySalesUseCase iusecase.ICheckReadySales
 var CheckDatafonoCancellationsInProgressUseCase iusecase.ICheckDatafonoCancellationsInProgress
 var GetUnresolvedSaleAttributesUseCase iusecase.IGetUnresolvedSaleAttributes
 var UpdateMovementStateUseCase iusecase.IUpdateMovementState
+var AssignCustomerDataUseCase iusecase.IAssignCustomerData
 
 // SERVICE
 var CheckPendingSalesClient iservice.ICheckPendingSales
@@ -30,6 +32,7 @@ var CheckReadySalesClient iservice.ICheckReadySales
 var CheckDatafonoCancellationsInProgressClient iservice.ICheckDatafonoCancellationsInProgress
 var GetUnresolvedSaleAttributesClient iservice.IGetUnresolvedSaleAttributes
 var UpdateMovementStateClient iservice.IUpdateMovementState
+var AssignCustomerDataClient iservice.IAssignCustomerData
 
 func initializes() {
     CheckPendingSalesRepository = &repositories.CheckPendingSalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
@@ -51,6 +54,10 @@ func initializes() {
     UpdateMovementStateRepository = &repositories.UpdateMovementStateRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
     UpdateMovementStateUseCase = &usecase.UpdateMovementState{Repository: UpdateMovementStateRepository}
     UpdateMovementStateClient = &service.UpdateMovementStateClient{UseCase: UpdateMovementStateUseCase}
+
+    AssignCustomerDataRepository = &repositories.AssignCustomerDataRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+    AssignCustomerDataUseCase = &usecase.AssignCustomerData{Repository: AssignCustomerDataRepository}
+    AssignCustomerDataClient = &service.AssignCustomerDataClient{UseCase: AssignCustomerDataUseCase}
 }
 
 func ResolveSalesContainer() iservice.ICheckPendingSales {
@@ -86,4 +93,11 @@ func ResolveUpdateMovementStateContainer() iservice.IUpdateMovementState {
         initializes()
     }
     return UpdateMovementStateClient
+}
+
+func ResolveAssignCustomerDataContainer() iservice.IAssignCustomerData {
+    if AssignCustomerDataClient == nil {
+        initializes()
+    }
+    return AssignCustomerDataClient
 }

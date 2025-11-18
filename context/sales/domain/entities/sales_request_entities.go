@@ -21,3 +21,8 @@ type DatafonoCancellationsInProgressRequest struct {
 type UpdateMovementStateRequest struct {
     EstadoDianId int `json:"estado_dian_id" binding:"required"`
 }
+
+// AssignCustomerDataRequest represents a passthrough JSON payload
+// that will be forwarded to the database function as a single JSON argument.
+// Using a map preserves flexibility for varying parameter sets.
+type AssignCustomerDataRequest map[string]any

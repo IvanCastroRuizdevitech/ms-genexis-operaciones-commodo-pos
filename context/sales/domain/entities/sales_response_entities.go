@@ -52,3 +52,9 @@ type UnresolvedSaleAttributes struct {
 type UpdateMovementStateResult struct {
     Updated bool `json:"updated" db:"updated"`
 }
+
+// AssignCustomerDataResult maps the result from
+// fnc_asignar_datos_cliente(... ) AS info
+type AssignCustomerDataResult struct {
+    Info any `json:"info" db:"info"`
+}
