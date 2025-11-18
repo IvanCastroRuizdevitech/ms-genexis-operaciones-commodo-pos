@@ -25,5 +25,9 @@ func LoadReportsRoutes(router *gin.RouterGroup) {
 			"/tanks/print-event",
 			handler_reports.CreateTankPrintEventHandler,
 		)
+		reportsGroup.GET(
+			"/movement-types",
+			handler_reports.GetMovementTypesHandler,
+		)
 	}
 }
