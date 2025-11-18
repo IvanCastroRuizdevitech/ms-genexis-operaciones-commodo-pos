@@ -74,3 +74,16 @@ type PendingSaleDatafono struct {
     IdAdquiriente       int    `json:"id_adquiriente" db:"id_adquiriente"`
     Proveedor           string `json:"proveedor" db:"proveedor"`
 }
+
+// UpdatePaymentMethodsResult maps the boolean result aliased as "info"
+// from fnc_actualizar_medios_de_pagos($1::json) and includes
+// the movement identifier and the payment methods payload shape.
+type UpdatePaymentMethodsResult struct {
+    // Database function result (true/false)
+    Info any `json:"info" db:"info"`
+}
+
+
+
+
+ 

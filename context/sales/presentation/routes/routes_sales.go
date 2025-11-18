@@ -49,5 +49,10 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			"/get-pending-sale-datafono/:id_transaccion",
 			handler_sales.GetPendingSaleDatafonoHandler,
 		)
+		salesGroup.PATCH(
+			"/update-payment-methods",
+			presentation_api_middlewares.ValidateBodyStruct[entities_sales.UpdatePaymentMethodsRequest](),
+			handler_sales.UpdatePaymentMethodsHandler,
+		)
 	}
 }
