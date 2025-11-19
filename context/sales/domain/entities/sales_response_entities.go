@@ -83,6 +83,10 @@ type UpdatePaymentMethodsResult struct {
     Info any `json:"info" db:"info"`
 }
 
+type ReprintSaleResult struct {
+    Info any `json:"info" db:"info"`
+}
+
 
 
 

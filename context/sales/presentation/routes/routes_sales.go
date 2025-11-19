@@ -54,5 +54,9 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			presentation_api_middlewares.ValidateBodyStruct[entities_sales.UpdatePaymentMethodsRequest](),
 			handler_sales.UpdatePaymentMethodsHandler,
 		)
+		salesGroup.GET(
+			"/reprint-sale/:movementId",
+			handler_sales.ReprintSaleHandler,
+		)
 	}
 }
