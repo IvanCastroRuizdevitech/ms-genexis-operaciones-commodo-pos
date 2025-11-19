@@ -17,5 +17,9 @@ func LoadConfigurationRoutes(router *gin.RouterGroup) {
             "/promoter-duty",
             handler_configuration.GetPromoterDutyHandler,
         )
+        configurationGroup.GET(
+            "/configuracion-inicial",
+            handler_configuration.GetInitialConfigurationHandler,
+        )
     }
 }
