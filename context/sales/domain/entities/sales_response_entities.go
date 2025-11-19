@@ -88,6 +88,13 @@ type ReprintSaleResult struct {
 }
 
 
+// FuelEntryReportResult maps the JSON returned by
+// procesos.fnc_re_imprimir_factura_entrada(...) selected as "data"
+type FuelEntryReportResult struct {
+    Data any `json:"data" db:"data"`
+}
+
+
 
 
  

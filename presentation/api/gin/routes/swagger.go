@@ -238,6 +238,16 @@ const swaggerJSON = `{
         }
       }
     },
+    "/sales/fuel-entry-report": {
+      "post": {
+        "tags": ["Sales"],
+        "summary": "Genera impresión de reporte de entrada de combustible",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FuelEntryReportRequest" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseFuelEntryReportResult" } } } }
+        }
+      }
+    },
     "/reports/closing-novelties": {
       "post": {
         "tags": ["Reports"],
@@ -402,6 +412,17 @@ const swaggerJSON = `{
       },
       "UpdatePaymentMethodsResult": { "type": "object", "properties": { "info": { "type": "object" } } },
 
+      "FuelEntryReportRequest": {
+        "type": "object",
+        "properties": {
+          "numero_factura": { "type": "integer", "format": "int64" },
+          "copia": { "type": "boolean" },
+          "cola": { "type": "boolean" }
+        },
+        "required": ["numero_factura", "copia", "cola"]
+      },
+      "FuelEntryReportResult": { "type": "object", "properties": { "data": { "type": "object" } } },
+
       "ResponsePendingSalesList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/PendingSale" } } } } ] },
       "ResponseDatafonoCancellationsInProgress": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/DatafonoCancellationsInProgress" } } } ] },
       "ResponseUnresolvedSaleAttributes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UnresolvedSaleAttributes" } } } ] },
@@ -410,6 +431,7 @@ const swaggerJSON = `{
       "ResponseUpdateClientMovementResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdateClientMovementResult" } } } ] },
       "ResponsePendingSaleDatafono": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/PendingSaleDatafono" } } } ] },
       "ResponseUpdatePaymentMethodsResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdatePaymentMethodsResult" } } } ] },
+      "ResponseFuelEntryReportResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/FuelEntryReportResult" } } } ] },
 
       "EnvelopesTotalRequest": {
         "type": "object",

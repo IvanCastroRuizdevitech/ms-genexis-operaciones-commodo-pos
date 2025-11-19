@@ -50,3 +50,11 @@ type PaymentMethodItem struct {
     NumeroComprobante string  `json:"numero_comprobante"`
     ConfirmacionBono  bool    `json:"confirmacionBono"`
 }
+
+// FuelEntryReportRequest payload
+// Maps to procesos.fnc_re_imprimir_factura_entrada(numero_factura, copia, cola)
+type FuelEntryReportRequest struct {
+    NumeroFactura int64 `json:"numero_factura" binding:"required"`
+    Copia         bool  `json:"copia" binding:"required"`
+    Cola          bool  `json:"cola" binding:"required"`
+}
