@@ -127,6 +127,15 @@ const swaggerJSON = `{
         }
       }
     },
+    "/configuration/configuracion-inicial": {
+      "get": {
+        "tags": ["Configuration"],
+        "summary": "Obtiene la configuración inicial del POS",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseInitialConfiguration" } } } }
+        }
+      }
+    },
     "/reports/day-closing-report/{fecha}": {
       "get": {
         "tags": ["Reports"],
@@ -445,6 +454,22 @@ const swaggerJSON = `{
       "PromoterDuty": { "type": "object", "properties": { "personas_id": { "type": "integer" }, "nombre": { "type": "string" }, "estado": { "type": "string" }, "id_perfiles": { "type": "integer" }, "descripcion": { "type": "string" } } },
       "ResponseConfig": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/Config" } } } ] },
       "ResponsePromoterDutyList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/PromoterDuty" } } } } ] },
+
+      "InitialConfiguration": {
+        "type": "object",
+        "properties": {
+          "equipo": { "type": "object", "additionalProperties": true },
+          "jornada": { "type": "object", "additionalProperties": true },
+          "empresas": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "promotor": { "type": "object", "additionalProperties": true },
+          "parametros": { "type": "object", "additionalProperties": true },
+          "surtidores": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "medios_pagos": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "turno_activo": { "type": "boolean" },
+          "surtidores_detalles": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+        }
+      },
+      "ResponseInitialConfiguration": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/InitialConfiguration" } } } ] },
 
       "FuelReport": { "type": "object", "properties": { "total_ventas_combustible": { "type": "number" }, "total_ventas_canastilla": { "type": "number" }, "cantidad_ventas_combustible": { "type": "number" }, "cantidad_ventas_canastilla": { "type": "number" } } },
       "DayClosingReport": {

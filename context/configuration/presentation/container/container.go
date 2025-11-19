@@ -13,16 +13,19 @@ import (
 // REPOSITORIES DB
 var GetParametersRepository irepositories.IGetParametersRepository
 var GetPromoterDutyRepository irepositories.IGetPromoterDutyRepository
+var GetInitialConfigurationRepository irepositories.IGetInitialConfigurationRepository
 
 // REPOSITORIES HTTPP
 
 // USECASE
 var GetParametersUseCase iusecase.IGetParameters
 var GetPromoterDutyUseCase iusecase.IGetPromoterDuty
+var GetInitialConfigurationUseCase iusecase.IGetInitialConfiguration
 
 // SERVICE
 var GetParametersClient iservice.IGetParameters
 var GetPromoterDutyClient iservice.IGetPromoterDuty
+var GetInitialConfigurationClient iservice.IGetInitialConfiguration
 
 func initializes() {
     GetParametersRepository = &repositories.GetParametersRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
@@ -32,6 +35,10 @@ func initializes() {
     GetPromoterDutyRepository = &repositories.GetPromoterDutyRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
     GetPromoterDutyUseCase = &usecase.GetPromoterDuty{GetPromoterDuty: GetPromoterDutyRepository}
     GetPromoterDutyClient = &service.GetPromoterDutyClient{GetPromoterDuty: GetPromoterDutyUseCase}
+
+    GetInitialConfigurationRepository = &repositories.GetInitialConfigurationRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+    GetInitialConfigurationUseCase = &usecase.GetInitialConfiguration{GetInitialConfiguration: GetInitialConfigurationRepository}
+    GetInitialConfigurationClient = &service.GetInitialConfigurationClient{GetInitialConfiguration: GetInitialConfigurationUseCase}
 }
 
 func ResolveGetParametersContainer() iservice.IGetParameters {
@@ -48,4 +55,11 @@ func ResolveGetPromoterDutyContainer() iservice.IGetPromoterDuty {
         initializes()
     }
     return GetPromoterDutyClient
+}
+
+func ResolveGetInitialConfigurationContainer() iservice.IGetInitialConfiguration {
+    if GetInitialConfigurationClient == nil {
+        initializes()
+    }
+    return GetInitialConfigurationClient
 }
