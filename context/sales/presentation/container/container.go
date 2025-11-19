@@ -21,6 +21,7 @@ var UpdateClientMovementRepository irepositories.IUpdateClientMovementRepository
 var GetPendingSaleDatafonoRepository irepositories.IGetPendingSaleDatafonoRepository
 var UpdatePaymentMethodsRepository irepositories.IUpdatePaymentMethodsRepository
 var ReprintSaleRepository irepositories.IReprintSaleRepository
+var FuelEntryReportRepository irepositories.IFuelEntryReportRepository
 
 // USECASE
 var CheckPendingSalesUseCase iusecase.ICheckPendingSales
@@ -33,6 +34,7 @@ var UpdateClientMovementUseCase iusecase.IUpdateClientMovement
 var GetPendingSaleDatafonoUseCase iusecase.IGetPendingSaleDatafono
 var UpdatePaymentMethodsUseCase iusecase.IUpdatePaymentMethods
 var ReprintSaleUseCase iusecase.IReprintSale
+var FuelEntryReportUseCase iusecase.IFuelEntryReport
 
 // SERVICE
 var CheckPendingSalesClient iservice.ICheckPendingSales
@@ -45,6 +47,7 @@ var UpdateClientMovementClient iservice.IUpdateClientMovement
 var GetPendingSaleDatafonoClient iservice.IGetPendingSaleDatafono
 var UpdatePaymentMethodsClient iservice.IUpdatePaymentMethods
 var ReprintSaleClient iservice.IReprintSale
+var FuelEntryReportClient iservice.IFuelEntryReport
 
 func initializes() {
     CheckPendingSalesRepository = &repositories.CheckPendingSalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
@@ -86,6 +89,10 @@ func initializes() {
     ReprintSaleRepository = &repositories.ReprintSaleRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
     ReprintSaleUseCase = &usecase.ReprintSale{Repository: ReprintSaleRepository}
     ReprintSaleClient = &service.ReprintSaleClient{UseCase: ReprintSaleUseCase}
+
+    FuelEntryReportRepository = &repositories.FuelEntryReportRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+    FuelEntryReportUseCase = &usecase.FuelEntryReport{Repository: FuelEntryReportRepository}
+    FuelEntryReportClient = &service.FuelEntryReportClient{UseCase: FuelEntryReportUseCase}
 }
 
 func ResolveSalesContainer() iservice.ICheckPendingSales {
@@ -156,4 +163,11 @@ func ResolveReprintSaleContainer() iservice.IReprintSale {
         initializes()
     }
     return ReprintSaleClient
+}
+
+func ResolveFuelEntryReportContainer() iservice.IFuelEntryReport {
+    if FuelEntryReportClient == nil {
+        initializes()
+    }
+    return FuelEntryReportClient
 }

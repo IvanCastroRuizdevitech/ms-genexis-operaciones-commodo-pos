@@ -58,5 +58,10 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			"/reprint-sale/:movementId",
 			handler_sales.ReprintSaleHandler,
 		)
+		salesGroup.POST(
+			"/fuel-entry-report",
+			presentation_api_middlewares.ValidateBodyStruct[entities_sales.FuelEntryReportRequest](),
+			handler_sales.FuelEntryReportHandler,
+		)
 	}
 }

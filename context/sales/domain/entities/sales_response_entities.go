@@ -87,6 +87,87 @@ type ReprintSaleResult struct {
     Info any `json:"info" db:"info"`
 }
 
+// Respuesta completa de la función PL/pgSQL
+type FuelEntryReportResult struct {
+	Codigo  int           `json:"codigo"`
+	Mensaje string        `json:"mensaje"`
+	Result  FacturaResult `json:"result"`
+}
+
+// "result"
+type FacturaResult struct {
+	Data          FacturaData `json:"data"`
+	FechaRegistro string      `json:"fecha_registro"`
+	JornadaID     int         `json:"jornada_id"` // si en el JSON viene como texto cambia a string
+	PosID         int         `json:"pos_id"`
+	Promotor      string      `json:"promotor"`
+	Copia         any         `json:"copia"` // no sabemos el tipo exacto -> interface{}
+}
+
+// "data"
+type FacturaData struct {
+	InformacionGeneral     InformacionGeneral     `json:"INFORMACION_GENERAL"`
+	MedidasIniciales       []MedidaInicial        `json:"MEDIDAS_INICIALES"`
+	ProductosSeleccionados []ProductoSeleccionado `json:"PRODUCTOS_SELECIONADOS"`
+	SolicitudMedidasFinales []MedidaFinal         `json:"SOLICITUD_MEDIDAS_FINALES"`
+	TanquesSeleccionados   []TanqueSeleccionado   `json:"TANQUES_SELECCIONADOS"`
+	FechaFin         string  `json:"fechaFin"`
+	FechaInicio      string  `json:"fechaInicio"`
+	FechaTransaccion string  `json:"fechaTransaccion"`
+	LecturaVeeder    any     `json:"lecturaVeeder"` // viene null
+	LecturaVeederFinal LecturaVeederFinal `json:"lecturaVeederFinal"`
+	DiferenciaGalones float64 `json:"diferenciaGalones"`
+	DiferenciaVentas  float64 `json:"diferenciaVentas"`
+}
+
+// "INFORMACION_GENERAL"
+type InformacionGeneral struct {
+	Documento string `json:"DOCUMENTO"`
+	Placa     string `json:"PLACA"`
+}
+
+// Elementos de "MEDIDAS_INICIALES"
+type MedidaInicial struct {
+	Agua                float64 `json:"agua"`
+	Altura              float64 `json:"altura"`
+	Galones             float64 `json:"galones"`
+	IdentificacionTanque int    `json:"identificacionTanque"`
+	IdentificadorTanque  string `json:"identificadorTanque"`
+}
+
+// Elementos de "PRODUCTOS_SELECIONADOS"
+type ProductoSeleccionado struct {
+	IdentificadorProducto int `json:"identificadorProducto"`
+	IdentificacionTanque  int `json:"identificacionTanque"`
+	IdentificadorTanque   int `json:"identificadorTanque"`
+}
+
+// Elementos de "SOLICITUD_MEDIDAS_FINALES"
+type MedidaFinal struct {
+	Agua                float64 `json:"agua"`
+	Altura              float64 `json:"altura"`
+	Galones             float64 `json:"galones"`
+	IdentificacionTanque int    `json:"identificacionTanque"`
+	IdentificadorTanque  string `json:"identificadorTanque"`
+}
+
+// Elementos de "TANQUES_SELECCIONADOS"
+type TanqueSeleccionado struct {
+	Cantidad             string `json:"cantidad"` // viene como texto en el JSON (->>)
+	IdentificacionTanque int    `json:"identificacionTanque"`
+	IdentificadorProducto int   `json:"identificadorProducto"`
+	IdentificadorTanque   int   `json:"identificadorTanque"`
+	ProductoDesc          string `json:"productoDesc"`
+	ProductoPrecio        int    `json:"productoPrecio"`
+}
+
+// Objeto "lecturaVeederFinal"
+type LecturaVeederFinal struct {
+	Agua   float64 `json:"agua"`
+	Altura float64 `json:"altura"`
+	Volumen float64 `json:"volumen"`
+}
+
 
 
 
