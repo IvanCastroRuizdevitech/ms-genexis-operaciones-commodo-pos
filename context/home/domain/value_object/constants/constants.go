@@ -15,3 +15,13 @@ WHERE
 ORDER BY 
     e.fecha_creacion DESC;
 `
+
+const QUERY_GET_MUNICIPALITY_LOCATION = `
+SELECT 
+    tm.descripcion AS ciudad,
+    td.nombre_departamento AS departamento
+FROM public.tbl_municipios tm
+INNER JOIN public.tbl_departamentos td 
+    ON tm.tbl_departamentos_id = td.id_departamento
+WHERE tm.id = $1;
+`

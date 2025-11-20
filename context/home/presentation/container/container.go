@@ -14,6 +14,10 @@ var loadErrorNotificationRepository irepositories.ILoadErrorNotificationReposito
 var loadErrorNotificationUseCase iusecase.ILoadErrorNotification
 var loadErrorNotificationService iservice.ILoadErrorNotification
 
+var municipalityLocationRepository irepositories.IGetMunicipalityLocationRepository
+var municipalityLocationUseCase iusecase.IGetMunicipalityLocation
+var municipalityLocationService iservice.IMunicipalityLocation
+
 func initializes() {
 	loadErrorNotificationRepository = &repositories.LoadErrorNotificationRepository{
 		Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
@@ -24,6 +28,16 @@ func initializes() {
 	loadErrorNotificationService = &service.LoadErrorNotificationClient{
 		LoadErrorNotification: loadErrorNotificationUseCase,
 	}
+
+	municipalityLocationRepository = &repositories.GetMunicipalityLocationRepository{
+		Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
+	}
+	municipalityLocationUseCase = &usecase.GetMunicipalityLocation{
+		Repository: municipalityLocationRepository,
+	}
+	municipalityLocationService = &service.MunicipalityLocationClient{
+		GetMunicipalityLocation: municipalityLocationUseCase,
+	}
 }
 
 func ResolveLoadErrorNotificationContainer() iservice.ILoadErrorNotification {
@@ -31,4 +45,11 @@ func ResolveLoadErrorNotificationContainer() iservice.ILoadErrorNotification {
 		initializes()
 	}
 	return loadErrorNotificationService
+}
+
+func ResolveMunicipalityLocationContainer() iservice.IMunicipalityLocation {
+	if municipalityLocationService == nil {
+		initializes()
+	}
+	return municipalityLocationService
 }
