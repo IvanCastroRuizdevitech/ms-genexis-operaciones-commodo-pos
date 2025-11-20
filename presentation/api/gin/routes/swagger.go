@@ -56,6 +56,7 @@ const swaggerJSON = `{
   "tags": [
     { "name": "Shift", "description": "Operaciones de turnos" },
     { "name": "Envelopes", "description": "Operaciones de sobres" },
+    { "name": "Home", "description": "Panel principal y notificaciones" },
     { "name": "Configuration", "description": "Parámetros y configuración" },
     { "name": "Reports", "description": "Reportes" },
     { "name": "Sales", "description": "Operaciones de ventas" }
