@@ -8,16 +8,16 @@ import (
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
 )
 
-var _ iusecase.IGetMunicipalityLocation = (*GetMunicipalityLocation)(nil)
+var _ iusecase.IGetPendingTransmissions = (*GetPendingTransmissions)(nil)
 
-type GetMunicipalityLocation struct {
-	Repository irepositories.IGetMunicipalityLocationRepository
+type GetPendingTransmissions struct {
+	Repository irepositories.IGetPendingTransmissionsRepository
 }
 
-func (u *GetMunicipalityLocation) Execute(id int) (*entities_main.Response[entities.MunicipalityLocation], error) {
-	result, err := u.Repository.GetByID(id)
+func (u *GetPendingTransmissions) Execute() (*entities_main.Response[[]entities.PendingTransmission], error) {
+	result, err := u.Repository.GetAll()
 	if err != nil {
-		log.Println("[GetMunicipalityLocation][Execute]", err)
+		log.Println("[GetPendingTransmissions][Execute]", err)
 		return nil, err
 	}
 	return result, nil

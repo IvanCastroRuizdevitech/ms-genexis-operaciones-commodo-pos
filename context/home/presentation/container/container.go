@@ -14,9 +14,9 @@ var loadErrorNotificationRepository irepositories.ILoadErrorNotificationReposito
 var loadErrorNotificationUseCase iusecase.ILoadErrorNotification
 var loadErrorNotificationService iservice.ILoadErrorNotification
 
-var municipalityLocationRepository irepositories.IGetMunicipalityLocationRepository
-var municipalityLocationUseCase iusecase.IGetMunicipalityLocation
-var municipalityLocationService iservice.IMunicipalityLocation
+var pendingTransmissionsRepository irepositories.IGetPendingTransmissionsRepository
+var pendingTransmissionsUseCase iusecase.IGetPendingTransmissions
+var pendingTransmissionsService iservice.IPendingTransmissions
 
 func initializes() {
 	loadErrorNotificationRepository = &repositories.LoadErrorNotificationRepository{
@@ -29,14 +29,14 @@ func initializes() {
 		LoadErrorNotification: loadErrorNotificationUseCase,
 	}
 
-	municipalityLocationRepository = &repositories.GetMunicipalityLocationRepository{
+	pendingTransmissionsRepository = &repositories.GetPendingTransmissionsRepository{
 		Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
 	}
-	municipalityLocationUseCase = &usecase.GetMunicipalityLocation{
-		Repository: municipalityLocationRepository,
+	pendingTransmissionsUseCase = &usecase.GetPendingTransmissions{
+		Repository: pendingTransmissionsRepository,
 	}
-	municipalityLocationService = &service.MunicipalityLocationClient{
-		GetMunicipalityLocation: municipalityLocationUseCase,
+	pendingTransmissionsService = &service.PendingTransmissionsClient{
+		GetPendingTransmissions: pendingTransmissionsUseCase,
 	}
 }
 
@@ -47,9 +47,9 @@ func ResolveLoadErrorNotificationContainer() iservice.ILoadErrorNotification {
 	return loadErrorNotificationService
 }
 
-func ResolveMunicipalityLocationContainer() iservice.IMunicipalityLocation {
-	if municipalityLocationService == nil {
+func ResolvePendingTransmissionsContainer() iservice.IPendingTransmissions {
+	if pendingTransmissionsService == nil {
 		initializes()
 	}
-	return municipalityLocationService
+	return pendingTransmissionsService
 }

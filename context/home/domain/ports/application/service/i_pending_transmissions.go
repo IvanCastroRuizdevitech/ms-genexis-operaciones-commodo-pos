@@ -5,6 +5,6 @@ import (
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
 )
 
-type IMunicipalityLocation interface {
-	Execute(id int) (*entities_main.Response[entities.MunicipalityLocation], error)
+type IPendingTransmissions interface {
+	Execute() (*entities_main.Response[[]entities.PendingTransmission], error)
 }

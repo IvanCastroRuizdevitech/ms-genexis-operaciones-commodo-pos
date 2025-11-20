@@ -5,6 +5,6 @@ import (
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
 )
 
-type IGetMunicipalityLocationRepository interface {
-	GetByID(id int) (*entities_main.Response[entities.MunicipalityLocation], error)
+type IGetPendingTransmissionsRepository interface {
+	GetAll() (*entities_main.Response[[]entities.PendingTransmission], error)
 }
