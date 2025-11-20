@@ -6,4 +6,5 @@ type Config struct {
 	MontoMinimoFe            string `json:"MONTO_MINIMO_FE"`
 	ObligatorioFe            string `json:"OBLIGATORIO_FE"`
 	VersionPos               string `json:"version_pos"`
+	PosPrincipal             string `json:"POS_PRINCIPAL"`
 }
