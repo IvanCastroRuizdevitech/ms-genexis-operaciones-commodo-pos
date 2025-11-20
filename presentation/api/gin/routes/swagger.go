@@ -1,22 +1,22 @@
 package api_routes
 
 import (
-    "net/http"
+	"net/http"
 
-    "github.com/gin-gonic/gin"
+	"github.com/gin-gonic/gin"
 )
 
 // registerSwaggerRoutes registers endpoints to serve a minimal Swagger UI and the OpenAPI spec.
 func registerSwaggerRoutes(r *gin.Engine) {
-    // OpenAPI JSON
-    r.GET("/docs/swagger.json", func(c *gin.Context) {
-        c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(swaggerJSON))
-    })
+	// OpenAPI JSON
+	r.GET("/docs/swagger.json", func(c *gin.Context) {
+		c.Data(http.StatusOK, "application/json; charset=utf-8", []byte(swaggerJSON))
+	})
 
-    // Lightweight Swagger UI via CDN
-    r.GET("/docs", func(c *gin.Context) {
-        c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(swaggerHTML))
-    })
+	// Lightweight Swagger UI via CDN
+	r.GET("/docs", func(c *gin.Context) {
+		c.Data(http.StatusOK, "text/html; charset=utf-8", []byte(swaggerHTML))
+	})
 }
 
 // Minimal HTML hosting Swagger UI from CDN and pointing to our JSON.
@@ -56,6 +56,7 @@ const swaggerJSON = `{
   "tags": [
     { "name": "Shift", "description": "Operaciones de turnos" },
     { "name": "Envelopes", "description": "Operaciones de sobres" },
+    { "name": "Home", "description": "Panel principal y notificaciones" },
     { "name": "Configuration", "description": "Parámetros y configuración" },
     { "name": "Reports", "description": "Reportes" },
     { "name": "Sales", "description": "Operaciones de ventas" }
@@ -106,6 +107,15 @@ const swaggerJSON = `{
         },
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseTotalEnvelopes" } } } }
+        }
+      }
+    },
+    "/home/load-error-notification": {
+      "get": {
+        "tags": ["Home"],
+        "summary": "Obtiene errores pendientes de notificación",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseErrorNotificationList" } } } }
         }
       }
     },
@@ -449,6 +459,19 @@ const swaggerJSON = `{
       },
       "TotalEnvelopes": { "type": "object", "properties": { "total": { "type": "number" } } },
       "ResponseTotalEnvelopes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TotalEnvelopes" } } } ] },
+
+      "ErrorNotification": {
+        "type": "object",
+        "properties": {
+          "detalle": { "type": "string" }
+        }
+      },
+      "ResponseErrorNotificationList": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/ErrorNotification" } } } }
+        ]
+      },
 
       "Config": { "type": "object", "properties": { "tipo_autorizacion": { "type": "string" }, "solicitar_lecturas_tanques": { "type": "string" } } },
       "PromoterDuty": { "type": "object", "properties": { "personas_id": { "type": "integer" }, "nombre": { "type": "string" }, "estado": { "type": "string" }, "id_perfiles": { "type": "integer" }, "descripcion": { "type": "string" } } },
