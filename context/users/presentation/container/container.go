@@ -13,6 +13,10 @@ import (
 var userRepository irepositories.IUserRepository
 var getUsersUseCase iusecase.IGetUsers
 var usersService iservice.IUsersService
+var assignTagUseCase iusecase.IAssignTag
+var assignTagService iservice.IAssignTag
+var assignTagTransmissionsUseCase iusecase.IAssignTagTransmissions
+var assignTagTransmissionsService iservice.IAssignTagTransmissions
 
 func initializes() {
 	userRepository = &repositories.UserRepository{
@@ -24,6 +28,20 @@ func initializes() {
 	usersService = &service.UsersService{
 		GetUsers: getUsersUseCase,
 	}
+
+	assignTagUseCase = &usecase.AssignTag{
+		Repository: userRepository,
+	}
+	assignTagService = &service.AssignTagService{
+		AssignTagUseCase: assignTagUseCase,
+	}
+
+	assignTagTransmissionsUseCase = &usecase.AssignTagTransmissions{
+		Repository: userRepository,
+	}
+	assignTagTransmissionsService = &service.AssignTagTransmissionsService{
+		AssignTagTransmissionsUseCase: assignTagTransmissionsUseCase,
+	}
 }
 
 func ResolveUsersContainer() iservice.IUsersService {
@@ -31,4 +49,18 @@ func ResolveUsersContainer() iservice.IUsersService {
 		initializes()
 	}
 	return usersService
+}
+
+func ResolveAssignTagContainer() iservice.IAssignTag {
+	if assignTagService == nil {
+		initializes()
+	}
+	return assignTagService
+}
+
+func ResolveAssignTagTransmissionsContainer() iservice.IAssignTagTransmissions {
+	if assignTagTransmissionsService == nil {
+		initializes()
+	}
+	return assignTagTransmissionsService
 }

@@ -8,3 +8,5 @@ import (
 type IUsersService interface {
 	Execute() (*entities_main.Response[[]entities.User], error)
 }
+
+// IAssignTag is defined in i_assign_tag_service.go for clarity.

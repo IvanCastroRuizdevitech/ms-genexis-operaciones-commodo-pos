@@ -8,6 +8,7 @@ import (
 	irepositories "ms-genexis-pos-operaciones/context/home/domain/ports/repositories"
 	repositories "ms-genexis-pos-operaciones/context/home/infrastructure"
 	presentation_container "ms-genexis-pos-operaciones/presentation/container"
+	"sync"
 )
 
 var loadErrorNotificationRepository irepositories.ILoadErrorNotificationRepository
@@ -21,39 +22,42 @@ var pendingTransmissionsService iservice.IPendingTransmissions
 var updateTransmissionStatusRepository irepositories.IUpdateTransmissionStatusRepository
 var processPendingTransmissionsUseCase iusecase.IProcessPendingTransmissions
 var processPendingTransmissionsService iservice.IPendingTransmissionsProcessor
+var initializeOnce sync.Once
 
 func initializes() {
-	loadErrorNotificationRepository = &repositories.LoadErrorNotificationRepository{
-		Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
-	}
-	loadErrorNotificationUseCase = &usecase.LoadErrorNotification{
-		Repository: loadErrorNotificationRepository,
-	}
-	loadErrorNotificationService = &service.LoadErrorNotificationClient{
-		LoadErrorNotification: loadErrorNotificationUseCase,
-	}
+	initializeOnce.Do(func() {
+		loadErrorNotificationRepository = &repositories.LoadErrorNotificationRepository{
+			Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
+		}
+		loadErrorNotificationUseCase = &usecase.LoadErrorNotification{
+			Repository: loadErrorNotificationRepository,
+		}
+		loadErrorNotificationService = &service.LoadErrorNotificationClient{
+			LoadErrorNotification: loadErrorNotificationUseCase,
+		}
 
-	pendingTransmissionsRepository = &repositories.GetPendingTransmissionsRepository{
-		Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
-	}
-	pendingTransmissionsUseCase = &usecase.GetPendingTransmissions{
-		Repository: pendingTransmissionsRepository,
-	}
-	pendingTransmissionsService = &service.PendingTransmissionsClient{
-		GetPendingTransmissions: pendingTransmissionsUseCase,
-	}
+		pendingTransmissionsRepository = &repositories.GetPendingTransmissionsRepository{
+			Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
+		}
+		pendingTransmissionsUseCase = &usecase.GetPendingTransmissions{
+			Repository: pendingTransmissionsRepository,
+		}
+		pendingTransmissionsService = &service.PendingTransmissionsClient{
+			GetPendingTransmissions: pendingTransmissionsUseCase,
+		}
 
-	updateTransmissionStatusRepository = &repositories.UpdateTransmissionStatusRepository{
-		Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
-	}
-	processPendingTransmissionsUseCase = &usecase.ProcessPendingTransmissions{
-		FetchRepository:  pendingTransmissionsRepository,
-		UpdateRepository: updateTransmissionStatusRepository,
-		HTTPClient:       presentation_container.ResolveClientHttpWithNet(),
-	}
-	processPendingTransmissionsService = &service.PendingTransmissionsProcessor{
-		ProcessPendingTransmissions: processPendingTransmissionsUseCase,
-	}
+		updateTransmissionStatusRepository = &repositories.UpdateTransmissionStatusRepository{
+			Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
+		}
+		processPendingTransmissionsUseCase = &usecase.ProcessPendingTransmissions{
+			FetchRepository:  pendingTransmissionsRepository,
+			UpdateRepository: updateTransmissionStatusRepository,
+			HTTPClient:       presentation_container.ResolveClientHttpWithNet(),
+		}
+		processPendingTransmissionsService = &service.PendingTransmissionsProcessor{
+			ProcessPendingTransmissions: processPendingTransmissionsUseCase,
+		}
+	})
 }
 
 func ResolveLoadErrorNotificationContainer() iservice.ILoadErrorNotification {
