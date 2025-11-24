@@ -10,13 +10,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetPendingTransmissionsHandler(ctx *gin.Context) {
+func ProcessPendingTransmissionsHandler(ctx *gin.Context) {
 	start := time.Now()
 	defer func() {
-		log.Printf("[GetPendingTransmissionsHandler] request duration: %s", time.Since(start))
+		log.Printf("[ProcessPendingTransmissionsHandler] request duration: %s", time.Since(start))
 	}()
 
-	response, err := container_home.ResolvePendingTransmissionsContainer().Execute()
+	response, err := container_home.ResolveProcessPendingTransmissionsContainer().Execute()
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Internal error", "error": err.Error()})
 		return
