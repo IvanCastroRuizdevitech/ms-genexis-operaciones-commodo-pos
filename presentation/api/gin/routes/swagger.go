@@ -119,6 +119,15 @@ const swaggerJSON = `{
         }
       }
     },
+    "/home/pending-transmissions": {
+      "get": {
+        "tags": ["Home"],
+        "summary": "Ejecuta la sincronización de transmisiones pendientes (tarea programada cada minuto)",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponsePendingTransmissionProcess" } } } }
+        }
+      }
+    },
     "/configuration/parameters": {
       "get": {
         "tags": ["Configuration"],
@@ -306,6 +315,16 @@ const swaggerJSON = `{
         },
         "required": ["status", "process_date"]
       },
+
+      "TransmissionProcessSummary": {
+        "type": "object",
+        "properties": {
+          "processed": { "type": "integer" },
+          "synchronized": { "type": "integer" },
+          "failed": { "type": "integer" }
+        }
+      },
+      "ResponsePendingTransmissionProcess": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TransmissionProcessSummary" } } } ] },
 
       "PendingSale": {
         "type": "object",
