@@ -7,6 +7,7 @@ type PersonShift struct {
 	Nombres        string `json:"nombres"`
 	Apellidos      string `json:"apellidos"`
 	PerfilesId     int    `json:"perfiles_id"`
+	JornadasId     int    `json:"jornadas_id"`
 }
 
 type ResponseShift struct {
