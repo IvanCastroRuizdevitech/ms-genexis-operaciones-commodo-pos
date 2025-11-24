@@ -2,7 +2,6 @@ package irepositories
 
 import "ms-genexis-pos-operaciones/context/shift/domain/entities"
 
-type IGetPersonShiftRepository interface {
-	GetPersonShit(infoClient *entities.OpeningShiftRequest) (*entities.PersonShift, error)
+type IValidatePersonRepository interface {
 	ValidatePerson(info *entities.PersonValidationRequest) (*entities.PersonShift, error)
 }

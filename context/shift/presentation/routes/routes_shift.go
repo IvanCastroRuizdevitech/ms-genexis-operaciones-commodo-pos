@@ -22,5 +22,9 @@ func LoadShiftRoutes(router *gin.RouterGroup) {
         shiftGroup.GET("/fuel-pumps",
             handler_shift.FuelPumpsHandler,
         )
+        shiftGroup.POST("/person-validation",
+            presentation_api_middlewares.ValidateBodyStruct[entities.PersonValidationRequest](),
+            handler_shift.PersonValidationHandler,
+        )
     }
 }

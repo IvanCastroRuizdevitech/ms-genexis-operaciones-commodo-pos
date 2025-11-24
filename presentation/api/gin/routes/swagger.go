@@ -97,6 +97,19 @@ const swaggerJSON = `{
         }
       }
     },
+    "/shift/person-validation": {
+      "post": {
+        "tags": ["Shift"],
+        "summary": "Validación de credenciales para cierre de turno",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PersonValidationRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponsePersonShift" } } } }
+        }
+      }
+    },
     "/envelopes/total": {
       "post": {
         "tags": ["Envelopes"],
@@ -302,6 +315,33 @@ const swaggerJSON = `{
         "allOf": [
           { "$ref": "#/components/schemas/ResponseShift" },
           { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object" } } } }
+        ]
+      },
+      "PersonShift": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "identificacion": { "type": "string" },
+          "pin": { "type": "string" },
+          "nombres": { "type": "string" },
+          "apellidos": { "type": "string" },
+          "perfiles_id": { "type": "integer" },
+          "jornadas_id": { "type": "integer" }
+        }
+      },
+      "PersonValidationRequest": {
+        "type": "object",
+        "properties": {
+          "usuario": { "type": "string" },
+          "clave": { "type": "string" },
+          "tag": { "type": "string" }
+        },
+        "required": ["usuario", "clave"]
+      },
+      "ResponsePersonShift": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseShift" },
+          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/PersonShift" } } }
         ]
       },
 
