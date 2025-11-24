@@ -14,6 +14,14 @@ var loadErrorNotificationRepository irepositories.ILoadErrorNotificationReposito
 var loadErrorNotificationUseCase iusecase.ILoadErrorNotification
 var loadErrorNotificationService iservice.ILoadErrorNotification
 
+var pendingTransmissionsRepository irepositories.IGetPendingTransmissionsRepository
+var pendingTransmissionsUseCase iusecase.IGetPendingTransmissions
+var pendingTransmissionsService iservice.IPendingTransmissions
+
+var updateTransmissionStatusRepository irepositories.IUpdateTransmissionStatusRepository
+var processPendingTransmissionsUseCase iusecase.IProcessPendingTransmissions
+var processPendingTransmissionsService iservice.IPendingTransmissionsProcessor
+
 func initializes() {
 	loadErrorNotificationRepository = &repositories.LoadErrorNotificationRepository{
 		Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
@@ -24,6 +32,28 @@ func initializes() {
 	loadErrorNotificationService = &service.LoadErrorNotificationClient{
 		LoadErrorNotification: loadErrorNotificationUseCase,
 	}
+
+	pendingTransmissionsRepository = &repositories.GetPendingTransmissionsRepository{
+		Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
+	}
+	pendingTransmissionsUseCase = &usecase.GetPendingTransmissions{
+		Repository: pendingTransmissionsRepository,
+	}
+	pendingTransmissionsService = &service.PendingTransmissionsClient{
+		GetPendingTransmissions: pendingTransmissionsUseCase,
+	}
+
+	updateTransmissionStatusRepository = &repositories.UpdateTransmissionStatusRepository{
+		Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
+	}
+	processPendingTransmissionsUseCase = &usecase.ProcessPendingTransmissions{
+		FetchRepository:  pendingTransmissionsRepository,
+		UpdateRepository: updateTransmissionStatusRepository,
+		HTTPClient:       presentation_container.ResolveClientHttpWithNet(),
+	}
+	processPendingTransmissionsService = &service.PendingTransmissionsProcessor{
+		ProcessPendingTransmissions: processPendingTransmissionsUseCase,
+	}
 }
 
 func ResolveLoadErrorNotificationContainer() iservice.ILoadErrorNotification {
@@ -31,4 +61,18 @@ func ResolveLoadErrorNotificationContainer() iservice.ILoadErrorNotification {
 		initializes()
 	}
 	return loadErrorNotificationService
+}
+
+func ResolvePendingTransmissionsContainer() iservice.IPendingTransmissions {
+	if pendingTransmissionsService == nil {
+		initializes()
+	}
+	return pendingTransmissionsService
+}
+
+func ResolveProcessPendingTransmissionsContainer() iservice.IPendingTransmissionsProcessor {
+	if processPendingTransmissionsService == nil {
+		initializes()
+	}
+	return processPendingTransmissionsService
 }

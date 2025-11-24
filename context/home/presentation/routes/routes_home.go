@@ -10,5 +10,7 @@ func LoadHomeRoutes(router *gin.RouterGroup) {
 	homeGroup := router.Group("/home")
 	{
 		homeGroup.GET("/load-error-notification", handler_home.LoadErrorNotificationHandler)
+		handler_home.StartPendingTransmissionsScheduler()
+		homeGroup.GET("/pending-transmissions", handler_home.ProcessPendingTransmissionsHandler)
 	}
 }

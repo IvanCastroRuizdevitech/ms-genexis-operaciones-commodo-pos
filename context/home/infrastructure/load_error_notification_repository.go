@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"log"
 	"time"
 
 	"ms-genexis-pos-operaciones/context/home/domain/entities"
@@ -21,8 +20,6 @@ func (r *LoadErrorNotificationRepository) Load() (*entities_main.Response[[]enti
 		return nil, err
 	}
 	defer conn.PgxConn.Release()
-
-	log.Println("CONSULTANDO: ", constants.QUERY_LOAD_ERROR_NOTIFICATION)
 
 	rows, err := conn.PgxConn.Query(context.Background(), constants.QUERY_LOAD_ERROR_NOTIFICATION)
 	if err != nil {
