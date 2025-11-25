@@ -1,13 +1,14 @@
 package container_configuration
 
 import (
-    "ms-genexis-pos-operaciones/context/configuration/application/service"
-    usecase "ms-genexis-pos-operaciones/context/configuration/application/use_case"
-    iservice "ms-genexis-pos-operaciones/context/configuration/domain/ports/application/service"
-    iusecase "ms-genexis-pos-operaciones/context/configuration/domain/ports/application/use_case"
-    irepositories "ms-genexis-pos-operaciones/context/configuration/domain/ports/repositories"
-    repositories "ms-genexis-pos-operaciones/context/configuration/infrastructure"
-    presentation_container "ms-genexis-pos-operaciones/presentation/container"
+	"ms-genexis-pos-operaciones/context/configuration/application/service"
+	usecase "ms-genexis-pos-operaciones/context/configuration/application/use_case"
+	iservice "ms-genexis-pos-operaciones/context/configuration/domain/ports/application/service"
+	iusecase "ms-genexis-pos-operaciones/context/configuration/domain/ports/application/use_case"
+	irepositories "ms-genexis-pos-operaciones/context/configuration/domain/ports/repositories"
+	repositories "ms-genexis-pos-operaciones/context/configuration/infrastructure"
+	dbclient "ms-genexis-pos-operaciones/infrastructure/db/client"
+	presentation_container "ms-genexis-pos-operaciones/presentation/container"
 )
 
 // REPOSITORIES DB
@@ -27,39 +28,53 @@ var GetParametersClient iservice.IGetParameters
 var GetPromoterDutyClient iservice.IGetPromoterDuty
 var GetInitialConfigurationClient iservice.IGetInitialConfiguration
 
-func initializes() {
-    GetParametersRepository = &repositories.GetParametersRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    GetParametersUseCase = &usecase.GetParameters{GetParameters: GetParametersRepository}
-    GetParametersClient = &service.GetParametersClient{GetParameters: GetParametersUseCase}
+func resolveDB() dbclient.DatabaseConnectionInterface {
+	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
+}
 
-    GetPromoterDutyRepository = &repositories.GetPromoterDutyRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    GetPromoterDutyUseCase = &usecase.GetPromoterDuty{GetPromoterDuty: GetPromoterDutyRepository}
-    GetPromoterDutyClient = &service.GetPromoterDutyClient{GetPromoterDuty: GetPromoterDutyUseCase}
+func buildGetParameters() {
+	if GetParametersClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetParametersRepository = &repositories.GetParametersRepository{Connection: dbConn}
+	GetParametersUseCase = &usecase.GetParameters{GetParameters: GetParametersRepository}
+	GetParametersClient = &service.GetParametersClient{GetParameters: GetParametersUseCase}
+}
 
-    GetInitialConfigurationRepository = &repositories.GetInitialConfigurationRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    GetInitialConfigurationUseCase = &usecase.GetInitialConfiguration{GetInitialConfiguration: GetInitialConfigurationRepository}
-    GetInitialConfigurationClient = &service.GetInitialConfigurationClient{GetInitialConfiguration: GetInitialConfigurationUseCase}
+func buildGetPromoterDuty() {
+	if GetPromoterDutyClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetPromoterDutyRepository = &repositories.GetPromoterDutyRepository{Connection: dbConn}
+	GetPromoterDutyUseCase = &usecase.GetPromoterDuty{GetPromoterDuty: GetPromoterDutyRepository}
+	GetPromoterDutyClient = &service.GetPromoterDutyClient{GetPromoterDuty: GetPromoterDutyUseCase}
+}
+
+func buildGetInitialConfiguration() {
+	if GetInitialConfigurationClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetInitialConfigurationRepository = &repositories.GetInitialConfigurationRepository{Connection: dbConn}
+	GetInitialConfigurationUseCase = &usecase.GetInitialConfiguration{GetInitialConfiguration: GetInitialConfigurationRepository}
+	GetInitialConfigurationClient = &service.GetInitialConfigurationClient{GetInitialConfiguration: GetInitialConfigurationUseCase}
 }
 
 func ResolveGetParametersContainer() iservice.IGetParameters {
 
-	if GetParametersClient == nil {
-		initializes()
-	}
+	buildGetParameters()
 
-    return GetParametersClient
+	return GetParametersClient
 }
 
 func ResolveGetPromoterDutyContainer() iservice.IGetPromoterDuty {
-    if GetPromoterDutyClient == nil {
-        initializes()
-    }
-    return GetPromoterDutyClient
+	buildGetPromoterDuty()
+	return GetPromoterDutyClient
 }
 
 func ResolveGetInitialConfigurationContainer() iservice.IGetInitialConfiguration {
-    if GetInitialConfigurationClient == nil {
-        initializes()
-    }
-    return GetInitialConfigurationClient
+	buildGetInitialConfiguration()
+	return GetInitialConfigurationClient
 }
