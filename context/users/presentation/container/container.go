@@ -7,6 +7,7 @@ import (
 	iusecase "ms-genexis-pos-operaciones/context/users/domain/ports/application/use_case"
 	irepositories "ms-genexis-pos-operaciones/context/users/domain/ports/repositories"
 	repositories "ms-genexis-pos-operaciones/context/users/infrastructure"
+	infrastructure_db_client "ms-genexis-pos-operaciones/infrastructure/db/client"
 	presentation_container "ms-genexis-pos-operaciones/presentation/container"
 )
 
@@ -23,7 +24,7 @@ var usersService iservice.IUsersService
 var assignTagService iservice.IAssignTag
 var assignTagTransmissionsService iservice.IAssignTagTransmissions
 
-func resolveDB() presentation_container.DatabaseConnectionInterface {
+func resolveDB() infrastructure_db_client.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
 }
 
