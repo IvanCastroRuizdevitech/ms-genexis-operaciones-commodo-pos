@@ -7,6 +7,7 @@ import (
 	iusecase "ms-genexis-pos-operaciones/context/reports/domain/ports/application/use_case"
 	irepositories "ms-genexis-pos-operaciones/context/reports/domain/ports/repositories"
 	repositories "ms-genexis-pos-operaciones/context/reports/infrastructure"
+	dbclient "ms-genexis-pos-operaciones/infrastructure/db/client"
 	presentation_container "ms-genexis-pos-operaciones/presentation/container"
 )
 
@@ -34,67 +35,96 @@ var TankPrintEventClient iservice.ITankPrintEvent
 var MovementTypesClient iservice.IMovementTypes
 var TanksClient iservice.ITanks
 
-func initializes() {
-	GetDayClosingReportRepository = &repositories.GetDayClosingReportRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-	GetFuelReportRepository = &repositories.GetFuelReportRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-	GetDailyNoveltiesRepository = &repositories.GetDailyNoveltiesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-	CreateTankPrintEventRepository = &repositories.CreateTankPrintEventRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-	GetMovementTypesRepository = &repositories.GetMovementTypesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-	GetTanksRepository = &repositories.GetTanksRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+func resolveDB() dbclient.DatabaseConnectionInterface {
+	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
+}
 
+func buildDayClosingReport() {
+	if DayClosingReportClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetDayClosingReportRepository = &repositories.GetDayClosingReportRepository{Connection: dbConn}
 	GetDayClosingReportUseCase = &usecase.GetDayClosingReport{Repository: GetDayClosingReportRepository}
-	GetFuelReportUseCase = &usecase.GetFuelReport{Repository: GetFuelReportRepository}
-	GetDailyNoveltiesUseCase = &usecase.GetDailyNovelties{Repository: GetDailyNoveltiesRepository}
-	CreateTankPrintEventUseCase = &usecase.CreateTankPrintEvent{Repository: CreateTankPrintEventRepository}
-	GetMovementTypesUseCase = &usecase.GetMovementTypes{Repository: GetMovementTypesRepository}
-	GetTanksUseCase = &usecase.GetTanks{Repository: GetTanksRepository}
-
 	DayClosingReportClient = &service.DayClosingReportClient{GetDayClosingReport: GetDayClosingReportUseCase}
+}
+
+func buildFuelReport() {
+	if FuelReportClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetFuelReportRepository = &repositories.GetFuelReportRepository{Connection: dbConn}
+	GetFuelReportUseCase = &usecase.GetFuelReport{Repository: GetFuelReportRepository}
 	FuelReportClient = &service.FuelReportClient{GetFuelReport: GetFuelReportUseCase}
+}
+
+func buildDailyNovelties() {
+	if DailyNoveltiesClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetDailyNoveltiesRepository = &repositories.GetDailyNoveltiesRepository{Connection: dbConn}
+	GetDailyNoveltiesUseCase = &usecase.GetDailyNovelties{Repository: GetDailyNoveltiesRepository}
 	DailyNoveltiesClient = &service.DailyNoveltiesClient{GetDailyNovelties: GetDailyNoveltiesUseCase}
+}
+
+func buildTankPrintEvent() {
+	if TankPrintEventClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	CreateTankPrintEventRepository = &repositories.CreateTankPrintEventRepository{Connection: dbConn}
+	CreateTankPrintEventUseCase = &usecase.CreateTankPrintEvent{Repository: CreateTankPrintEventRepository}
 	TankPrintEventClient = &service.TankPrintEventClient{CreateTankPrintEvent: CreateTankPrintEventUseCase}
+}
+
+func buildMovementTypes() {
+	if MovementTypesClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetMovementTypesRepository = &repositories.GetMovementTypesRepository{Connection: dbConn}
+	GetMovementTypesUseCase = &usecase.GetMovementTypes{Repository: GetMovementTypesRepository}
 	MovementTypesClient = &service.MovementTypesClient{GetMovementTypes: GetMovementTypesUseCase}
+}
+
+func buildTanks() {
+	if TanksClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetTanksRepository = &repositories.GetTanksRepository{Connection: dbConn}
+	GetTanksUseCase = &usecase.GetTanks{Repository: GetTanksRepository}
 	TanksClient = &service.TanksClient{GetTanks: GetTanksUseCase}
 }
 
 func ResolveDayClosingReportContainer() iservice.IDayClosingReport {
-	if DayClosingReportClient == nil {
-		initializes()
-	}
+	buildDayClosingReport()
 	return DayClosingReportClient
 }
 
 func ResolveFuelReportContainer() iservice.IFuelReport {
-	if FuelReportClient == nil {
-		initializes()
-	}
+	buildFuelReport()
 	return FuelReportClient
 }
 
 func ResolveDailyNoveltiesContainer() iservice.IDailyNovelties {
-	if DailyNoveltiesClient == nil {
-		initializes()
-	}
+	buildDailyNovelties()
 	return DailyNoveltiesClient
 }
 
 func ResolveTankPrintEventContainer() iservice.ITankPrintEvent {
-	if TankPrintEventClient == nil {
-		initializes()
-	}
+	buildTankPrintEvent()
 	return TankPrintEventClient
 }
 
 func ResolveMovementTypesContainer() iservice.IMovementTypes {
-	if MovementTypesClient == nil {
-		initializes()
-	}
+	buildMovementTypes()
 	return MovementTypesClient
 }
 
 func ResolveTanksContainer() iservice.ITanks {
-	if TanksClient == nil {
-		initializes()
-	}
+	buildTanks()
 	return TanksClient
 }

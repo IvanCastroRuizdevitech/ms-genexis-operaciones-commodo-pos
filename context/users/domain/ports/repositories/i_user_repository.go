@@ -7,4 +7,6 @@ import (
 
 type IUserRepository interface {
 	GetAll() (*entities_main.Response[[]entities.User], error)
+	AssignTag(request *entities.AssignTagRequest) (*entities_main.Response[entities.AssignTagResult], error)
+	GenerateAssignTagTransmissions(request *entities.AssignTagTransmissionsRequest) (*entities_main.Response[entities.AssignTagTransmissionsResult], error)
 }

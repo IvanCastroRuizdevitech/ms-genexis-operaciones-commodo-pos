@@ -5,6 +5,8 @@ import (
 	"database/sql"
 	"time"
 
+	"github.com/jackc/pgx/v5"
+
 	"ms-genexis-pos-operaciones/context/users/domain/entities"
 	"ms-genexis-pos-operaciones/context/users/domain/value_object/constants"
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
@@ -13,6 +15,24 @@ import (
 
 type UserRepository struct {
 	Connection infrastructure_db_client.DatabaseConnectionInterface
+}
+
+func nowString() string {
+	return time.Now().Format("2006-01-02 15:04:05")
+}
+
+func nullString(ns sql.NullString) string {
+	if ns.Valid {
+		return ns.String
+	}
+	return ""
+}
+
+func nullInt64(n sql.NullInt64) int64 {
+	if n.Valid {
+		return n.Int64
+	}
+	return 0
 }
 
 func (r *UserRepository) GetAll() (*entities_main.Response[[]entities.User], error) {
@@ -57,15 +77,10 @@ func (r *UserRepository) GetAll() (*entities_main.Response[[]entities.User], err
 			Name:           name,
 			Identification: identification,
 			Status:         status,
-			Phone:          nullStringOrEmpty(phone),
-			Address:        nullStringOrEmpty(address),
-			ProfileID: func(v sql.NullInt64) int64 {
-				if v.Valid {
-					return v.Int64
-				}
-				return 0
-			}(profileID),
-			Tag: nullStringOrEmpty(tag),
+			Phone:          nullString(phone),
+			Address:        nullString(address),
+			ProfileID:      nullInt64(profileID),
+			Tag:            nullString(tag),
 		})
 	}
 	if err := rows.Err(); err != nil {
@@ -76,16 +91,73 @@ func (r *UserRepository) GetAll() (*entities_main.Response[[]entities.User], err
 	success := entities_main.NewSuccessResponse[[]entities.User](
 		200,
 		"OK",
-		time.Now().Format("2006-01-02 15:04:05"),
+		nowString(),
 		&data,
 	)
 
 	return &success, nil
 }
 
-func nullStringOrEmpty(ns sql.NullString) string {
-	if ns.Valid {
-		return ns.String
+func (r *UserRepository) AssignTag(request *entities.AssignTagRequest) (*entities_main.Response[entities.AssignTagResult], error) {
+	conn, err := r.Connection.GetDatabaseConnection()
+	if err != nil {
+		return nil, err
 	}
-	return ""
+	defer conn.PgxConn.Release()
+
+	ctx := context.Background()
+	tx, err := conn.PgxConn.Begin(ctx)
+	if err != nil {
+		return nil, err
+	}
+	defer tx.Rollback(ctx)
+
+	if _, err := tx.Exec(ctx, constants.QueryClearTag, request.Tag); err != nil {
+		return nil, err
+	}
+
+	var id int64
+	if err := tx.QueryRow(ctx, constants.QueryAssignTag, request.Tag, request.Identification).Scan(&id); err != nil {
+		if err == pgx.ErrNoRows {
+			return nil, err
+		}
+		return nil, err
+	}
+
+	if err := tx.Commit(ctx); err != nil {
+		return nil, err
+	}
+
+	result := entities.AssignTagResult{ID: id}
+	success := entities_main.NewSuccessResponse(
+		200,
+		"Tag assigned",
+		nowString(),
+		&result,
+	)
+
+	return &success, nil
+}
+
+func (r *UserRepository) GenerateAssignTagTransmissions(request *entities.AssignTagTransmissionsRequest) (*entities_main.Response[entities.AssignTagTransmissionsResult], error) {
+	conn, err := r.Connection.GetDatabaseConnection()
+	if err != nil {
+		return nil, err
+	}
+	defer conn.PgxConn.Release()
+
+	var transmissionsRaw string
+	if err := conn.PgxConn.QueryRow(context.Background(), constants.QueryGenerateAssignTagTransmissions, request.Identification, request.Tag, request.Medio).Scan(&transmissionsRaw); err != nil {
+		return nil, err
+	}
+
+	result := entities.AssignTagTransmissionsResult{TransmissionsRaw: transmissionsRaw}
+	success := entities_main.NewSuccessResponse(
+		200,
+		"Tag transmissions generated",
+		nowString(),
+		&result,
+	)
+
+	return &success, nil
 }

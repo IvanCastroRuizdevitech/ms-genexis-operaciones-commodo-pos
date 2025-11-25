@@ -10,6 +10,7 @@ import (
 	"ms-genexis-pos-operaciones/context/home/domain/entities"
 	iusecase "ms-genexis-pos-operaciones/context/home/domain/ports/application/use_case"
 	irepositories "ms-genexis-pos-operaciones/context/home/domain/ports/repositories"
+	"ms-genexis-pos-operaciones/domain/constants"
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
 	infrastructure_external_nethttp "ms-genexis-pos-operaciones/infrastructure/externals/externalhttp"
 )
@@ -77,10 +78,23 @@ func (u *ProcessPendingTransmissions) processTransmission(transmission entities.
 	default:
 		return fmt.Errorf("unsupported method %s", method)
 	}
+	log.Printf("[ProcessPendingTransmissions] processing transmission %d to %s", transmission.IDTransmision, transmission.URL)
+	log.Printf("[ProcessPendingTransmissions] request body: %s", string(body))
+	headers := make(map[string]string, len(constants.DefaultHeaders))
+	for k, v := range constants.DefaultHeaders {
+		headers[k] = v
+	}
 
-	statusCode, _, err := u.HTTPClient.Request(method, transmission.URL, body, map[string]string{})
+	statusCode, responseBody, err := u.HTTPClient.Request(method, transmission.URL, body, headers)
 	if err != nil {
 		return err
+	}
+
+	log.Printf("[ProcessPendingTransmissions] transmission %d response status: %d", transmission.IDTransmision, statusCode)
+	if len(responseBody) > 0 {
+		log.Printf("[ProcessPendingTransmissions] transmission %d response body: %s", transmission.IDTransmision, string(responseBody))
+	} else {
+		log.Printf("[ProcessPendingTransmissions] transmission %d response body: <empty>", transmission.IDTransmision)
 	}
 
 	if statusCode < http.StatusOK || statusCode >= http.StatusMultipleChoices {

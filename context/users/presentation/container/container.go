@@ -7,16 +7,33 @@ import (
 	iusecase "ms-genexis-pos-operaciones/context/users/domain/ports/application/use_case"
 	irepositories "ms-genexis-pos-operaciones/context/users/domain/ports/repositories"
 	repositories "ms-genexis-pos-operaciones/context/users/infrastructure"
+	infrastructure_db_client "ms-genexis-pos-operaciones/infrastructure/db/client"
 	presentation_container "ms-genexis-pos-operaciones/presentation/container"
 )
 
+// Repositories
 var userRepository irepositories.IUserRepository
-var getUsersUseCase iusecase.IGetUsers
-var usersService iservice.IUsersService
 
-func initializes() {
+// Use cases
+var getUsersUseCase iusecase.IGetUsers
+var assignTagUseCase iusecase.IAssignTag
+var assignTagTransmissionsUseCase iusecase.IAssignTagTransmissions
+
+// Services
+var usersService iservice.IUsersService
+var assignTagService iservice.IAssignTag
+var assignTagTransmissionsService iservice.IAssignTagTransmissions
+
+func resolveDB() infrastructure_db_client.DatabaseConnectionInterface {
+	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
+}
+
+func buildUsers() {
+	if usersService != nil {
+		return
+	}
 	userRepository = &repositories.UserRepository{
-		Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
+		Connection: resolveDB(),
 	}
 	getUsersUseCase = &usecase.GetUsers{
 		Repository: userRepository,
@@ -26,9 +43,47 @@ func initializes() {
 	}
 }
 
-func ResolveUsersContainer() iservice.IUsersService {
-	if usersService == nil {
-		initializes()
+func buildAssignTag() {
+	if assignTagService != nil {
+		return
 	}
+	if userRepository == nil {
+		buildUsers()
+	}
+	assignTagUseCase = &usecase.AssignTag{
+		Repository: userRepository,
+	}
+	assignTagService = &service.AssignTagService{
+		AssignTagUseCase: assignTagUseCase,
+	}
+}
+
+func buildAssignTagTransmissions() {
+	if assignTagTransmissionsService != nil {
+		return
+	}
+	if userRepository == nil {
+		buildUsers()
+	}
+	assignTagTransmissionsUseCase = &usecase.AssignTagTransmissions{
+		Repository: userRepository,
+	}
+	assignTagTransmissionsService = &service.AssignTagTransmissionsService{
+		AssignTagTransmissionsUseCase: assignTagTransmissionsUseCase,
+	}
+}
+
+func ResolveUsersContainer() iservice.IUsersService {
+	buildUsers()
 	return usersService
+}
+
+func ResolveAssignTagContainer() iservice.IAssignTag {
+	buildAssignTag()
+	return assignTagService
+}
+
+func ResolveAssignTagTransmissionsContainer() iservice.IAssignTagTransmissions {
+	buildAssignTagTransmissions()
+	return assignTagTransmissionsService
 }

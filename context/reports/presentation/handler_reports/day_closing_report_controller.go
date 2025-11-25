@@ -19,7 +19,14 @@ func GetDayClosingReportHandler(ctx *gin.Context) {
 	response, err := container_reports.ResolveDayClosingReportContainer().Execute(fecha)
 	log.Printf("Respuesta del GetDayClosingReportHandler: %+v \n\n", response)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Error interno", err))
+		log.Printf("[GetDayClosingReportHandler] fecha=%s error: %v", fecha, err)
+		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Error interno obteniendo cierre de dia", err))
+		return
+	}
+
+	if response == nil {
+		log.Printf("[GetDayClosingReportHandler] fecha=%s empty response", fecha)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Respuesta vacia del reporte de cierre de dia"})
 		return
 	}
 
