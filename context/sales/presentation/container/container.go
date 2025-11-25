@@ -7,8 +7,11 @@ import (
     iusecase "ms-genexis-pos-operaciones/context/sales/domain/ports/application/use_case"
     irepositories "ms-genexis-pos-operaciones/context/sales/domain/ports/repositories"
     repositories "ms-genexis-pos-operaciones/context/sales/infrastructure"
+    dbclient "ms-genexis-pos-operaciones/infrastructure/db/client"
     presentation_container "ms-genexis-pos-operaciones/presentation/container"
 )
+
+var dbConn dbclient.DatabaseConnectionInterface
 
 // REPOSITORIES DB
 var CheckPendingSalesRepository irepositories.ICheckPendingSalesRepository
@@ -49,125 +52,175 @@ var UpdatePaymentMethodsClient iservice.IUpdatePaymentMethods
 var ReprintSaleClient iservice.IReprintSale
 var FuelEntryReportClient iservice.IFuelEntryReport
 
-func initializes() {
-    CheckPendingSalesRepository = &repositories.CheckPendingSalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    CheckPendingSalesUseCase = &usecase.CheckPendingSales{Repository: CheckPendingSalesRepository}
+
+func resolveDB() dbclient.DatabaseConnectionInterface {
+    if dbConn == nil {
+        dbConn = presentation_container.ResolveDatabaseConnectionToLecWithPgx()
+    }
+    return dbConn
+}
+
+func buildCheckPendingSales() {
+    if CheckPendingSalesClient != nil {
+        return
+    }
+    repo := &repositories.CheckPendingSalesRepository{Connection: resolveDB()}
+    CheckPendingSalesRepository = repo
+    CheckPendingSalesUseCase = &usecase.CheckPendingSales{Repository: repo}
     CheckPendingSalesClient = &service.CheckPendingSalesClient{UseCase: CheckPendingSalesUseCase}
+}
 
-    CheckReadySalesRepository = &repositories.CheckReadySalesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    CheckReadySalesUseCase = &usecase.CheckReadySales{Repository: CheckReadySalesRepository}
+func buildReadySales() {
+    if CheckReadySalesClient != nil {
+        return
+    }
+    repo := &repositories.CheckReadySalesRepository{Connection: resolveDB()}
+    CheckReadySalesRepository = repo
+    CheckReadySalesUseCase = &usecase.CheckReadySales{Repository: repo}
     CheckReadySalesClient = &service.CheckReadySalesClient{UseCase: CheckReadySalesUseCase}
+}
 
-    CheckDatafonoCancellationsInProgressRepository = &repositories.CheckDatafonoCancellationsInProgressRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    CheckDatafonoCancellationsInProgressUseCase = &usecase.CheckDatafonoCancellationsInProgress{Repository: CheckDatafonoCancellationsInProgressRepository}
+func buildDatafonoCancellationsInProgress() {
+    if CheckDatafonoCancellationsInProgressClient != nil {
+        return
+    }
+    repo := &repositories.CheckDatafonoCancellationsInProgressRepository{Connection: resolveDB()}
+    CheckDatafonoCancellationsInProgressRepository = repo
+    CheckDatafonoCancellationsInProgressUseCase = &usecase.CheckDatafonoCancellationsInProgress{Repository: repo}
     CheckDatafonoCancellationsInProgressClient = &service.CheckDatafonoCancellationsInProgressClient{UseCase: CheckDatafonoCancellationsInProgressUseCase}
+}
 
-    GetUnresolvedSaleAttributesRepository = &repositories.GetUnresolvedSaleAttributesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    GetUnresolvedSaleAttributesUseCase = &usecase.GetUnresolvedSaleAttributes{Repository: GetUnresolvedSaleAttributesRepository}
+func buildUnresolvedSaleAttributes() {
+    if GetUnresolvedSaleAttributesClient != nil {
+        return
+    }
+    repo := &repositories.GetUnresolvedSaleAttributesRepository{Connection: resolveDB()}
+    GetUnresolvedSaleAttributesRepository = repo
+    GetUnresolvedSaleAttributesUseCase = &usecase.GetUnresolvedSaleAttributes{Repository: repo}
     GetUnresolvedSaleAttributesClient = &service.GetUnresolvedSaleAttributesClient{UseCase: GetUnresolvedSaleAttributesUseCase}
+}
 
-    UpdateMovementStateRepository = &repositories.UpdateMovementStateRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    UpdateMovementStateUseCase = &usecase.UpdateMovementState{Repository: UpdateMovementStateRepository}
+func buildUpdateMovementState() {
+    if UpdateMovementStateClient != nil {
+        return
+    }
+    repo := &repositories.UpdateMovementStateRepository{Connection: resolveDB()}
+    UpdateMovementStateRepository = repo
+    UpdateMovementStateUseCase = &usecase.UpdateMovementState{Repository: repo}
     UpdateMovementStateClient = &service.UpdateMovementStateClient{UseCase: UpdateMovementStateUseCase}
+}
 
-    AssignCustomerDataRepository = &repositories.AssignCustomerDataRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    AssignCustomerDataUseCase = &usecase.AssignCustomerData{Repository: AssignCustomerDataRepository}
+func buildAssignCustomerData() {
+    if AssignCustomerDataClient != nil {
+        return
+    }
+    repo := &repositories.AssignCustomerDataRepository{Connection: resolveDB()}
+    AssignCustomerDataRepository = repo
+    AssignCustomerDataUseCase = &usecase.AssignCustomerData{Repository: repo}
     AssignCustomerDataClient = &service.AssignCustomerDataClient{UseCase: AssignCustomerDataUseCase}
+}
 
-    UpdateClientMovementRepository = &repositories.UpdateClientMovementRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    UpdateClientMovementUseCase = &usecase.UpdateClientMovement{Repository: UpdateClientMovementRepository}
+func buildUpdateClientMovement() {
+    if UpdateClientMovementClient != nil {
+        return
+    }
+    repo := &repositories.UpdateClientMovementRepository{Connection: resolveDB()}
+    UpdateClientMovementRepository = repo
+    UpdateClientMovementUseCase = &usecase.UpdateClientMovement{Repository: repo}
     UpdateClientMovementClient = &service.UpdateClientMovementClient{UseCase: UpdateClientMovementUseCase}
+}
 
-    GetPendingSaleDatafonoRepository = &repositories.GetPendingSaleDatafonoRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    GetPendingSaleDatafonoUseCase = &usecase.GetPendingSaleDatafono{Repository: GetPendingSaleDatafonoRepository}
+func buildPendingSaleDatafono() {
+    if GetPendingSaleDatafonoClient != nil {
+        return
+    }
+    repo := &repositories.GetPendingSaleDatafonoRepository{Connection: resolveDB()}
+    GetPendingSaleDatafonoRepository = repo
+    GetPendingSaleDatafonoUseCase = &usecase.GetPendingSaleDatafono{Repository: repo}
     GetPendingSaleDatafonoClient = &service.GetPendingSaleDatafonoClient{UseCase: GetPendingSaleDatafonoUseCase}
+}
 
-    UpdatePaymentMethodsRepository = &repositories.UpdatePaymentMethodsRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    UpdatePaymentMethodsUseCase = &usecase.UpdatePaymentMethods{Repository: UpdatePaymentMethodsRepository}
+func buildUpdatePaymentMethods() {
+    if UpdatePaymentMethodsClient != nil {
+        return
+    }
+    repo := &repositories.UpdatePaymentMethodsRepository{Connection: resolveDB()}
+    UpdatePaymentMethodsRepository = repo
+    UpdatePaymentMethodsUseCase = &usecase.UpdatePaymentMethods{Repository: repo}
     UpdatePaymentMethodsClient = &service.UpdatePaymentMethodsClient{UseCase: UpdatePaymentMethodsUseCase}
+}
 
-    ReprintSaleRepository = &repositories.ReprintSaleRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    ReprintSaleUseCase = &usecase.ReprintSale{Repository: ReprintSaleRepository}
+func buildReprintSale() {
+    if ReprintSaleClient != nil {
+        return
+    }
+    repo := &repositories.ReprintSaleRepository{Connection: resolveDB()}
+    ReprintSaleRepository = repo
+    ReprintSaleUseCase = &usecase.ReprintSale{Repository: repo}
     ReprintSaleClient = &service.ReprintSaleClient{UseCase: ReprintSaleUseCase}
+}
 
-    FuelEntryReportRepository = &repositories.FuelEntryReportRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    FuelEntryReportUseCase = &usecase.FuelEntryReport{Repository: FuelEntryReportRepository}
+func buildFuelEntryReport() {
+    if FuelEntryReportClient != nil {
+        return
+    }
+    repo := &repositories.FuelEntryReportRepository{Connection: resolveDB()}
+    FuelEntryReportRepository = repo
+    FuelEntryReportUseCase = &usecase.FuelEntryReport{Repository: repo}
     FuelEntryReportClient = &service.FuelEntryReportClient{UseCase: FuelEntryReportUseCase}
 }
 
 func ResolveSalesContainer() iservice.ICheckPendingSales {
-    if CheckPendingSalesClient == nil {
-        initializes()
-    }
+    buildCheckPendingSales()
     return CheckPendingSalesClient
 }
 
 func ResolveReadySalesContainer() iservice.ICheckReadySales {
-    if CheckReadySalesClient == nil {
-        initializes()
-    }
+    buildReadySales()
     return CheckReadySalesClient
 }
 
 func ResolveDatafonoCancellationsInProgressContainer() iservice.ICheckDatafonoCancellationsInProgress {
-    if CheckDatafonoCancellationsInProgressClient == nil {
-        initializes()
-    }
+    buildDatafonoCancellationsInProgress()
     return CheckDatafonoCancellationsInProgressClient
 }
 
 func ResolveGetUnresolvedSaleAttributesContainer() iservice.IGetUnresolvedSaleAttributes {
-    if GetUnresolvedSaleAttributesClient == nil {
-        initializes()
-    }
+    buildUnresolvedSaleAttributes()
     return GetUnresolvedSaleAttributesClient
 }
 
 func ResolveUpdateMovementStateContainer() iservice.IUpdateMovementState {
-    if UpdateMovementStateClient == nil {
-        initializes()
-    }
+    buildUpdateMovementState()
     return UpdateMovementStateClient
 }
 
 func ResolveAssignCustomerDataContainer() iservice.IAssignCustomerData {
-    if AssignCustomerDataClient == nil {
-        initializes()
-    }
+    buildAssignCustomerData()
     return AssignCustomerDataClient
 }
 
 func ResolveUpdateClientMovementContainer() iservice.IUpdateClientMovement {
-    if UpdateClientMovementClient == nil {
-        initializes()
-    }
+    buildUpdateClientMovement()
     return UpdateClientMovementClient
 }
 
 func ResolveGetPendingSaleDatafonoContainer() iservice.IGetPendingSaleDatafono {
-    if GetPendingSaleDatafonoClient == nil {
-        initializes()
-    }
+    buildPendingSaleDatafono()
     return GetPendingSaleDatafonoClient
 }
 
 func ResolveUpdatePaymentMethodsContainer() iservice.IUpdatePaymentMethods {
-    if UpdatePaymentMethodsClient == nil {
-        initializes()
-    }
+    buildUpdatePaymentMethods()
     return UpdatePaymentMethodsClient
 }
 
 func ResolveReprintSaleContainer() iservice.IReprintSale {
-    if ReprintSaleClient == nil {
-        initializes()
-    }
+    buildReprintSale()
     return ReprintSaleClient
 }
 
 func ResolveFuelEntryReportContainer() iservice.IFuelEntryReport {
-    if FuelEntryReportClient == nil {
-        initializes()
-    }
+    buildFuelEntryReport()
     return FuelEntryReportClient
 }
