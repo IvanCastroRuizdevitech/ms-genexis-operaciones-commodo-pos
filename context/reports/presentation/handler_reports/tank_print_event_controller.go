@@ -1,6 +1,7 @@
 package handler_reports
 
 import (
+	"log"
 	"net/http"
 
 	entities_reports "ms-genexis-pos-operaciones/context/reports/domain/entities"
@@ -24,7 +25,14 @@ func CreateTankPrintEventHandler(ctx *gin.Context) {
 
 	response, err := container_reports.ResolveTankPrintEventContainer().Execute(request.TankIDs)
 	if err != nil {
+		log.Printf("[CreateTankPrintEventHandler] request=%+v error: %v", request, err)
 		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Failed to create tank print event.", err))
+		return
+	}
+
+	if response == nil {
+		log.Printf("[CreateTankPrintEventHandler] request=%+v empty response", request)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Empty response creating tank print event"})
 		return
 	}
 

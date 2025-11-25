@@ -2,6 +2,7 @@ package handler_users
 
 import (
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/jackc/pgx/v5"
@@ -30,7 +31,14 @@ func AssignTagHandler(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, entities_main.NewErrorResponse[interface{}]("User not found for identification", err))
 			return
 		}
+		log.Printf("[AssignTagHandler] error assigning tag: %v", err)
 		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Internal error", err))
+		return
+	}
+
+	if response == nil {
+		log.Printf("[AssignTagHandler] empty response")
+		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Empty response assigning tag", nil))
 		return
 	}
 

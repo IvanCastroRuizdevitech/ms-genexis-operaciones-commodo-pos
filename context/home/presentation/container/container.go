@@ -7,8 +7,8 @@ import (
 	iusecase "ms-genexis-pos-operaciones/context/home/domain/ports/application/use_case"
 	irepositories "ms-genexis-pos-operaciones/context/home/domain/ports/repositories"
 	repositories "ms-genexis-pos-operaciones/context/home/infrastructure"
+	dbclient "ms-genexis-pos-operaciones/infrastructure/db/client"
 	presentation_container "ms-genexis-pos-operaciones/presentation/container"
-	"sync"
 )
 
 var loadErrorNotificationRepository irepositories.ILoadErrorNotificationRepository
@@ -22,61 +22,61 @@ var pendingTransmissionsService iservice.IPendingTransmissions
 var updateTransmissionStatusRepository irepositories.IUpdateTransmissionStatusRepository
 var processPendingTransmissionsUseCase iusecase.IProcessPendingTransmissions
 var processPendingTransmissionsService iservice.IPendingTransmissionsProcessor
-var initializeOnce sync.Once
 
-func initializes() {
-	initializeOnce.Do(func() {
-		loadErrorNotificationRepository = &repositories.LoadErrorNotificationRepository{
-			Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
-		}
-		loadErrorNotificationUseCase = &usecase.LoadErrorNotification{
-			Repository: loadErrorNotificationRepository,
-		}
-		loadErrorNotificationService = &service.LoadErrorNotificationClient{
-			LoadErrorNotification: loadErrorNotificationUseCase,
-		}
+func resolveDB() dbclient.DatabaseConnectionInterface {
+	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
+}
 
-		pendingTransmissionsRepository = &repositories.GetPendingTransmissionsRepository{
-			Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
-		}
-		pendingTransmissionsUseCase = &usecase.GetPendingTransmissions{
-			Repository: pendingTransmissionsRepository,
-		}
-		pendingTransmissionsService = &service.PendingTransmissionsClient{
-			GetPendingTransmissions: pendingTransmissionsUseCase,
-		}
+func buildLoadErrorNotification() {
+	if loadErrorNotificationService != nil {
+		return
+	}
+	dbConn := resolveDB()
+	loadErrorNotificationRepository = &repositories.LoadErrorNotificationRepository{Connection: dbConn}
+	loadErrorNotificationUseCase = &usecase.LoadErrorNotification{Repository: loadErrorNotificationRepository}
+	loadErrorNotificationService = &service.LoadErrorNotificationClient{LoadErrorNotification: loadErrorNotificationUseCase}
+}
 
-		updateTransmissionStatusRepository = &repositories.UpdateTransmissionStatusRepository{
-			Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
-		}
-		processPendingTransmissionsUseCase = &usecase.ProcessPendingTransmissions{
-			FetchRepository:  pendingTransmissionsRepository,
-			UpdateRepository: updateTransmissionStatusRepository,
-			HTTPClient:       presentation_container.ResolveClientHttpWithNet(),
-		}
-		processPendingTransmissionsService = &service.PendingTransmissionsProcessor{
-			ProcessPendingTransmissions: processPendingTransmissionsUseCase,
-		}
-	})
+func buildPendingTransmissions() {
+	if pendingTransmissionsService != nil {
+		return
+	}
+	dbConn := resolveDB()
+	pendingTransmissionsRepository = &repositories.GetPendingTransmissionsRepository{Connection: dbConn}
+	pendingTransmissionsUseCase = &usecase.GetPendingTransmissions{Repository: pendingTransmissionsRepository}
+	pendingTransmissionsService = &service.PendingTransmissionsClient{GetPendingTransmissions: pendingTransmissionsUseCase}
+}
+
+func buildProcessPendingTransmissions() {
+	if processPendingTransmissionsService != nil {
+		return
+	}
+	dbConn := resolveDB()
+	if pendingTransmissionsRepository == nil {
+		pendingTransmissionsRepository = &repositories.GetPendingTransmissionsRepository{Connection: dbConn}
+		pendingTransmissionsUseCase = &usecase.GetPendingTransmissions{Repository: pendingTransmissionsRepository}
+		pendingTransmissionsService = &service.PendingTransmissionsClient{GetPendingTransmissions: pendingTransmissionsUseCase}
+	}
+	updateTransmissionStatusRepository = &repositories.UpdateTransmissionStatusRepository{Connection: dbConn}
+	processPendingTransmissionsUseCase = &usecase.ProcessPendingTransmissions{
+		FetchRepository:  pendingTransmissionsRepository,
+		UpdateRepository: updateTransmissionStatusRepository,
+		HTTPClient:       presentation_container.ResolveClientHttpWithNet(),
+	}
+	processPendingTransmissionsService = &service.PendingTransmissionsProcessor{ProcessPendingTransmissions: processPendingTransmissionsUseCase}
 }
 
 func ResolveLoadErrorNotificationContainer() iservice.ILoadErrorNotification {
-	if loadErrorNotificationService == nil {
-		initializes()
-	}
+	buildLoadErrorNotification()
 	return loadErrorNotificationService
 }
 
 func ResolvePendingTransmissionsContainer() iservice.IPendingTransmissions {
-	if pendingTransmissionsService == nil {
-		initializes()
-	}
+	buildPendingTransmissions()
 	return pendingTransmissionsService
 }
 
 func ResolveProcessPendingTransmissionsContainer() iservice.IPendingTransmissionsProcessor {
-	if processPendingTransmissionsService == nil {
-		initializes()
-	}
+	buildProcessPendingTransmissions()
 	return processPendingTransmissionsService
 }

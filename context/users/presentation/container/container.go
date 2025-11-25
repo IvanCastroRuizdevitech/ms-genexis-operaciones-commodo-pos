@@ -10,17 +10,29 @@ import (
 	presentation_container "ms-genexis-pos-operaciones/presentation/container"
 )
 
+// Repositories
 var userRepository irepositories.IUserRepository
+
+// Use cases
 var getUsersUseCase iusecase.IGetUsers
-var usersService iservice.IUsersService
 var assignTagUseCase iusecase.IAssignTag
-var assignTagService iservice.IAssignTag
 var assignTagTransmissionsUseCase iusecase.IAssignTagTransmissions
+
+// Services
+var usersService iservice.IUsersService
+var assignTagService iservice.IAssignTag
 var assignTagTransmissionsService iservice.IAssignTagTransmissions
 
-func initializes() {
+func resolveDB() presentation_container.DatabaseConnectionInterface {
+	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
+}
+
+func buildUsers() {
+	if usersService != nil {
+		return
+	}
 	userRepository = &repositories.UserRepository{
-		Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx(),
+		Connection: resolveDB(),
 	}
 	getUsersUseCase = &usecase.GetUsers{
 		Repository: userRepository,
@@ -28,14 +40,30 @@ func initializes() {
 	usersService = &service.UsersService{
 		GetUsers: getUsersUseCase,
 	}
+}
 
+func buildAssignTag() {
+	if assignTagService != nil {
+		return
+	}
+	if userRepository == nil {
+		buildUsers()
+	}
 	assignTagUseCase = &usecase.AssignTag{
 		Repository: userRepository,
 	}
 	assignTagService = &service.AssignTagService{
 		AssignTagUseCase: assignTagUseCase,
 	}
+}
 
+func buildAssignTagTransmissions() {
+	if assignTagTransmissionsService != nil {
+		return
+	}
+	if userRepository == nil {
+		buildUsers()
+	}
 	assignTagTransmissionsUseCase = &usecase.AssignTagTransmissions{
 		Repository: userRepository,
 	}
@@ -45,22 +73,16 @@ func initializes() {
 }
 
 func ResolveUsersContainer() iservice.IUsersService {
-	if usersService == nil {
-		initializes()
-	}
+	buildUsers()
 	return usersService
 }
 
 func ResolveAssignTagContainer() iservice.IAssignTag {
-	if assignTagService == nil {
-		initializes()
-	}
+	buildAssignTag()
 	return assignTagService
 }
 
 func ResolveAssignTagTransmissionsContainer() iservice.IAssignTagTransmissions {
-	if assignTagTransmissionsService == nil {
-		initializes()
-	}
+	buildAssignTagTransmissions()
 	return assignTagTransmissionsService
 }

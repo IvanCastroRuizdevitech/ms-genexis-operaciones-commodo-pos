@@ -1,6 +1,7 @@
 package handler_reports
 
 import (
+	"log"
 	container_reports "ms-genexis-pos-operaciones/context/reports/presentation/container"
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
 	"net/http"
@@ -17,7 +18,14 @@ func GetFuelReportHandler(ctx *gin.Context) {
 
 	response, err := container_reports.ResolveFuelReportContainer().Execute(fecha)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Error interno", err))
+		log.Printf("[GetFuelReportHandler] fecha=%s error: %v", fecha, err)
+		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Error interno obteniendo reporte de combustible", err))
+		return
+	}
+
+	if response == nil {
+		log.Printf("[GetFuelReportHandler] fecha=%s empty response", fecha)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Respuesta vacia del reporte de combustible"})
 		return
 	}
 

@@ -2,20 +2,26 @@ package handler_users
 
 import (
 	"errors"
+	"log"
 	"net/http"
 
+	"github.com/gin-gonic/gin"
 	"github.com/jackc/pgx/v5"
+
 	"ms-genexis-pos-operaciones/context/users/domain/entities"
 	container_users "ms-genexis-pos-operaciones/context/users/presentation/container"
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
-
-	"github.com/gin-gonic/gin"
 )
 
 func AssignTagTransmissionsHandler(ctx *gin.Context) {
 	var body entities.AssignTagTransmissionsRequest
 	if err := ctx.ShouldBindJSON(&body); err != nil {
 		ctx.JSON(http.StatusBadRequest, entities_main.NewErrorResponse[interface{}]("Invalid request body", err))
+		return
+	}
+
+	if body.Tag == "" || body.Identification == "" || body.Medio == "" {
+		ctx.JSON(http.StatusBadRequest, entities_main.NewErrorResponse[interface{}]("Fields 'tag', 'identification' and 'medio' are required", nil))
 		return
 	}
 
@@ -29,6 +35,7 @@ func AssignTagTransmissionsHandler(ctx *gin.Context) {
 			ctx.JSON(http.StatusNotFound, entities_main.NewErrorResponse[interface{}]("User not found for identification", err))
 			return
 		}
+		log.Printf("[AssignTagTransmissionsHandler] error assigning tag: %v", err)
 		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Internal error", err))
 		return
 	}
@@ -36,7 +43,14 @@ func AssignTagTransmissionsHandler(ctx *gin.Context) {
 	// Paso 2: generar transmisiones (si falla, devolvemos 500)
 	transResp, err := container_users.ResolveAssignTagTransmissionsContainer().Execute(&body)
 	if err != nil {
+		log.Printf("[AssignTagTransmissionsHandler] error generating transmissions: %v", err)
 		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Error generating transmissions", err))
+		return
+	}
+
+	if assignResp == nil || transResp == nil {
+		log.Printf("[AssignTagTransmissionsHandler] empty response assignResp=%v transResp=%v", assignResp, transResp)
+		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Empty response generating transmissions", nil))
 		return
 	}
 

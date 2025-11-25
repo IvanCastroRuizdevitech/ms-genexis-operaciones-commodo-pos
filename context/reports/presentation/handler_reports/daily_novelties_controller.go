@@ -27,7 +27,14 @@ func GetDailyNoveltiesHandler(ctx *gin.Context) {
 
 	response, err := container_reports.ResolveDailyNoveltiesContainer().Execute(request.Ano, request.Mes, request.Dia)
 	if err != nil {
+		log.Printf("[GetDailyNoveltiesHandler] request=%+v error: %v", request, err)
 		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Unable to obtain novelties", err))
+		return
+	}
+
+	if response == nil {
+		log.Printf("[GetDailyNoveltiesHandler] request=%+v empty response", request)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": "Empty response for novelties"})
 		return
 	}
 
