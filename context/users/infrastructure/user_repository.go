@@ -17,6 +17,24 @@ type UserRepository struct {
 	Connection infrastructure_db_client.DatabaseConnectionInterface
 }
 
+func nowString() string {
+	return time.Now().Format("2006-01-02 15:04:05")
+}
+
+func nullString(ns sql.NullString) string {
+	if ns.Valid {
+		return ns.String
+	}
+	return ""
+}
+
+func nullInt64(n sql.NullInt64) int64 {
+	if n.Valid {
+		return n.Int64
+	}
+	return 0
+}
+
 func (r *UserRepository) GetAll() (*entities_main.Response[[]entities.User], error) {
 	conn, err := r.Connection.GetDatabaseConnection()
 	if err != nil {
@@ -59,15 +77,10 @@ func (r *UserRepository) GetAll() (*entities_main.Response[[]entities.User], err
 			Name:           name,
 			Identification: identification,
 			Status:         status,
-			Phone:          nullStringOrEmpty(phone),
-			Address:        nullStringOrEmpty(address),
-			ProfileID: func(v sql.NullInt64) int64 {
-				if v.Valid {
-					return v.Int64
-				}
-				return 0
-			}(profileID),
-			Tag: nullStringOrEmpty(tag),
+			Phone:          nullString(phone),
+			Address:        nullString(address),
+			ProfileID:      nullInt64(profileID),
+			Tag:            nullString(tag),
 		})
 	}
 	if err := rows.Err(); err != nil {
@@ -78,18 +91,11 @@ func (r *UserRepository) GetAll() (*entities_main.Response[[]entities.User], err
 	success := entities_main.NewSuccessResponse[[]entities.User](
 		200,
 		"OK",
-		time.Now().Format("2006-01-02 15:04:05"),
+		nowString(),
 		&data,
 	)
 
 	return &success, nil
-}
-
-func nullStringOrEmpty(ns sql.NullString) string {
-	if ns.Valid {
-		return ns.String
-	}
-	return ""
 }
 
 func (r *UserRepository) AssignTag(request *entities.AssignTagRequest) (*entities_main.Response[entities.AssignTagResult], error) {
@@ -126,7 +132,7 @@ func (r *UserRepository) AssignTag(request *entities.AssignTagRequest) (*entitie
 	success := entities_main.NewSuccessResponse(
 		200,
 		"Tag assigned",
-		time.Now().Format("2006-01-02 15:04:05"),
+		nowString(),
 		&result,
 	)
 
@@ -149,7 +155,7 @@ func (r *UserRepository) GenerateAssignTagTransmissions(request *entities.Assign
 	success := entities_main.NewSuccessResponse(
 		200,
 		"Tag transmissions generated",
-		time.Now().Format("2006-01-02 15:04:05"),
+		nowString(),
 		&result,
 	)
 
