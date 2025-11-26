@@ -18,5 +18,5 @@ RETURNING id;
 `
 
 const QueryGenerateAssignTagTransmissions = `
-SELECT public.fnc_generar_transmisiones_asignar_tag($1, $2, $3);
+SELECT genexis_operaciones.fnc_generar_transmisiones_asignar_tag($1, $2, $3);
 `
