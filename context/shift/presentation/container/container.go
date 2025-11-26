@@ -1,13 +1,15 @@
 package container_shift
 
 import (
-    "ms-genexis-pos-operaciones/context/shift/application/service"
-    usecase "ms-genexis-pos-operaciones/context/shift/application/use_case"
-    iservice "ms-genexis-pos-operaciones/context/shift/domain/ports/application/service"
-    iusecase "ms-genexis-pos-operaciones/context/shift/domain/ports/application/use_case"
-    irepositories "ms-genexis-pos-operaciones/context/shift/domain/ports/repositories"
-    repositories "ms-genexis-pos-operaciones/context/shift/infrastructure"
-    presentation_container "ms-genexis-pos-operaciones/presentation/container"
+	"ms-genexis-pos-operaciones/context/shift/application/service"
+	usecase "ms-genexis-pos-operaciones/context/shift/application/use_case"
+	iservice "ms-genexis-pos-operaciones/context/shift/domain/ports/application/service"
+	iusecase "ms-genexis-pos-operaciones/context/shift/domain/ports/application/use_case"
+	irepositories "ms-genexis-pos-operaciones/context/shift/domain/ports/repositories"
+	repositories "ms-genexis-pos-operaciones/context/shift/infrastructure"
+	dbclient "ms-genexis-pos-operaciones/infrastructure/db/client"
+	externalhttp "ms-genexis-pos-operaciones/infrastructure/externals/externalhttp"
+	presentation_container "ms-genexis-pos-operaciones/presentation/container"
 )
 
 // REPOSITORIES DB
@@ -32,63 +34,110 @@ var dailyIncomeMeasurementsService *service.DailyIncomeMeasurementsClient
 var fuelPumpsService *service.FuelPumpsClient
 var personValidationService *service.PersonValidationClient
 
-func initializes() {
-    getPersonShiftRepository = &repositories.GetPersonShiftRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    personValidationRepository = getPersonShiftRepository
-    getDailyIncomeMeasurementsRepository = &repositories.GetDailyIncomeMeasurementsRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
-    getFuelPumpsRepository = &repositories.GetFuelPumpsRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+func resolveDB() dbclient.DatabaseConnectionInterface {
+	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
+}
 
-	sendOpeningShiftRepositoryHttp = &repositories.SendOpeningShiftRepositoryHttp{Connection: presentation_container.ResolveClientHttpWithNet()}
+func resolveHTTPClient() externalhttp.ClientHTTPInterface {
+	return presentation_container.ResolveClientHttpWithNet()
+}
 
-    validatePersonShiftUseCase = &usecase.ValidatePersonShift{ShiftRepository: getPersonShiftRepository}
-    openingShiftUseCase = &usecase.OpeningShift{SendOpening: sendOpeningShiftRepositoryHttp}
-    getDailyIncomeMeasurementsUseCase = &usecase.GetDailyIncomeMeasurements{Repository: getDailyIncomeMeasurementsRepository}
-    getFuelPumpsUseCase = &usecase.GetFuelPumps{Repository: getFuelPumpsRepository}
-    personValidationUseCase = &usecase.PersonValidation{Repository: personValidationRepository}
+func ensurePersonRepositories(dbConn dbclient.DatabaseConnectionInterface) {
+	if getPersonShiftRepository != nil {
+		return
+	}
+	repo := &repositories.GetPersonShiftRepository{Connection: dbConn}
+	getPersonShiftRepository = repo
+	personValidationRepository = repo
+}
 
-    openingShift = &service.OpeningShiftClient{
-        ValidatePerson: validatePersonShiftUseCase,
-        OpeningShift:   openingShiftUseCase,
-    }
+func ensureDailyIncomeMeasurementsRepository(dbConn dbclient.DatabaseConnectionInterface) {
+	if getDailyIncomeMeasurementsRepository == nil {
+		getDailyIncomeMeasurementsRepository = &repositories.GetDailyIncomeMeasurementsRepository{Connection: dbConn}
+	}
+}
 
-    dailyIncomeMeasurementsService = &service.DailyIncomeMeasurementsClient{
-        GetDailyIncomeMeasurements: getDailyIncomeMeasurementsUseCase,
-    }
+func ensureFuelPumpsRepository(dbConn dbclient.DatabaseConnectionInterface) {
+	if getFuelPumpsRepository == nil {
+		getFuelPumpsRepository = &repositories.GetFuelPumpsRepository{Connection: dbConn}
+	}
+}
 
-    fuelPumpsService = &service.FuelPumpsClient{
-        GetFuelPumps: getFuelPumpsUseCase,
-    }
+func buildOpeningShift() {
+	if openingShift != nil {
+		return
+	}
+	dbConn := resolveDB()
+	ensurePersonRepositories(dbConn)
+	if validatePersonShiftUseCase == nil {
+		validatePersonShiftUseCase = &usecase.ValidatePersonShift{ShiftRepository: getPersonShiftRepository}
+	}
+	if sendOpeningShiftRepositoryHttp == nil {
+		sendOpeningShiftRepositoryHttp = &repositories.SendOpeningShiftRepositoryHttp{Connection: resolveHTTPClient()}
+	}
+	if openingShiftUseCase == nil {
+		openingShiftUseCase = &usecase.OpeningShift{SendOpening: sendOpeningShiftRepositoryHttp}
+	}
+	openingShift = &service.OpeningShiftClient{
+		ValidatePerson: validatePersonShiftUseCase,
+		OpeningShift:   openingShiftUseCase,
+	}
+}
 
-    personValidationService = &service.PersonValidationClient{
-        ValidatePerson: personValidationUseCase,
-    }
+func buildDailyIncomeMeasurements() {
+	if dailyIncomeMeasurementsService != nil {
+		return
+	}
+	dbConn := resolveDB()
+	ensureDailyIncomeMeasurementsRepository(dbConn)
+	if getDailyIncomeMeasurementsUseCase == nil {
+		getDailyIncomeMeasurementsUseCase = &usecase.GetDailyIncomeMeasurements{Repository: getDailyIncomeMeasurementsRepository}
+	}
+	dailyIncomeMeasurementsService = &service.DailyIncomeMeasurementsClient{
+		GetDailyIncomeMeasurements: getDailyIncomeMeasurementsUseCase,
+	}
+}
+
+func buildFuelPumps() {
+	if fuelPumpsService != nil {
+		return
+	}
+	dbConn := resolveDB()
+	ensureFuelPumpsRepository(dbConn)
+	if getFuelPumpsUseCase == nil {
+		getFuelPumpsUseCase = &usecase.GetFuelPumps{Repository: getFuelPumpsRepository}
+	}
+	fuelPumpsService = &service.FuelPumpsClient{GetFuelPumps: getFuelPumpsUseCase}
+}
+
+func buildPersonValidation() {
+	if personValidationService != nil {
+		return
+	}
+	dbConn := resolveDB()
+	ensurePersonRepositories(dbConn)
+	if personValidationUseCase == nil {
+		personValidationUseCase = &usecase.PersonValidation{Repository: personValidationRepository}
+	}
+	personValidationService = &service.PersonValidationClient{ValidatePerson: personValidationUseCase}
 }
 
 func ResolveOpeningShiftContainer() iservice.IOpeningShift {
-
-	if openingShift == nil {
-		initializes()
-	}
-    return openingShift
+	buildOpeningShift()
+	return openingShift
 }
 
 func ResolveDailyIncomeMeasurementsContainer() *service.DailyIncomeMeasurementsClient {
-    if dailyIncomeMeasurementsService == nil {
-        initializes()
-    }
-    return dailyIncomeMeasurementsService
+	buildDailyIncomeMeasurements()
+	return dailyIncomeMeasurementsService
 }
 
 func ResolveFuelPumpsContainer() *service.FuelPumpsClient {
-    if fuelPumpsService == nil {
-        initializes()
-    }
-    return fuelPumpsService
+	buildFuelPumps()
+	return fuelPumpsService
 }
 
 func ResolvePersonValidationContainer() *service.PersonValidationClient {
-    if personValidationService == nil {
-        initializes()
-    }
-    return personValidationService
+	buildPersonValidation()
+	return personValidationService
 }
