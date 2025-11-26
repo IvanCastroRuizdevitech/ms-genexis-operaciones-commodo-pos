@@ -59,7 +59,8 @@ const swaggerJSON = `{
     { "name": "Home", "description": "Panel principal y notificaciones" },
     { "name": "Configuration", "description": "Parámetros y configuración" },
     { "name": "Reports", "description": "Reportes" },
-    { "name": "Sales", "description": "Operaciones de ventas" }
+    { "name": "Sales", "description": "Operaciones de ventas" },
+    { "name": "Users", "description": "Gestión de usuarios y tags" }
   ],
   "paths": {
     "/shift/opening": {
@@ -296,6 +297,63 @@ const swaggerJSON = `{
         "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DailyNoveltiesRequest" } } } },
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseDailyNovelties" } } } }
+        }
+      }
+    },
+    "/reports/tanks/print-event": {
+      "post": {
+        "tags": ["Reports"],
+        "summary": "Crea evento de impresión de inventario de tanques",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/TankPrintEventRequest" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseTankPrintEvent" } } } }
+        }
+      }
+    },
+    "/reports/movement-types": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Obtiene tipos de movimiento",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseMovementTypes" } } } }
+        }
+      }
+    },
+    "/reports/tanks": {
+      "get": {
+        "tags": ["Reports"],
+        "summary": "Obtiene tanques/bodegas disponibles",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseTanks" } } } }
+        }
+      }
+    },
+    "/users/getusersfilters": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "Listado de usuarios",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseUsersList" } } } }
+        }
+      }
+    },
+    "/users/assign-tag": {
+      "put": {
+        "tags": ["Users"],
+        "summary": "Asigna/actualiza el tag RFID del usuario",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AssignTagRequest" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseAssignTagResult" } } } }
+        }
+      }
+    },
+    "/users/assign-tag-transmissions": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "Asigna tag y genera transmisiones",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AssignTagTransmissionsRequest" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseAssignTagTransmissions" } } } }
         }
       }
     }
@@ -632,7 +690,65 @@ const swaggerJSON = `{
           "factor_precio": { "type": "integer" },
           "precio": { "type": "number" }
         }
-      }
+      },
+
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "name": { "type": "string" },
+          "identification": { "type": "string" },
+          "status": { "type": "string" },
+          "phone": { "type": "string" },
+          "address": { "type": "string" },
+          "profile_id": { "type": "integer", "format": "int64" },
+          "tag": { "type": "string" }
+        }
+      },
+      "AssignTagRequest": {
+        "type": "object",
+        "properties": {
+          "tag": { "type": "string" },
+          "identification": { "type": "string" }
+        },
+        "required": ["tag", "identification"]
+      },
+      "AssignTagResult": { "type": "object", "properties": { "id": { "type": "integer", "format": "int64" } } },
+      "AssignTagTransmissionsRequest": {
+        "type": "object",
+        "properties": {
+          "tag": { "type": "string" },
+          "identification": { "type": "string" },
+          "medio": { "type": "string" }
+        },
+        "required": ["tag", "identification", "medio"]
+      },
+      "AssignTagTransmissionsResult": { "type": "object", "properties": { "transmissions_raw": { "type": "string" } } },
+      "ResponseUsersList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/User" } } } } ] },
+      "ResponseAssignTagResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/AssignTagResult" } } } ] },
+      "ResponseAssignTagTransmissions": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer" },
+          "message": { "type": "string" },
+          "process_date": { "type": "string" },
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "integer", "format": "int64" },
+              "transmissions_raw": { "type": "string" }
+            }
+          }
+        }
+      },
+
+      "MovementType": { "type": "object", "properties": { "id": { "type": "integer" }, "descripcion": { "type": "string" } } },
+      "TankBodega": { "type": "object", "properties": { "id": { "type": "number", "format": "double" }, "bodega": { "type": "string" } } },
+      "TankPrintEventRequest": { "type": "object", "properties": { "tank_ids": { "type": "array", "items": { "type": "integer" } } }, "required": ["tank_ids"] },
+      "TankPrintEventResult": { "type": "object", "properties": { "created": { "type": "boolean" } } },
+      "ResponseMovementTypes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/MovementType" } } } } ] },
+      "ResponseTanks": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/TankBodega" } } } } ] },
+      "ResponseTankPrintEvent": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TankPrintEventResult" } } } ] }
     }
   }
 }`
