@@ -17,7 +17,7 @@ ORDER BY
 `
 
 const QUERY_GET_PENDING_TRANSMISSIONS = `
-SELECT public.fnc_obtener_transmisiones_pendientes();
+SELECT genexis_operaciones.fnc_obtener_transmisiones_pendientes();
 `
 
 const QUERY_MARK_TRANSMISSION_AS_SYNCED = `
