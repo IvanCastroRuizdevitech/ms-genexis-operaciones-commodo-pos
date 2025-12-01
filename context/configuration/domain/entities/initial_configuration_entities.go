@@ -7,15 +7,20 @@ type InitialConfiguration struct {
 }
 
 type InitialConfigurationDataResponse struct {
-	Equipo             *Equipment        `json:"equipo,omitempty"`
-	Jornada            *Journal          `json:"jornada,omitempty"`
-	Empresas           []Company         `json:"empresas,omitempty"`
-	Promotor           *Promoter         `json:"promotor,omitempty"`
-	Parametros         map[string]string `json:"parametros,omitempty"`
-	Surtidores         []Dispenser       `json:"surtidores,omitempty"`
-	MediosPagos        []PaymentMethod   `json:"medios_pagos,omitempty"`
-	TurnoActivo        bool              `json:"turno_activo"`
-	SurtidoresDetalles []DispenserDetail `json:"surtidores_detalles,omitempty"`
+	Equipo             *Equipment           `json:"equipo,omitempty"`
+	Jornada            *Journal             `json:"jornada,omitempty"`
+	Empresas           []Company            `json:"empresas,omitempty"`
+	Promotor           *Promoter            `json:"promotor,omitempty"`
+	Parametros         map[string]Parameter `json:"parametros,omitempty"`
+	Surtidores         []Dispenser          `json:"surtidores,omitempty"`
+	MediosPagos        []PaymentMethod      `json:"medios_pagos,omitempty"`
+	TurnoActivo        bool                 `json:"turno_activo"`
+	SurtidoresDetalles []DispenserDetail    `json:"surtidores_detalles,omitempty"`
+}
+
+type Parameter struct {
+	Tipo  int    `json:"tipo"`
+	Valor string `json:"valor"`
 }
 
 type Equipment struct {
