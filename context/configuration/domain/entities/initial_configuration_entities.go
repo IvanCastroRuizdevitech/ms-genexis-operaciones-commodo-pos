@@ -7,15 +7,15 @@ type InitialConfiguration struct {
 }
 
 type InitialConfigurationDataResponse struct {
-	Equipo             *Equipment           `json:"equipo,omitempty"`
-	Jornada            *Journal             `json:"jornada,omitempty"`
-	Empresas           []Company            `json:"empresas,omitempty"`
-	Promotor           *Promoter            `json:"promotor,omitempty"`
-	Parametros         map[string]Parameter `json:"parametros,omitempty"`
-	Surtidores         []Dispenser          `json:"surtidores,omitempty"`
-	MediosPagos        []PaymentMethod      `json:"medios_pagos,omitempty"`
-	TurnoActivo        bool                 `json:"turno_activo"`
-	SurtidoresDetalles []DispenserDetail    `json:"surtidores_detalles,omitempty"`
+	Equipo             *Equipment        `json:"equipo,omitempty"`
+	Jornada            *Journal          `json:"jornada,omitempty"`
+	Empresas           []Company         `json:"empresas,omitempty"`
+	Promotor           *Promoter         `json:"promotor,omitempty"`
+	Parametros         map[string]string `json:"parametros,omitempty"`
+	Surtidores         []Dispenser       `json:"surtidores,omitempty"`
+	MediosPagos        []PaymentMethod   `json:"medios_pagos,omitempty"`
+	TurnoActivo        bool              `json:"turno_activo"`
+	SurtidoresDetalles []DispenserDetail `json:"surtidores_detalles,omitempty"`
 }
 
 type Equipment struct {
@@ -118,11 +118,6 @@ type Promoter struct {
 	TiposIdentificacionID int     `json:"tipos_identificacion_id"`
 }
 
-type Parameter struct {
-	Tipo  int    `json:"tipo"`
-	Valor string `json:"valor"`
-}
-
 type Dispenser struct {
 	ID                            int     `json:"id"`
 	IP                            *string `json:"ip"`
@@ -185,7 +180,7 @@ type DispenserDetail struct {
 	LectorRFID                    *string     `json:"lector_rfid"`
 	ProductosID                   *int        `json:"productos_id"`
 	LectorPuerto                  *int        `json:"lector_puerto"`
-	SaltoLectura                  *int        `json:"salto_lectura"`
+	SaltoLectura                  *string     `json:"salto_lectura"`
 	SurtidoresID                  *int        `json:"surtidores_id"`
 	EstadoPublico                 *int        `json:"estado_publico"`
 	FamiliaCodigo                 *string     `json:"familia_codigo"`
