@@ -18,6 +18,11 @@ type InitialConfigurationDataResponse struct {
 	SurtidoresDetalles []DispenserDetail    `json:"surtidores_detalles,omitempty"`
 }
 
+type Parameter struct {
+	Tipo  int    `json:"tipo"`
+	Valor string `json:"valor"`
+}
+
 type Equipment struct {
 	ID                  int     `json:"id"`
 	IP                  *string `json:"ip"`
@@ -118,11 +123,6 @@ type Promoter struct {
 	TiposIdentificacionID int     `json:"tipos_identificacion_id"`
 }
 
-type Parameter struct {
-	Tipo  int    `json:"tipo"`
-	Valor string `json:"valor"`
-}
-
 type Dispenser struct {
 	ID                            int     `json:"id"`
 	IP                            *string `json:"ip"`
@@ -185,7 +185,7 @@ type DispenserDetail struct {
 	LectorRFID                    *string     `json:"lector_rfid"`
 	ProductosID                   *int        `json:"productos_id"`
 	LectorPuerto                  *int        `json:"lector_puerto"`
-	SaltoLectura                  *int        `json:"salto_lectura"`
+	SaltoLectura                  *string     `json:"salto_lectura"`
 	SurtidoresID                  *int        `json:"surtidores_id"`
 	EstadoPublico                 *int        `json:"estado_publico"`
 	FamiliaCodigo                 *string     `json:"familia_codigo"`

@@ -17,6 +17,7 @@ var getPersonShiftRepository irepositories.IGetPersonShiftRepository
 var getDailyIncomeMeasurementsRepository irepositories.IGetDailyIncomeMeasurementsRepository
 var getFuelPumpsRepository irepositories.IGetFuelPumpsRepository
 var personValidationRepository irepositories.IValidatePersonRepository
+var createEnvelopeRepository irepositories.ICreateEnvelopeRepository
 
 // REPOSITORIES HTTPP
 var sendOpeningShiftRepositoryHttp irepositories.ISendOpeningShiftRepositoryHttp
@@ -27,12 +28,14 @@ var openingShiftUseCase iusecase.IOpeningShift
 var getDailyIncomeMeasurementsUseCase iusecase.IGetDailyIncomeMeasurements
 var getFuelPumpsUseCase iusecase.IGetFuelPumps
 var personValidationUseCase iusecase.IPersonValidation
+var createEnvelopeUseCase iusecase.ICreateEnvelope
 
 // SERVICE
 var openingShift iservice.IOpeningShift
 var dailyIncomeMeasurementsService *service.DailyIncomeMeasurementsClient
 var fuelPumpsService *service.FuelPumpsClient
 var personValidationService *service.PersonValidationClient
+var createEnvelopeService iservice.ICreateEnvelope
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
@@ -60,6 +63,12 @@ func ensureDailyIncomeMeasurementsRepository(dbConn dbclient.DatabaseConnectionI
 func ensureFuelPumpsRepository(dbConn dbclient.DatabaseConnectionInterface) {
 	if getFuelPumpsRepository == nil {
 		getFuelPumpsRepository = &repositories.GetFuelPumpsRepository{Connection: dbConn}
+	}
+}
+
+func ensureCreateEnvelopeRepository(dbConn dbclient.DatabaseConnectionInterface) {
+	if createEnvelopeRepository == nil {
+		createEnvelopeRepository = &repositories.CreateEnvelopeRepository{Connection: dbConn}
 	}
 }
 
@@ -122,6 +131,18 @@ func buildPersonValidation() {
 	personValidationService = &service.PersonValidationClient{ValidatePerson: personValidationUseCase}
 }
 
+func buildCreateEnvelope() {
+	if createEnvelopeService != nil {
+		return
+	}
+	dbConn := resolveDB()
+	ensureCreateEnvelopeRepository(dbConn)
+	if createEnvelopeUseCase == nil {
+		createEnvelopeUseCase = &usecase.CreateEnvelope{Repository: createEnvelopeRepository}
+	}
+	createEnvelopeService = &service.CreateEnvelopeClient{CreateEnvelope: createEnvelopeUseCase}
+}
+
 func ResolveOpeningShiftContainer() iservice.IOpeningShift {
 	buildOpeningShift()
 	return openingShift
@@ -140,4 +161,9 @@ func ResolveFuelPumpsContainer() *service.FuelPumpsClient {
 func ResolvePersonValidationContainer() *service.PersonValidationClient {
 	buildPersonValidation()
 	return personValidationService
+}
+
+func ResolveCreateEnvelopeContainer() iservice.ICreateEnvelope {
+	buildCreateEnvelope()
+	return createEnvelopeService
 }

@@ -111,6 +111,19 @@ const swaggerJSON = `{
         }
       }
     },
+    "/shift/envelope": {
+      "post": {
+        "tags": ["Shift"],
+        "summary": "Crear sobre",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/EnvelopeRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseEnvelopeCreate" } } } }
+        }
+      }
+    },
     "/envelopes/total": {
       "post": {
         "tags": ["Envelopes"],
@@ -287,6 +300,15 @@ const swaggerJSON = `{
         "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/FuelEntryReportRequest" } } } },
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseFuelEntryReportResult" } } } }
+        }
+      }
+    },
+    "/sales/dispenser-details": {
+      "get": {
+        "tags": ["Sales"],
+        "summary": "Listado de detalles de surtidores activos",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseDispenserDetailsList" } } } }
         }
       }
     },
@@ -558,6 +580,19 @@ const swaggerJSON = `{
         "required": ["numero_factura", "copia", "cola"]
       },
       "FuelEntryReportResult": { "type": "object", "properties": { "data": { "type": "object" } } },
+      "DispenserDetail": {
+        "type": "object",
+        "properties": {
+          "surtidores_detalles_id": { "type": "integer" },
+          "surtidores_id": { "type": "integer" },
+          "productos_id": { "type": "integer" },
+          "estado": { "type": "integer" },
+          "descripcion_producto": { "type": "string" },
+          "precio_producto": { "type": "number" },
+          "familia_codigo": { "type": "string" },
+          "familia_id": { "type": "integer" }
+        }
+      },
 
       "ResponsePendingSalesList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/PendingSale" } } } } ] },
       "ResponseDatafonoCancellationsInProgress": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/DatafonoCancellationsInProgress" } } } ] },
@@ -568,6 +603,7 @@ const swaggerJSON = `{
       "ResponsePendingSaleDatafono": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/PendingSaleDatafono" } } } ] },
       "ResponseUpdatePaymentMethodsResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdatePaymentMethodsResult" } } } ] },
       "ResponseFuelEntryReportResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/FuelEntryReportResult" } } } ] },
+      "ResponseDispenserDetailsList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/DispenserDetail" } } } } ] },
 
       "EnvelopesTotalRequest": {
         "type": "object",
@@ -576,7 +612,22 @@ const swaggerJSON = `{
       },
       "TotalEnvelopes": { "type": "object", "properties": { "total": { "type": "number" } } },
       "ResponseTotalEnvelopes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TotalEnvelopes" } } } ] },
-
+      "EnvelopeRequest": {
+        "type": "object",
+        "properties": {
+          "identificadorEmpresa": { "type": "integer" },
+          "fecha": { "type": "string" },
+          "identificadorPromotor": { "type": "integer" },
+          "total": { "type": "number" },
+          "identificadorEquipo": { "type": "integer" },
+          "remoto_id": { "type": "integer" },
+          "atributos": { "type": "object", "additionalProperties": true },
+          "identificadorGrupoJornada": { "type": "integer" }
+        },
+        "required": ["identificadorEmpresa", "fecha", "identificadorPromotor", "total", "identificadorEquipo", "remoto_id", "atributos", "identificadorGrupoJornada"]
+      },
+      "EnvelopeCreate": { "type": "object", "properties": { "created": { "type": "boolean" }, "message_error": { "type": "string" } } },
+      "ResponseEnvelopeCreate": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/EnvelopeCreate" } } } ] },
       "ErrorNotification": {
         "type": "object",
         "properties": {
