@@ -1,18 +1,21 @@
 package entities
 
-import "time"
+import (
+	"encoding/json"
+	"time"
+)
 
 // DispenserDetail represents the active dispenser detail row returned by
 // genexis_operaciones.fnc_obtener_surtidores_detalles().
 type DispenserDetail struct {
-	SurtidoresDetallesID int     `json:"surtidores_detalles_id" db:"surtidores_detalles_id"`
-	SurtidoresID         int     `json:"surtidores_id" db:"surtidores_id"`
-	ProductosID          int     `json:"productos_id" db:"productos_id"`
-	Estado               int     `json:"estado" db:"estado"`
-	DescripcionProducto  string  `json:"descripcion_producto" db:"descripcion_producto"`
-	PrecioProducto       float64 `json:"precio_producto" db:"precio_producto"`
-	FamiliaCodigo        string  `json:"familia_codigo" db:"familia_codigo"`
-	FamiliaID            int     `json:"familia_id" db:"familia_id"`
+	SurtidoresDetallesID int             `json:"surtidores_detalles_id" db:"surtidores_detalles_id"`
+	SurtidoresID         int             `json:"surtidores_id" db:"surtidores_id"`
+	ProductosID          int             `json:"productos_id" db:"productos_id"`
+	Estado               json.RawMessage `json:"estado" db:"estado"`
+	DescripcionProducto  string          `json:"descripcion_producto" db:"descripcion_producto"`
+	PrecioProducto       float64         `json:"precio_producto" db:"precio_producto"`
+	FamiliaCodigo        string          `json:"familia_codigo" db:"familia_codigo"`
+	FamiliaID            int             `json:"familia_id" db:"familia_id"`
 }
 
 type PendingSale struct {
