@@ -13,4 +13,5 @@ const (
 	QUERY_REPRINT_SALE                             = "select * from public.reimpresion($1) as info;"
 	QUERY_FUEL_ENTRY_REPORT                        = "select * from procesos.fnc_re_imprimir_factura_entrada($1::bigint, $2::boolean, $3::boolean) as data;"
 	QUERY_GET_DISPENSER_DETAILS                    = "select * from genexis_operaciones.fnc_obtener_surtidores_detalles();"
+	QUERY_GET_TRANSACTIONS_BY_DISPENSER_AND_FACE   = "select * from genexis_operaciones.fnc_obtener_transacciones_por_surtidor_y_cara($1::int, $2::int);"
 )
