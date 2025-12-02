@@ -33,5 +33,9 @@ func LoadReportsRoutes(router *gin.RouterGroup) {
 			"/tanks",
 			handler_reports.GetTanksHandler,
 		)
+		reportsGroup.POST(
+			"/shift-summary",
+			handler_reports.GetShiftSummaryHandler,
+		)
 	}
 }
