@@ -62,14 +62,15 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			"/dispenser-details",
 			handler_sales.GetDispenserDetailsHandler,
 		)
-		salesGroup.GET(
-			"/dispenser/:dispenserId/face/:face/transactions",
-			handler_sales.GetTransactionsByDispenserAndFaceHandler,
-		)
 		salesGroup.POST(
 			"/fuel-entry-report",
 			presentation_api_middlewares.ValidateBodyStruct[entities_sales.FuelEntryReportRequest](),
 			handler_sales.FuelEntryReportHandler,
+		)
+		salesGroup.POST(
+			"/dispenser/active-transaction",
+			presentation_api_middlewares.ValidateBodyStruct[entities_sales.ActiveDispenserFaceTransactionRequest](),
+			handler_sales.UpsertActiveDispenserFaceTransactionHandler,
 		)
 	}
 }
