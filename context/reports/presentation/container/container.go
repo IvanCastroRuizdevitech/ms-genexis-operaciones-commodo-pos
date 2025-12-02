@@ -18,6 +18,7 @@ var GetDailyNoveltiesRepository irepositories.IGetDailyNoveltiesRepository
 var CreateTankPrintEventRepository irepositories.ICreateTankPrintEventRepository
 var GetMovementTypesRepository irepositories.IGetMovementTypesRepository
 var GetTanksRepository irepositories.IGetTanksRepository
+var GetShiftSummaryRepository irepositories.IGetShiftSummaryRepository
 
 // USECASE
 var GetDayClosingReportUseCase iusecase.IGetDayClosingReport
@@ -26,6 +27,7 @@ var GetDailyNoveltiesUseCase iusecase.IGetDailyNovelties
 var CreateTankPrintEventUseCase iusecase.ICreateTankPrintEvent
 var GetMovementTypesUseCase iusecase.IGetMovementTypes
 var GetTanksUseCase iusecase.IGetTanks
+var GetShiftSummaryUseCase iusecase.IGetShiftSummary
 
 // SERVICE
 var DayClosingReportClient iservice.IDayClosingReport
@@ -34,6 +36,7 @@ var DailyNoveltiesClient iservice.IDailyNovelties
 var TankPrintEventClient iservice.ITankPrintEvent
 var MovementTypesClient iservice.IMovementTypes
 var TanksClient iservice.ITanks
+var ShiftSummaryClient iservice.IGetShiftSummary
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
@@ -99,6 +102,16 @@ func buildTanks() {
 	TanksClient = &service.TanksClient{GetTanks: GetTanksUseCase}
 }
 
+func buildShiftSummary() {
+	if ShiftSummaryClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetShiftSummaryRepository = &repositories.GetShiftSummaryRepository{Connection: dbConn}
+	GetShiftSummaryUseCase = &usecase.GetShiftSummary{Repository: GetShiftSummaryRepository}
+	ShiftSummaryClient = &service.GetShiftSummaryClient{GetShiftSummary: GetShiftSummaryUseCase}
+}
+
 func ResolveDayClosingReportContainer() iservice.IDayClosingReport {
 	buildDayClosingReport()
 	return DayClosingReportClient
@@ -127,4 +140,9 @@ func ResolveMovementTypesContainer() iservice.IMovementTypes {
 func ResolveTanksContainer() iservice.ITanks {
 	buildTanks()
 	return TanksClient
+}
+
+func ResolveGetShiftSummaryContainer() iservice.IGetShiftSummary {
+	buildShiftSummary()
+	return ShiftSummaryClient
 }
