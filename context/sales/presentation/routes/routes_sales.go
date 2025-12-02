@@ -67,5 +67,10 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			presentation_api_middlewares.ValidateBodyStruct[entities_sales.FuelEntryReportRequest](),
 			handler_sales.FuelEntryReportHandler,
 		)
+		salesGroup.POST(
+			"/dispenser/active-transaction",
+			presentation_api_middlewares.ValidateBodyStruct[entities_sales.ActiveDispenserFaceTransactionRequest](),
+			handler_sales.UpsertActiveDispenserFaceTransactionHandler,
+		)
 	}
 }

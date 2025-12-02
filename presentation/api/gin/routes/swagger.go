@@ -312,6 +312,19 @@ const swaggerJSON = `{
         }
       }
     },
+    "/sales/dispenser/{dispenserId}/face/{face}/transactions": {
+      "get": {
+        "tags": ["Sales"],
+        "summary": "Transacciones por surtidor y cara (usado IS NULL)",
+        "parameters": [
+          { "name": "dispenserId", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID del surtidor" },
+          { "name": "face", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "Cara del surtidor" }
+        ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseTransactionsByDispenserAndFace" } } } }
+        }
+      }
+    },
     "/reports/closing-novelties": {
       "post": {
         "tags": ["Reports"],
@@ -604,6 +617,7 @@ const swaggerJSON = `{
       "ResponseUpdatePaymentMethodsResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdatePaymentMethodsResult" } } } ] },
       "ResponseFuelEntryReportResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/FuelEntryReportResult" } } } ] },
       "ResponseDispenserDetailsList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/DispenserDetail" } } } } ] },
+      "ResponseTransactionsByDispenserAndFace": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] },
 
       "EnvelopesTotalRequest": {
         "type": "object",
