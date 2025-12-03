@@ -23,4 +23,5 @@ WHERE datos IS NOT NULL
 	QUERY_GET_MOVEMENT_TYPES      = "select tm.id_tipo_movimiento as id, tm.descripcion from tipos_movimiento tm;"
 	QUERY_GET_TANKS               = "select cb.id, cb.bodega from ct_bodegas cb;"
 	QUERY_GET_SHIFT_SUMMARY       = "select * from reporteria_cierres.fnc_obtener_resumen_jornadas($1::int, $2::timestamp, $3::timestamp);"
+	QUERY_GET_SHIFT_CONSOLIDATED  = "select * from reporteria_cierres.fnc_consulta_turnos_consolidado($1::timestamp, $2::timestamp);"
 )
