@@ -19,6 +19,7 @@ var CreateTankPrintEventRepository irepositories.ICreateTankPrintEventRepository
 var GetMovementTypesRepository irepositories.IGetMovementTypesRepository
 var GetTanksRepository irepositories.IGetTanksRepository
 var GetShiftSummaryRepository irepositories.IGetShiftSummaryRepository
+var GetShiftConsolidatedRepository irepositories.IGetShiftConsolidatedRepository
 
 // USECASE
 var GetDayClosingReportUseCase iusecase.IGetDayClosingReport
@@ -28,6 +29,7 @@ var CreateTankPrintEventUseCase iusecase.ICreateTankPrintEvent
 var GetMovementTypesUseCase iusecase.IGetMovementTypes
 var GetTanksUseCase iusecase.IGetTanks
 var GetShiftSummaryUseCase iusecase.IGetShiftSummary
+var GetShiftConsolidatedUseCase iusecase.IGetShiftConsolidated
 
 // SERVICE
 var DayClosingReportClient iservice.IDayClosingReport
@@ -37,6 +39,7 @@ var TankPrintEventClient iservice.ITankPrintEvent
 var MovementTypesClient iservice.IMovementTypes
 var TanksClient iservice.ITanks
 var ShiftSummaryClient iservice.IGetShiftSummary
+var ShiftConsolidatedClient iservice.IGetShiftConsolidated
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
@@ -112,6 +115,16 @@ func buildShiftSummary() {
 	ShiftSummaryClient = &service.GetShiftSummaryClient{GetShiftSummary: GetShiftSummaryUseCase}
 }
 
+func buildShiftConsolidated() {
+	if ShiftConsolidatedClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetShiftConsolidatedRepository = &repositories.GetShiftConsolidatedRepository{Connection: dbConn}
+	GetShiftConsolidatedUseCase = &usecase.GetShiftConsolidated{Repository: GetShiftConsolidatedRepository}
+	ShiftConsolidatedClient = &service.GetShiftConsolidatedClient{GetShiftConsolidated: GetShiftConsolidatedUseCase}
+}
+
 func ResolveDayClosingReportContainer() iservice.IDayClosingReport {
 	buildDayClosingReport()
 	return DayClosingReportClient
@@ -145,4 +158,9 @@ func ResolveTanksContainer() iservice.ITanks {
 func ResolveGetShiftSummaryContainer() iservice.IGetShiftSummary {
 	buildShiftSummary()
 	return ShiftSummaryClient
+}
+
+func ResolveGetShiftConsolidatedContainer() iservice.IGetShiftConsolidated {
+	buildShiftConsolidated()
+	return ShiftConsolidatedClient
 }

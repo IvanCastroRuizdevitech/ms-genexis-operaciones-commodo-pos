@@ -37,5 +37,9 @@ func LoadReportsRoutes(router *gin.RouterGroup) {
 			"/shift-summary",
 			handler_reports.GetShiftSummaryHandler,
 		)
+		reportsGroup.POST(
+			"/shift-consolidated",
+			handler_reports.GetShiftConsolidatedHandler,
+		)
 	}
 }
