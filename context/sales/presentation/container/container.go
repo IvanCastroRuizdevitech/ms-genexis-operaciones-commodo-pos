@@ -27,6 +27,7 @@ var ReprintSaleRepository irepositories.IReprintSaleRepository
 var FuelEntryReportRepository irepositories.IFuelEntryReportRepository
 var GetDispenserDetailsRepository irepositories.IGetDispenserDetailsRepository
 var UpsertActiveDispenserFaceTransactionRepository irepositories.IUpsertActiveDispenserFaceTransactionRepository
+var UpdateVehicleDetailRepository irepositories.IUpdateVehicleDetailRepository
 
 // USECASE
 var CheckPendingSalesUseCase iusecase.ICheckPendingSales
@@ -42,6 +43,7 @@ var ReprintSaleUseCase iusecase.IReprintSale
 var FuelEntryReportUseCase iusecase.IFuelEntryReport
 var GetDispenserDetailsUseCase iusecase.IGetDispenserDetails
 var UpsertActiveDispenserFaceTransactionUseCase iusecase.IUpsertActiveDispenserFaceTransaction
+var UpdateVehicleDetailUseCase iusecase.IUpdateVehicleDetail
 
 // SERVICE
 var CheckPendingSalesClient iservice.ICheckPendingSales
@@ -57,6 +59,7 @@ var ReprintSaleClient iservice.IReprintSale
 var FuelEntryReportClient iservice.IFuelEntryReport
 var GetDispenserDetailsClient iservice.IGetDispenserDetails
 var UpsertActiveDispenserFaceTransactionClient iservice.IUpsertActiveDispenserFaceTransaction
+var UpdateVehicleDetailClient iservice.IUpdateVehicleDetail
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	if dbConn == nil {
@@ -195,6 +198,16 @@ func buildUpsertActiveDispenserFaceTransaction() {
 	UpsertActiveDispenserFaceTransactionClient = &service.UpsertActiveDispenserFaceTransactionClient{UseCase: UpsertActiveDispenserFaceTransactionUseCase}
 }
 
+func buildUpdateVehicleDetail() {
+	if UpdateVehicleDetailClient != nil {
+		return
+	}
+	repo := &repositories.UpdateVehicleDetailRepository{Connection: resolveDB()}
+	UpdateVehicleDetailRepository = repo
+	UpdateVehicleDetailUseCase = &usecase.UpdateVehicleDetail{Repository: repo}
+	UpdateVehicleDetailClient = &service.UpdateVehicleDetailClient{UseCase: UpdateVehicleDetailUseCase}
+}
+
 func ResolveSalesContainer() iservice.ICheckPendingSales {
 	buildCheckPendingSales()
 	return CheckPendingSalesClient
@@ -258,4 +271,9 @@ func ResolveGetDispenserDetailsContainer() iservice.IGetDispenserDetails {
 func ResolveUpsertActiveDispenserFaceTransactionContainer() iservice.IUpsertActiveDispenserFaceTransaction {
 	buildUpsertActiveDispenserFaceTransaction()
 	return UpsertActiveDispenserFaceTransactionClient
+}
+
+func ResolveUpdateVehicleDetailContainer() iservice.IUpdateVehicleDetail {
+	buildUpdateVehicleDetail()
+	return UpdateVehicleDetailClient
 }

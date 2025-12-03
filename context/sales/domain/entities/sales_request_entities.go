@@ -41,6 +41,15 @@ type UpdatePaymentMethodsRequest struct {
 	MediosPago   []PaymentMethodItem `json:"mediosDePagos,omitempty"`
 }
 
+// UpdateVehicleDetailRequest maps the payload for updating vehicle data on a movement
+// via public.prc_actualizar_detalle_vehiculo
+type UpdateVehicleDetailRequest struct {
+	MovimientoID     int64  `json:"i_movimiento_id" binding:"required"`
+	VehiculoPlaca    string `json:"i_vehiculo_placa" binding:"required"`
+	VehiculoNumero   string `json:"i_vehiculo_numero" binding:"required"`
+	VehiculoOdometro string `json:"i_vehiculo_odometro" binding:"required"`
+}
+
 type PaymentMethodItem struct {
 	IngPagoDatafono   bool    `json:"ing_pago_datafono"`
 	IdMedio           int64   `json:"ct_medios_pagos_id"`
