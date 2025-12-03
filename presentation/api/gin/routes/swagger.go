@@ -293,6 +293,16 @@ const swaggerJSON = `{
         }
       }
     },
+    "/sales/update-vehicle-detail": {
+      "put": {
+        "tags": ["Sales"],
+        "summary": "Actualiza detalle del vehículo de la venta",
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateVehicleDetailRequest" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseUpdateVehicleDetailResult" } } } }
+        }
+      }
+    },
     "/sales/fuel-entry-report": {
       "post": {
         "tags": ["Sales"],
@@ -543,6 +553,16 @@ const swaggerJSON = `{
         },
         "required": ["i_id_movimiento", "i_id_transmision", "i_sinconizacion"]
       },
+      "UpdateVehicleDetailRequest": {
+        "type": "object",
+        "properties": {
+          "i_movimiento_id": { "type": "integer", "format": "int64" },
+          "i_vehiculo_placa": { "type": "string" },
+          "i_vehiculo_numero": { "type": "string" },
+          "i_vehiculo_odometro": { "type": "string" }
+        },
+        "required": ["i_movimiento_id", "i_vehiculo_placa", "i_vehiculo_numero", "i_vehiculo_odometro"]
+      },
 
       "DatafonoCancellationsInProgress": { "type": "object", "properties": { "in_progress": { "type": "boolean" } } },
       "UnresolvedSaleAttributes": { "type": "object", "properties": { "atributos": { "type": "object" } } },
@@ -582,6 +602,7 @@ const swaggerJSON = `{
         }
       },
       "UpdatePaymentMethodsResult": { "type": "object", "properties": { "info": { "type": "object" } } },
+      "UpdateVehicleDetailResult": { "type": "object", "properties": { "info": { "type": "object" } } },
 
       "FuelEntryReportRequest": {
         "type": "object",
@@ -615,6 +636,7 @@ const swaggerJSON = `{
       "ResponseUpdateClientMovementResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdateClientMovementResult" } } } ] },
       "ResponsePendingSaleDatafono": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/PendingSaleDatafono" } } } ] },
       "ResponseUpdatePaymentMethodsResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdatePaymentMethodsResult" } } } ] },
+      "ResponseUpdateVehicleDetailResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdateVehicleDetailResult" } } } ] },
       "ResponseFuelEntryReportResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/FuelEntryReportResult" } } } ] },
       "ResponseDispenserDetailsList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/DispenserDetail" } } } } ] },
       "ResponseTransactionsByDispenserAndFace": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] },

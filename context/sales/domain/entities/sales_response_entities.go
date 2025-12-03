@@ -99,6 +99,12 @@ type UpdatePaymentMethodsResult struct {
 	Info any `json:"info" db:"info"`
 }
 
+// UpdateVehicleDetailResult wraps the JSON response returned by
+// prc_actualizar_detalle_vehiculo.
+type UpdateVehicleDetailResult struct {
+	Info any `json:"info" db:"info"`
+}
+
 type ReprintSaleResult struct {
 	Info any `json:"info" db:"info"`
 }
