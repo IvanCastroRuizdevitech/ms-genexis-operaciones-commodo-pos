@@ -343,6 +343,15 @@ const swaggerJSON = `{
         }
       }
     },
+    "/credit-customers/price-families": {
+      "get": {
+        "tags": ["CreditCustomers"],
+        "summary": "Familias de precios",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseCreditPriceFamilies" } } } }
+        }
+      }
+    },
     "/sales/dispenser/{dispenserId}/face/{face}/transactions": {
       "get": {
         "tags": ["Sales"],
@@ -861,7 +870,8 @@ const swaggerJSON = `{
       "ResponseMovementTypes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/MovementType" } } } } ] },
       "ResponseTanks": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/TankBodega" } } } } ] },
       "ResponseTankPrintEvent": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TankPrintEventResult" } } } ] },
-      "ResponseCreditIdentifierTypes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] }
+      "ResponseCreditIdentifierTypes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] },
+      "ResponseCreditPriceFamilies": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] }
   }
 }
 }`
