@@ -44,6 +44,7 @@ const swaggerHTML = `<!doctype html>
     </script>
   </body>
 </html>`
+
 // Static OpenAPI 3.0 document. Paths grouped by context via tags with accurate request/response schemas.
 const swaggerJSON = `{
   "openapi": "3.0.3",
@@ -60,6 +61,7 @@ const swaggerJSON = `{
     { "name": "Configuration", "description": "Parámetros y configuración" },
     { "name": "Reports", "description": "Reportes" },
     { "name": "Sales", "description": "Operaciones de ventas" },
+    { "name": "CreditCustomers", "description": "Gestión de clientes con crédito" },
     { "name": "Users", "description": "Gestión de usuarios y tags" }
   ],
   "paths": {
@@ -313,6 +315,16 @@ const swaggerJSON = `{
         }
       }
     },
+    "/sales/invoice-attributes/{cara}": {
+      "put": {
+        "tags": ["Sales"],
+        "summary": "Update invoice attributes by face (cara)",
+        "parameters": [ { "name": "cara", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "Cara del surtidor" } ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseSetInvoiceAttributes" } } } }
+        }
+      }
+    },
     "/sales/dispenser-details": {
       "get": {
         "tags": ["Sales"],
@@ -335,7 +347,7 @@ const swaggerJSON = `{
         }
       }
     },
-    "/reports/closing-novelties": {
+        "/reports/closing-novelties": {
       "post": {
         "tags": ["Reports"],
         "summary": "Novedades de cierre diario",
@@ -370,6 +382,26 @@ const swaggerJSON = `{
         "summary": "Obtiene tanques/bodegas disponibles",
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseTanks" } } } }
+        }
+      }
+    },
+    "/credit-customers": {
+      "get": {
+        "tags": ["CreditCustomers"],
+        "summary": "List credit customers",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseCreditCustomers" } } } }
+        }
+      }
+    },
+    "/credit-customers/{id}/limit": {
+      "patch": {
+        "tags": ["CreditCustomers"],
+        "summary": "Update credit customer limit",
+        "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "Customer identifier" } ],
+        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateCreditCustomerLimitRequest" } } } },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseUpdateCreditCustomerLimit" } } } }
         }
       }
     },
@@ -641,6 +673,15 @@ const swaggerJSON = `{
       "ResponseDispenserDetailsList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/DispenserDetail" } } } } ] },
       "ResponseTransactionsByDispenserAndFace": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] },
 
+      "CreditCustomer": { "type": "object", "properties": { "id": { "type": "integer" }, "name": { "type": "string" }, "document": { "type": "string" }, "credit_limit": { "type": "number" }, "available_credit": { "type": "number" }, "status": { "type": "string" }, "last_updated_at_utc": { "type": "string" } } },
+      "UpdateCreditCustomerLimitRequest": { "type": "object", "properties": { "customer_id": { "type": "integer" }, "new_limit": { "type": "number" } }, "required": ["customer_id", "new_limit"] },
+      "UpdateCreditCustomerLimitResult": { "type": "object", "properties": { "customer_id": { "type": "integer" }, "new_limit": { "type": "number" }, "available_credit": { "type": "number" }, "status": { "type": "string" } } },
+      "ResponseCreditCustomers": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/CreditCustomer" } } } } ] },
+      "ResponseUpdateCreditCustomerLimit": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdateCreditCustomerLimitResult" } } } ] },
+            "SetInvoiceAttributesResult": { "type": "object", "properties": { "info": { "type": "object" } } },
+      "ResponseSetInvoiceAttributes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/SetInvoiceAttributesResult" } } } ] },
+      "SetInvoiceAttributesResult": { "type": "object", "properties": { "info": { "type": "object" } } },
+      "ResponseSetInvoiceAttributes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/SetInvoiceAttributesResult" } } } ] },
       "EnvelopesTotalRequest": {
         "type": "object",
         "properties": { "journal_id": { "type": "integer" }, "promoter_id": { "type": "integer" } },

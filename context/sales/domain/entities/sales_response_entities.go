@@ -105,6 +105,12 @@ type UpdateVehicleDetailResult struct {
 	Info any `json:"info" db:"info"`
 }
 
+// SetInvoiceAttributesResult wraps the JSON returned by
+// fnc_ventas_curso_set_atributos_factura.
+type SetInvoiceAttributesResult struct {
+	Info any `json:"info" db:"info"`
+}
+
 type ReprintSaleResult struct {
 	Info any `json:"info" db:"info"`
 }

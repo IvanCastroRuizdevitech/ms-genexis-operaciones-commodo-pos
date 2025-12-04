@@ -50,6 +50,11 @@ type UpdateVehicleDetailRequest struct {
 	VehiculoOdometro string `json:"i_vehiculo_odometro" binding:"required"`
 }
 
+// SetInvoiceAttributesRequest carries only the cara path param.
+type SetInvoiceAttributesRequest struct {
+	Cara int
+}
+
 type PaymentMethodItem struct {
 	IngPagoDatafono   bool    `json:"ing_pago_datafono"`
 	IdMedio           int64   `json:"ct_medios_pagos_id"`

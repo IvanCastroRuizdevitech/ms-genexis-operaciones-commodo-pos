@@ -28,6 +28,7 @@ var FuelEntryReportRepository irepositories.IFuelEntryReportRepository
 var GetDispenserDetailsRepository irepositories.IGetDispenserDetailsRepository
 var UpsertActiveDispenserFaceTransactionRepository irepositories.IUpsertActiveDispenserFaceTransactionRepository
 var UpdateVehicleDetailRepository irepositories.IUpdateVehicleDetailRepository
+var SetInvoiceAttributesRepository irepositories.ISetInvoiceAttributesRepository
 
 // USECASE
 var CheckPendingSalesUseCase iusecase.ICheckPendingSales
@@ -44,6 +45,7 @@ var FuelEntryReportUseCase iusecase.IFuelEntryReport
 var GetDispenserDetailsUseCase iusecase.IGetDispenserDetails
 var UpsertActiveDispenserFaceTransactionUseCase iusecase.IUpsertActiveDispenserFaceTransaction
 var UpdateVehicleDetailUseCase iusecase.IUpdateVehicleDetail
+var SetInvoiceAttributesUseCase iusecase.ISetInvoiceAttributes
 
 // SERVICE
 var CheckPendingSalesClient iservice.ICheckPendingSales
@@ -60,6 +62,7 @@ var FuelEntryReportClient iservice.IFuelEntryReport
 var GetDispenserDetailsClient iservice.IGetDispenserDetails
 var UpsertActiveDispenserFaceTransactionClient iservice.IUpsertActiveDispenserFaceTransaction
 var UpdateVehicleDetailClient iservice.IUpdateVehicleDetail
+var SetInvoiceAttributesClient iservice.ISetInvoiceAttributes
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	if dbConn == nil {
@@ -208,6 +211,16 @@ func buildUpdateVehicleDetail() {
 	UpdateVehicleDetailClient = &service.UpdateVehicleDetailClient{UseCase: UpdateVehicleDetailUseCase}
 }
 
+func buildSetInvoiceAttributes() {
+	if SetInvoiceAttributesClient != nil {
+		return
+	}
+	repo := &repositories.SetInvoiceAttributesRepository{Connection: resolveDB()}
+	SetInvoiceAttributesRepository = repo
+	SetInvoiceAttributesUseCase = &usecase.SetInvoiceAttributes{Repository: repo}
+	SetInvoiceAttributesClient = &service.SetInvoiceAttributesService{UseCase: SetInvoiceAttributesUseCase}
+}
+
 func ResolveSalesContainer() iservice.ICheckPendingSales {
 	buildCheckPendingSales()
 	return CheckPendingSalesClient
@@ -276,4 +289,9 @@ func ResolveUpsertActiveDispenserFaceTransactionContainer() iservice.IUpsertActi
 func ResolveUpdateVehicleDetailContainer() iservice.IUpdateVehicleDetail {
 	buildUpdateVehicleDetail()
 	return UpdateVehicleDetailClient
+}
+
+func ResolveSetInvoiceAttributesContainer() iservice.ISetInvoiceAttributes {
+	buildSetInvoiceAttributes()
+	return SetInvoiceAttributesClient
 }
