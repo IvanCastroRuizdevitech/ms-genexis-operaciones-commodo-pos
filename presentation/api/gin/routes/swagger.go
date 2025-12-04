@@ -44,6 +44,7 @@ const swaggerHTML = `<!doctype html>
     </script>
   </body>
 </html>`
+
 // Static OpenAPI 3.0 document. Paths grouped by context via tags with accurate request/response schemas.
 const swaggerJSON = `{
   "openapi": "3.0.3",
@@ -60,6 +61,7 @@ const swaggerJSON = `{
     { "name": "Configuration", "description": "Parámetros y configuración" },
     { "name": "Reports", "description": "Reportes" },
     { "name": "Sales", "description": "Operaciones de ventas" },
+    { "name": "CreditCustomers", "description": "Gestión de clientes con crédito" },
     { "name": "Users", "description": "Gestión de usuarios y tags" }
   ],
   "paths": {
@@ -313,12 +315,31 @@ const swaggerJSON = `{
         }
       }
     },
+    "/sales/invoice-attributes/{cara}": {
+      "put": {
+        "tags": ["Sales"],
+        "summary": "Update invoice attributes by face (cara)",
+        "parameters": [ { "name": "cara", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "Cara del surtidor" } ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseSetInvoiceAttributes" } } } }
+        }
+      }
+    },
     "/sales/dispenser-details": {
       "get": {
         "tags": ["Sales"],
         "summary": "Listado de detalles de surtidores activos",
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseDispenserDetailsList" } } } }
+        }
+      }
+    },
+    "/credit-customers/identifier-types": {
+      "get": {
+        "tags": ["CreditCustomers"],
+        "summary": "Tipos de identificadores de clientes crédito",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseCreditIdentifierTypes" } } } }
         }
       }
     },
@@ -335,7 +356,7 @@ const swaggerJSON = `{
         }
       }
     },
-    "/reports/closing-novelties": {
+        "/reports/closing-novelties": {
       "post": {
         "tags": ["Reports"],
         "summary": "Novedades de cierre diario",
@@ -641,6 +662,10 @@ const swaggerJSON = `{
       "ResponseDispenserDetailsList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/DispenserDetail" } } } } ] },
       "ResponseTransactionsByDispenserAndFace": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] },
 
+            "SetInvoiceAttributesResult": { "type": "object", "properties": { "info": { "type": "object" } } },
+      "ResponseSetInvoiceAttributes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/SetInvoiceAttributesResult" } } } ] },
+      "SetInvoiceAttributesResult": { "type": "object", "properties": { "info": { "type": "object" } } },
+      "ResponseSetInvoiceAttributes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/SetInvoiceAttributesResult" } } } ] },
       "EnvelopesTotalRequest": {
         "type": "object",
         "properties": { "journal_id": { "type": "integer" }, "promoter_id": { "type": "integer" } },
@@ -835,7 +860,8 @@ const swaggerJSON = `{
       "TankPrintEventResult": { "type": "object", "properties": { "created": { "type": "boolean" } } },
       "ResponseMovementTypes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/MovementType" } } } } ] },
       "ResponseTanks": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/TankBodega" } } } } ] },
-      "ResponseTankPrintEvent": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TankPrintEventResult" } } } ] }
-    }
+      "ResponseTankPrintEvent": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TankPrintEventResult" } } } ] },
+      "ResponseCreditIdentifierTypes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] }
   }
+}
 }`

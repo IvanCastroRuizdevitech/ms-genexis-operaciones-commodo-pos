@@ -77,5 +77,9 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			presentation_api_middlewares.ValidateBodyStruct[entities_sales.ActiveDispenserFaceTransactionRequest](),
 			handler_sales.UpsertActiveDispenserFaceTransactionHandler,
 		)
+		salesGroup.PUT(
+			"/invoice-attributes/:cara",
+			handler_sales.SetInvoiceAttributesHandler,
+		)
 	}
 }

@@ -15,4 +15,5 @@ const (
 	QUERY_GET_DISPENSER_DETAILS                    = "select * from genexis_operaciones.fnc_obtener_surtidores_detalles();"
 	QUERY_UPSERT_ACTIVE_DISPENSER_FACE_TRANSACTION = "select * from genexis_operaciones.fnc_transaccion_surtidor_cara_vigente($1::int, $2::int, $3::varchar, $4::int, $5::int, $6::numeric, $7::numeric, $8::json, $9::int);"
 	QUERY_UPDATE_VEHICLE_DETAIL                    = "select public.prc_actualizar_detalle_vehiculo($1::bigint, $2::text, $3::text, $4::text) as info;"
+	QUERY_SET_INVOICE_ATTRIBUTES_BY_FACE           = "select public.fnc_ventas_curso_set_atributos_factura($1::int) as info;"
 )
