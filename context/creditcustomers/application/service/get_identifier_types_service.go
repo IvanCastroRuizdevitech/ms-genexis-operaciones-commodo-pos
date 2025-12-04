@@ -8,10 +8,10 @@ import (
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
 )
 
-type GetCreditCustomersService struct {
-	UseCase iusecase.IGetCreditCustomers
+type GetIdentifierTypesService struct {
+	UseCase iusecase.IGetIdentifierTypes
 }
 
-func (s *GetCreditCustomersService) Execute(ctx context.Context) (*entities_main.Response[[]entities.CreditCustomer], error) {
+func (s *GetIdentifierTypesService) Execute(ctx context.Context) (*entities_main.Response[[]entities.IdentifierType], error) {
 	return s.UseCase.Execute(ctx)
 }

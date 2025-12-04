@@ -1,4 +1,4 @@
-package iservice
+package repositories
 
 import (
 	"context"
@@ -7,6 +7,6 @@ import (
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
 )
 
-type IGetCreditCustomersService interface {
-	Execute(ctx context.Context) (*entities_main.Response[[]entities.CreditCustomer], error)
+type IIdentifierTypesRepository interface {
+	GetAll(ctx context.Context) (*entities_main.Response[[]entities.IdentifierType], error)
 }

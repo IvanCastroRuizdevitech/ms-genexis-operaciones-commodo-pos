@@ -1,6 +1,5 @@
 package constants
 
 const (
-	StatusActive   = "ACTIVE"
-	StatusInactive = "INACTIVE"
+	QueryGetIdentifierTypes = "select * from clientes_credito.fnc_obtener_tipos_identificadores();"
 )

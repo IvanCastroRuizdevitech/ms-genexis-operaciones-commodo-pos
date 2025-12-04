@@ -13,15 +13,11 @@ import (
 
 var dbConn dbclient.DatabaseConnectionInterface
 
-var CreditCustomerRepository irepositories.ICreditCustomerRepository
+var IdentifierTypesRepository irepositories.IIdentifierTypesRepository
 
-// USE CASES
-var GetCreditCustomersUseCase iusecase.IGetCreditCustomers
-var UpdateCreditCustomerLimitUseCase iusecase.IUpdateCreditCustomerLimit
+var GetIdentifierTypesUseCase iusecase.IGetIdentifierTypes
 
-// SERVICES
-var GetCreditCustomersClient iservice.IGetCreditCustomersService
-var UpdateCreditCustomerLimitClient iservice.IUpdateCreditCustomerLimitService
+var GetIdentifierTypesClient iservice.IGetIdentifierTypesService
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	if dbConn == nil {
@@ -30,39 +26,17 @@ func resolveDB() dbclient.DatabaseConnectionInterface {
 	return dbConn
 }
 
-func ensureRepository() irepositories.ICreditCustomerRepository {
-	if CreditCustomerRepository == nil {
-		CreditCustomerRepository = &repositories.CreditCustomerRepository{
-			Connection: resolveDB(),
-		}
-	}
-	return CreditCustomerRepository
-}
-
-func buildGetCreditCustomers() {
-	if GetCreditCustomersClient != nil {
+func buildGetIdentifierTypes() {
+	if GetIdentifierTypesClient != nil {
 		return
 	}
-	repo := ensureRepository()
-	GetCreditCustomersUseCase = &usecase.GetCreditCustomers{Repository: repo}
-	GetCreditCustomersClient = &app_service.GetCreditCustomersService{UseCase: GetCreditCustomersUseCase}
+	repo := &repositories.IdentifierTypesRepository{Connection: resolveDB()}
+	IdentifierTypesRepository = repo
+	GetIdentifierTypesUseCase = &usecase.GetIdentifierTypes{Repository: repo}
+	GetIdentifierTypesClient = &app_service.GetIdentifierTypesService{UseCase: GetIdentifierTypesUseCase}
 }
 
-func buildUpdateCreditCustomerLimit() {
-	if UpdateCreditCustomerLimitClient != nil {
-		return
-	}
-	repo := ensureRepository()
-	UpdateCreditCustomerLimitUseCase = &usecase.UpdateCreditCustomerLimit{Repository: repo}
-	UpdateCreditCustomerLimitClient = &app_service.UpdateCreditCustomerLimitService{UseCase: UpdateCreditCustomerLimitUseCase}
-}
-
-func ResolveGetCreditCustomersContainer() iservice.IGetCreditCustomersService {
-	buildGetCreditCustomers()
-	return GetCreditCustomersClient
-}
-
-func ResolveUpdateCreditCustomerLimitContainer() iservice.IUpdateCreditCustomerLimitService {
-	buildUpdateCreditCustomerLimit()
-	return UpdateCreditCustomerLimitClient
+func ResolveGetIdentifierTypesContainer() iservice.IGetIdentifierTypesService {
+	buildGetIdentifierTypes()
+	return GetIdentifierTypesClient
 }

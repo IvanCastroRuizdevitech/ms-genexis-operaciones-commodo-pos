@@ -7,6 +7,6 @@ import (
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
 )
 
-type IGetCreditCustomers interface {
-	Execute(ctx context.Context) (*entities_main.Response[[]entities.CreditCustomer], error)
+type IGetIdentifierTypes interface {
+	Execute(ctx context.Context) (*entities_main.Response[[]entities.IdentifierType], error)
 }

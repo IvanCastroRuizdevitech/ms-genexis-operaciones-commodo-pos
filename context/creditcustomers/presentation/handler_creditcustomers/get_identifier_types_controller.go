@@ -8,10 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetCreditCustomersHandler(ctx *gin.Context) {
-	response, err := container_creditcustomers.ResolveGetCreditCustomersContainer().Execute(ctx.Request.Context())
+func GetIdentifierTypesHandler(ctx *gin.Context) {
+	response, err := container_creditcustomers.ResolveGetIdentifierTypesContainer().Execute(ctx.Request.Context())
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("failed to get credit customers", err))
+		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("failed to get identifier types", err))
 		return
 	}
 

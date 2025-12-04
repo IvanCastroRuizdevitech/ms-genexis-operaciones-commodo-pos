@@ -334,6 +334,15 @@ const swaggerJSON = `{
         }
       }
     },
+    "/credit-customers/identifier-types": {
+      "get": {
+        "tags": ["CreditCustomers"],
+        "summary": "Tipos de identificadores de clientes crédito",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseCreditIdentifierTypes" } } } }
+        }
+      }
+    },
     "/sales/dispenser/{dispenserId}/face/{face}/transactions": {
       "get": {
         "tags": ["Sales"],
@@ -382,26 +391,6 @@ const swaggerJSON = `{
         "summary": "Obtiene tanques/bodegas disponibles",
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseTanks" } } } }
-        }
-      }
-    },
-    "/credit-customers": {
-      "get": {
-        "tags": ["CreditCustomers"],
-        "summary": "List credit customers",
-        "responses": {
-          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseCreditCustomers" } } } }
-        }
-      }
-    },
-    "/credit-customers/{id}/limit": {
-      "patch": {
-        "tags": ["CreditCustomers"],
-        "summary": "Update credit customer limit",
-        "parameters": [ { "name": "id", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "Customer identifier" } ],
-        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateCreditCustomerLimitRequest" } } } },
-        "responses": {
-          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseUpdateCreditCustomerLimit" } } } }
         }
       }
     },
@@ -673,11 +662,6 @@ const swaggerJSON = `{
       "ResponseDispenserDetailsList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/DispenserDetail" } } } } ] },
       "ResponseTransactionsByDispenserAndFace": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] },
 
-      "CreditCustomer": { "type": "object", "properties": { "id": { "type": "integer" }, "name": { "type": "string" }, "document": { "type": "string" }, "credit_limit": { "type": "number" }, "available_credit": { "type": "number" }, "status": { "type": "string" }, "last_updated_at_utc": { "type": "string" } } },
-      "UpdateCreditCustomerLimitRequest": { "type": "object", "properties": { "customer_id": { "type": "integer" }, "new_limit": { "type": "number" } }, "required": ["customer_id", "new_limit"] },
-      "UpdateCreditCustomerLimitResult": { "type": "object", "properties": { "customer_id": { "type": "integer" }, "new_limit": { "type": "number" }, "available_credit": { "type": "number" }, "status": { "type": "string" } } },
-      "ResponseCreditCustomers": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/CreditCustomer" } } } } ] },
-      "ResponseUpdateCreditCustomerLimit": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdateCreditCustomerLimitResult" } } } ] },
             "SetInvoiceAttributesResult": { "type": "object", "properties": { "info": { "type": "object" } } },
       "ResponseSetInvoiceAttributes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/SetInvoiceAttributesResult" } } } ] },
       "SetInvoiceAttributesResult": { "type": "object", "properties": { "info": { "type": "object" } } },
@@ -876,7 +860,8 @@ const swaggerJSON = `{
       "TankPrintEventResult": { "type": "object", "properties": { "created": { "type": "boolean" } } },
       "ResponseMovementTypes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/MovementType" } } } } ] },
       "ResponseTanks": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/TankBodega" } } } } ] },
-      "ResponseTankPrintEvent": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TankPrintEventResult" } } } ] }
-    }
+      "ResponseTankPrintEvent": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TankPrintEventResult" } } } ] },
+      "ResponseCreditIdentifierTypes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] }
   }
+}
 }`
