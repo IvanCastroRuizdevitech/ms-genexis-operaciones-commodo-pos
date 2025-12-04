@@ -14,10 +14,13 @@ import (
 var dbConn dbclient.DatabaseConnectionInterface
 
 var IdentifierTypesRepository irepositories.IIdentifierTypesRepository
+var PriceFamiliesRepository irepositories.IPriceFamiliesRepository
 
 var GetIdentifierTypesUseCase iusecase.IGetIdentifierTypes
+var GetPriceFamiliesUseCase iusecase.IGetPriceFamilies
 
 var GetIdentifierTypesClient iservice.IGetIdentifierTypesService
+var GetPriceFamiliesClient iservice.IGetPriceFamiliesService
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	if dbConn == nil {
@@ -39,4 +42,19 @@ func buildGetIdentifierTypes() {
 func ResolveGetIdentifierTypesContainer() iservice.IGetIdentifierTypesService {
 	buildGetIdentifierTypes()
 	return GetIdentifierTypesClient
+}
+
+func buildGetPriceFamilies() {
+	if GetPriceFamiliesClient != nil {
+		return
+	}
+	repo := &repositories.PriceFamiliesRepository{Connection: resolveDB()}
+	PriceFamiliesRepository = repo
+	GetPriceFamiliesUseCase = &usecase.GetPriceFamilies{Repository: repo}
+	GetPriceFamiliesClient = &app_service.GetPriceFamiliesService{UseCase: GetPriceFamiliesUseCase}
+}
+
+func ResolveGetPriceFamiliesContainer() iservice.IGetPriceFamiliesService {
+	buildGetPriceFamilies()
+	return GetPriceFamiliesClient
 }

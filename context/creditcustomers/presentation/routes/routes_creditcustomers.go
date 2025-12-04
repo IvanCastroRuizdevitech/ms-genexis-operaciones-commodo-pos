@@ -13,5 +13,9 @@ func LoadCreditCustomersRoutes(router *gin.RouterGroup) {
 			"/identifier-types",
 			handler_creditcustomers.GetIdentifierTypesHandler,
 		)
+		creditCustomersGroup.GET(
+			"/price-families",
+			handler_creditcustomers.GetPriceFamiliesHandler,
+		)
 	}
 }
