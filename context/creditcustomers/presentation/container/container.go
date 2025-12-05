@@ -15,12 +15,15 @@ var dbConn dbclient.DatabaseConnectionInterface
 
 var IdentifierTypesRepository irepositories.IIdentifierTypesRepository
 var PriceFamiliesRepository irepositories.IPriceFamiliesRepository
+var PreAuthorizationRepository irepositories.IPreAuthorizationRepository
 
 var GetIdentifierTypesUseCase iusecase.IGetIdentifierTypes
 var GetPriceFamiliesUseCase iusecase.IGetPriceFamilies
+var CreatePreAuthorizationUseCase iusecase.ICreatePreAuthorization
 
 var GetIdentifierTypesClient iservice.IGetIdentifierTypesService
 var GetPriceFamiliesClient iservice.IGetPriceFamiliesService
+var CreatePreAuthorizationClient iservice.ICreatePreAuthorizationService
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	if dbConn == nil {
@@ -57,4 +60,19 @@ func buildGetPriceFamilies() {
 func ResolveGetPriceFamiliesContainer() iservice.IGetPriceFamiliesService {
 	buildGetPriceFamilies()
 	return GetPriceFamiliesClient
+}
+
+func buildCreatePreAuthorization() {
+	if CreatePreAuthorizationClient != nil {
+		return
+	}
+	repo := &repositories.PreAuthorizationRepository{Connection: resolveDB()}
+	PreAuthorizationRepository = repo
+	CreatePreAuthorizationUseCase = &usecase.CreatePreAuthorization{Repository: repo}
+	CreatePreAuthorizationClient = &app_service.CreatePreAuthorizationService{UseCase: CreatePreAuthorizationUseCase}
+}
+
+func ResolveCreatePreAuthorizationContainer() iservice.ICreatePreAuthorizationService {
+	buildCreatePreAuthorization()
+	return CreatePreAuthorizationClient
 }
