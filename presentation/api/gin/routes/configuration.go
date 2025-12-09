@@ -2,6 +2,7 @@ package api_routes
 
 import (
 	routes_configuration "ms-genexis-pos-operaciones/context/configuration/presentation/routes"
+	routes_creditcustomers "ms-genexis-pos-operaciones/context/creditcustomers/presentation/routes"
 	routes_envelopes "ms-genexis-pos-operaciones/context/envelopes/presentation/routes"
 	routes_home "ms-genexis-pos-operaciones/context/home/presentation/routes"
 	routes_reports "ms-genexis-pos-operaciones/context/reports/presentation/routes"
@@ -45,6 +46,7 @@ func GinConfig() (*gin.Engine, error) {
 	routes_shift.LoadShiftRoutes(api)
 	routes_envelopes.LoadEnvelopesRoutes(api)
 	routes_configuration.LoadConfigurationRoutes(api)
+	routes_creditcustomers.LoadCreditCustomersRoutes(api)
 	routes_reports.LoadReportsRoutes(api)
 	routes_sales.LoadSalesRoutes(api)
 	routes_home.LoadHomeRoutes(api)
