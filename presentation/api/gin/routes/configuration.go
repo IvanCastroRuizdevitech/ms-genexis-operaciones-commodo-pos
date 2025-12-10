@@ -1,6 +1,11 @@
 package api_routes
 
 import (
+	"log"
+	"os"
+	"strconv"
+	"time"
+
 	routes_configuration "ms-genexis-pos-operaciones/context/configuration/presentation/routes"
 	routes_creditcustomers "ms-genexis-pos-operaciones/context/creditcustomers/presentation/routes"
 	routes_envelopes "ms-genexis-pos-operaciones/context/envelopes/presentation/routes"
@@ -10,7 +15,8 @@ import (
 	routes_shift "ms-genexis-pos-operaciones/context/shift/presentation/routes"
 	routes_users "ms-genexis-pos-operaciones/context/users/presentation/routes"
 	"ms-genexis-pos-operaciones/domain/constants"
-	"time"
+	handlers_printer "ms-genexis-pos-operaciones/internal/handler"
+	"ms-genexis-pos-operaciones/internal/printer"
 
 	"github.com/gin-gonic/gin"
 	cors "github.com/itsjamie/gin-cors"
@@ -42,6 +48,16 @@ func GinConfig() (*gin.Engine, error) {
 	if enableSwaggerDocs {
 		registerSwaggerRoutes(router)
 	}
+
+	// Printer micro-endpoint (POST /printer) mounted at root for local calls.
+	printerTimeout := parsePrinterTimeout(os.Getenv("PRINTER_TIMEOUT_MS"))
+	printerClient := &printer.Client{Timeout: printerTimeout}
+	printerHandler := handlers_printer.New(
+		printerClient,
+		log.New(os.Stdout, "[printer] ", log.LstdFlags|log.Lmicroseconds),
+	)
+	printerHandler.Register(router)
+
 	api := router.Group(constants.API_PATH)
 	routes_shift.LoadShiftRoutes(api)
 	routes_envelopes.LoadEnvelopesRoutes(api)
@@ -53,4 +69,14 @@ func GinConfig() (*gin.Engine, error) {
 	routes_users.LoadUsersRoutes(api)
 
 	return router, nil
+}
+
+func parsePrinterTimeout(val string) time.Duration {
+	if val == "" {
+		return 3 * time.Second
+	}
+	if ms, err := strconv.Atoi(val); err == nil && ms > 0 {
+		return time.Duration(ms) * time.Millisecond
+	}
+	return 3 * time.Second
 }
