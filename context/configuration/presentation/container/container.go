@@ -17,6 +17,7 @@ var GetPromoterDutyRepository irepositories.IGetPromoterDutyRepository
 var GetInitialConfigurationRepository irepositories.IGetInitialConfigurationRepository
 var GetPrinterIPRepository irepositories.IGetPrinterIPRepository
 var UpdatePrinterIPRepository irepositories.IUpdatePrinterIPRepository
+var PrinterTester irepositories.IPrinterTester
 
 // REPOSITORIES HTTPP
 
@@ -26,6 +27,7 @@ var GetPromoterDutyUseCase iusecase.IGetPromoterDuty
 var GetInitialConfigurationUseCase iusecase.IGetInitialConfiguration
 var GetPrinterIPUseCase iusecase.IGetPrinterIP
 var UpdatePrinterIPUseCase iusecase.IUpdatePrinterIP
+var PrintTestAfterUpdateUseCase iusecase.IPrintTestAfterUpdate
 
 // SERVICE
 var GetParametersClient iservice.IGetParameters
@@ -84,8 +86,13 @@ func buildUpdatePrinterIP() {
 	}
 	dbConn := resolveDB()
 	UpdatePrinterIPRepository = &repositories.UpdatePrinterIPRepository{Connection: dbConn}
+	PrinterTester = &repositories.PrinterTesterHTTP{}
 	UpdatePrinterIPUseCase = &usecase.UpdatePrinterIP{Repository: UpdatePrinterIPRepository}
-	UpdatePrinterIPClient = &service.UpdatePrinterIPClient{UseCase: UpdatePrinterIPUseCase}
+	PrintTestAfterUpdateUseCase = &usecase.PrintTestAfterUpdate{PrinterTester: PrinterTester}
+	UpdatePrinterIPClient = &service.UpdatePrinterIPClient{
+		UpdateUseCase:    UpdatePrinterIPUseCase,
+		PrintAfterUpdate: PrintTestAfterUpdateUseCase,
+	}
 }
 
 func ResolveGetParametersContainer() iservice.IGetParameters {

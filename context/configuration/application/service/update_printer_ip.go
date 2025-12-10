@@ -7,9 +7,19 @@ import (
 )
 
 type UpdatePrinterIPClient struct {
-	UseCase iusecase.IUpdatePrinterIP
+	UpdateUseCase    iusecase.IUpdatePrinterIP
+	PrintAfterUpdate iusecase.IPrintTestAfterUpdate
 }
 
 func (s *UpdatePrinterIPClient) Execute(req *entities.PrinterIPUpdateRequest) (*entities_main.Response[entities.PrinterIPUpdateResult], error) {
-	return s.UseCase.Execute(req)
+	resp, err := s.UpdateUseCase.Execute(req)
+	if err != nil {
+		return nil, err
+	}
+
+	if s.PrintAfterUpdate != nil {
+		return s.PrintAfterUpdate.Execute(resp)
+	}
+
+	return resp, nil
 }
