@@ -5,6 +5,6 @@ import (
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
 )
 
-type IGetPromoterDutyRepository interface {
-	GetPromoterDuty() (*entities_main.Response[[]entities.PromoterDuty], error)
+type IUpdatePrinterIPRepository interface {
+	Update(req *entities.PrinterIPUpdateRequest) (*entities_main.Response[entities.PrinterIPUpdateResult], error)
 }

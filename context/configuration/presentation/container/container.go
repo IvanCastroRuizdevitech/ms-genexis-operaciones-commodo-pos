@@ -15,6 +15,8 @@ import (
 var GetParametersRepository irepositories.IGetParametersRepository
 var GetPromoterDutyRepository irepositories.IGetPromoterDutyRepository
 var GetInitialConfigurationRepository irepositories.IGetInitialConfigurationRepository
+var GetPrinterIPRepository irepositories.IGetPrinterIPRepository
+var UpdatePrinterIPRepository irepositories.IUpdatePrinterIPRepository
 
 // REPOSITORIES HTTPP
 
@@ -22,11 +24,15 @@ var GetInitialConfigurationRepository irepositories.IGetInitialConfigurationRepo
 var GetParametersUseCase iusecase.IGetParameters
 var GetPromoterDutyUseCase iusecase.IGetPromoterDuty
 var GetInitialConfigurationUseCase iusecase.IGetInitialConfiguration
+var GetPrinterIPUseCase iusecase.IGetPrinterIP
+var UpdatePrinterIPUseCase iusecase.IUpdatePrinterIP
 
 // SERVICE
 var GetParametersClient iservice.IGetParameters
 var GetPromoterDutyClient iservice.IGetPromoterDuty
 var GetInitialConfigurationClient iservice.IGetInitialConfiguration
+var GetPrinterIPClient iservice.IGetPrinterIP
+var UpdatePrinterIPClient iservice.IUpdatePrinterIP
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
@@ -62,6 +68,26 @@ func buildGetInitialConfiguration() {
 	GetInitialConfigurationClient = &service.GetInitialConfigurationClient{GetInitialConfiguration: GetInitialConfigurationUseCase}
 }
 
+func buildGetPrinterIP() {
+	if GetPrinterIPClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetPrinterIPRepository = &repositories.GetPrinterIPRepository{Connection: dbConn}
+	GetPrinterIPUseCase = &usecase.GetPrinterIP{Repository: GetPrinterIPRepository}
+	GetPrinterIPClient = &service.GetPrinterIPClient{UseCase: GetPrinterIPUseCase}
+}
+
+func buildUpdatePrinterIP() {
+	if UpdatePrinterIPClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	UpdatePrinterIPRepository = &repositories.UpdatePrinterIPRepository{Connection: dbConn}
+	UpdatePrinterIPUseCase = &usecase.UpdatePrinterIP{Repository: UpdatePrinterIPRepository}
+	UpdatePrinterIPClient = &service.UpdatePrinterIPClient{UseCase: UpdatePrinterIPUseCase}
+}
+
 func ResolveGetParametersContainer() iservice.IGetParameters {
 
 	buildGetParameters()
@@ -77,4 +103,14 @@ func ResolveGetPromoterDutyContainer() iservice.IGetPromoterDuty {
 func ResolveGetInitialConfigurationContainer() iservice.IGetInitialConfiguration {
 	buildGetInitialConfiguration()
 	return GetInitialConfigurationClient
+}
+
+func ResolveGetPrinterIPContainer() iservice.IGetPrinterIP {
+	buildGetPrinterIP()
+	return GetPrinterIPClient
+}
+
+func ResolveUpdatePrinterIPContainer() iservice.IUpdatePrinterIP {
+	buildUpdatePrinterIP()
+	return UpdatePrinterIPClient
 }

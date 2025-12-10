@@ -44,7 +44,6 @@ const swaggerHTML = `<!doctype html>
     </script>
   </body>
 </html>`
-
 // Static OpenAPI 3.0 document. Paths grouped by context via tags with accurate request/response schemas.
 const swaggerJSON = `{
   "openapi": "3.0.3",
@@ -61,7 +60,6 @@ const swaggerJSON = `{
     { "name": "Configuration", "description": "Parámetros y configuración" },
     { "name": "Reports", "description": "Reportes" },
     { "name": "Sales", "description": "Operaciones de ventas" },
-    { "name": "CreditCustomers", "description": "Gestión de clientes con crédito" },
     { "name": "Users", "description": "Gestión de usuarios y tags" }
   ],
   "paths": {
@@ -295,16 +293,6 @@ const swaggerJSON = `{
         }
       }
     },
-    "/sales/update-vehicle-detail": {
-      "put": {
-        "tags": ["Sales"],
-        "summary": "Actualiza detalle del vehículo de la venta",
-        "requestBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateVehicleDetailRequest" } } } },
-        "responses": {
-          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseUpdateVehicleDetailResult" } } } }
-        }
-      }
-    },
     "/sales/fuel-entry-report": {
       "post": {
         "tags": ["Sales"],
@@ -315,40 +303,12 @@ const swaggerJSON = `{
         }
       }
     },
-    "/sales/invoice-attributes/{cara}": {
-      "put": {
-        "tags": ["Sales"],
-        "summary": "Update invoice attributes by face (cara)",
-        "parameters": [ { "name": "cara", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "Cara del surtidor" } ],
-        "responses": {
-          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseSetInvoiceAttributes" } } } }
-        }
-      }
-    },
     "/sales/dispenser-details": {
       "get": {
         "tags": ["Sales"],
         "summary": "Listado de detalles de surtidores activos",
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseDispenserDetailsList" } } } }
-        }
-      }
-    },
-    "/credit-customers/identifier-types": {
-      "get": {
-        "tags": ["CreditCustomers"],
-        "summary": "Tipos de identificadores de clientes crédito",
-        "responses": {
-          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseCreditIdentifierTypes" } } } }
-        }
-      }
-    },
-    "/credit-customers/price-families": {
-      "get": {
-        "tags": ["CreditCustomers"],
-        "summary": "Familias de precios",
-        "responses": {
-          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseCreditPriceFamilies" } } } }
         }
       }
     },
@@ -365,7 +325,7 @@ const swaggerJSON = `{
         }
       }
     },
-        "/reports/closing-novelties": {
+    "/reports/closing-novelties": {
       "post": {
         "tags": ["Reports"],
         "summary": "Novedades de cierre diario",
@@ -583,16 +543,6 @@ const swaggerJSON = `{
         },
         "required": ["i_id_movimiento", "i_id_transmision", "i_sinconizacion"]
       },
-      "UpdateVehicleDetailRequest": {
-        "type": "object",
-        "properties": {
-          "i_movimiento_id": { "type": "integer", "format": "int64" },
-          "i_vehiculo_placa": { "type": "string" },
-          "i_vehiculo_numero": { "type": "string" },
-          "i_vehiculo_odometro": { "type": "string" }
-        },
-        "required": ["i_movimiento_id", "i_vehiculo_placa", "i_vehiculo_numero", "i_vehiculo_odometro"]
-      },
 
       "DatafonoCancellationsInProgress": { "type": "object", "properties": { "in_progress": { "type": "boolean" } } },
       "UnresolvedSaleAttributes": { "type": "object", "properties": { "atributos": { "type": "object" } } },
@@ -632,7 +582,6 @@ const swaggerJSON = `{
         }
       },
       "UpdatePaymentMethodsResult": { "type": "object", "properties": { "info": { "type": "object" } } },
-      "UpdateVehicleDetailResult": { "type": "object", "properties": { "info": { "type": "object" } } },
 
       "FuelEntryReportRequest": {
         "type": "object",
@@ -666,15 +615,10 @@ const swaggerJSON = `{
       "ResponseUpdateClientMovementResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdateClientMovementResult" } } } ] },
       "ResponsePendingSaleDatafono": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/PendingSaleDatafono" } } } ] },
       "ResponseUpdatePaymentMethodsResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdatePaymentMethodsResult" } } } ] },
-      "ResponseUpdateVehicleDetailResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdateVehicleDetailResult" } } } ] },
       "ResponseFuelEntryReportResult": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/FuelEntryReportResult" } } } ] },
       "ResponseDispenserDetailsList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/DispenserDetail" } } } } ] },
       "ResponseTransactionsByDispenserAndFace": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] },
 
-            "SetInvoiceAttributesResult": { "type": "object", "properties": { "info": { "type": "object" } } },
-      "ResponseSetInvoiceAttributes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/SetInvoiceAttributesResult" } } } ] },
-      "SetInvoiceAttributesResult": { "type": "object", "properties": { "info": { "type": "object" } } },
-      "ResponseSetInvoiceAttributes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/SetInvoiceAttributesResult" } } } ] },
       "EnvelopesTotalRequest": {
         "type": "object",
         "properties": { "journal_id": { "type": "integer" }, "promoter_id": { "type": "integer" } },
@@ -869,9 +813,7 @@ const swaggerJSON = `{
       "TankPrintEventResult": { "type": "object", "properties": { "created": { "type": "boolean" } } },
       "ResponseMovementTypes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/MovementType" } } } } ] },
       "ResponseTanks": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/TankBodega" } } } } ] },
-      "ResponseTankPrintEvent": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TankPrintEventResult" } } } ] },
-      "ResponseCreditIdentifierTypes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] },
-      "ResponseCreditPriceFamilies": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } } } } ] }
+      "ResponseTankPrintEvent": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TankPrintEventResult" } } } ] }
+    }
   }
-}
 }`

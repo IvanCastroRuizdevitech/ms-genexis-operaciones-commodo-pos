@@ -1,14 +1,14 @@
 package repositories
 
 import (
-    "context"
-    "encoding/json"
-    "log"
-    "ms-genexis-pos-operaciones/context/configuration/domain/entities"
-    "ms-genexis-pos-operaciones/context/configuration/domain/value_object/constants"
-    entities_main "ms-genexis-pos-operaciones/domain/entities"
-    infrastructure_db_client "ms-genexis-pos-operaciones/infrastructure/db/client"
-    "time"
+	"context"
+	"encoding/json"
+	"log"
+	"ms-genexis-pos-operaciones/context/configuration/domain/entities"
+	"ms-genexis-pos-operaciones/context/configuration/domain/value_object/constants"
+	entities_main "ms-genexis-pos-operaciones/domain/entities"
+	infrastructure_db_client "ms-genexis-pos-operaciones/infrastructure/db/client"
+	"time"
 )
 
 type GetParametersRepository struct {
@@ -30,9 +30,8 @@ func (g *GetParametersRepository) GetParameters() (*entities_main.Response[entit
 
 	err = conn.PgxConn.QueryRow(
 		context.Background(),
-		constants.QUERY_GET_ALL_CONFIGURATION,	
+		constants.QUERY_GET_ALL_CONFIGURATION,
 	).Scan(&jsonStrResponse)
-
 
 	if err != nil {
 		return nil, err

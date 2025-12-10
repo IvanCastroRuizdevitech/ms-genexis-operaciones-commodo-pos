@@ -4,6 +4,7 @@ import "time"
 
 type Response[T any] struct {
 	Status      int    `json:"status"`
+	Success     bool   `json:"success,omitempty"`
 	Message     string `json:"message,omitempty"`
 	ProcessDate string `json:"process_date"`
 	Data        *T     `json:"data,omitempty"`
@@ -14,6 +15,7 @@ type Response[T any] struct {
 func NewSuccessResponse[T any](status int, message, processDate string, data *T) Response[T] {
 	return Response[T]{
 		Status:      status,
+		Success:     true,
 		Message:     message,
 		ProcessDate: processDate,
 		Data:        data,
@@ -24,6 +26,7 @@ func NewSuccessResponse[T any](status int, message, processDate string, data *T)
 func NewErrorResponse[T any](message string, err error) Response[T] {
 	return Response[T]{
 		Status:      400,
+		Success:     false,
 		Message:     message,
 		ProcessDate: time.Now().Format("2006-01-02 15:04:05"),
 		Error:       err.Error(),

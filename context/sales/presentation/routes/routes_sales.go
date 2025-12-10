@@ -54,11 +54,6 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			presentation_api_middlewares.ValidateBodyStruct[entities_sales.UpdatePaymentMethodsRequest](),
 			handler_sales.UpdatePaymentMethodsHandler,
 		)
-		salesGroup.PUT(
-			"/update-vehicle-detail",
-			presentation_api_middlewares.ValidateBodyStruct[entities_sales.UpdateVehicleDetailRequest](),
-			handler_sales.UpdateVehicleDetailHandler,
-		)
 		salesGroup.GET(
 			"/reprint-sale/:movementId",
 			handler_sales.ReprintSaleHandler,
@@ -76,10 +71,6 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			"/dispenser/active-transaction",
 			presentation_api_middlewares.ValidateBodyStruct[entities_sales.ActiveDispenserFaceTransactionRequest](),
 			handler_sales.UpsertActiveDispenserFaceTransactionHandler,
-		)
-		salesGroup.PUT(
-			"/invoice-attributes/:cara",
-			handler_sales.SetInvoiceAttributesHandler,
 		)
 	}
 }

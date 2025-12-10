@@ -1,17 +1,18 @@
 package handler_creditcustomers
 
 import (
+	"net/http"
+
 	container_creditcustomers "ms-genexis-pos-operaciones/context/creditcustomers/presentation/container"
 	entities_main "ms-genexis-pos-operaciones/domain/entities"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetPriceFamiliesHandler(ctx *gin.Context) {
-	response, err := container_creditcustomers.ResolveGetPriceFamiliesContainer().Execute(ctx.Request.Context())
+func GetDispenserDetailsHandler(ctx *gin.Context) {
+	response, err := container_creditcustomers.ResolveGetDispenserDetailsContainer().Execute()
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("failed to get price families", err))
+		ctx.JSON(http.StatusInternalServerError, entities_main.NewErrorResponse[interface{}]("Error interno", err))
 		return
 	}
 
