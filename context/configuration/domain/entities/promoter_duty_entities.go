@@ -8,4 +8,5 @@ type PromoterDuty struct {
 	Descripcion            string `json:"descripcion"`
 	IdentificacionPromotor string `json:"identificacion_promotor"`
 	Jornada                int64  `json:"jornada"`
+	FechaInicio            string `json:"fecha_inicio"`
 }
