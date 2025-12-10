@@ -1,11 +1,10 @@
 package iusecase
 
 import (
-    "ms-genexis-pos-operaciones/context/configuration/domain/entities"
-    entities_main "ms-genexis-pos-operaciones/domain/entities"
+	"ms-genexis-pos-operaciones/context/configuration/domain/entities"
+	entities_main "ms-genexis-pos-operaciones/domain/entities"
 )
 
 type IGetInitialConfiguration interface {
-    Execute() (*entities_main.Response[entities.InitialConfiguration], error)
+	Execute() (*entities_main.Response[entities.InitialConfiguration], error)
 }
-
