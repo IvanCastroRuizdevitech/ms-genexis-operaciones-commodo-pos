@@ -44,6 +44,7 @@ const swaggerHTML = `<!doctype html>
     </script>
   </body>
 </html>`
+
 // Static OpenAPI 3.0 document. Paths grouped by context via tags with accurate request/response schemas.
 const swaggerJSON = `{
   "openapi": "3.0.3",
@@ -179,6 +180,15 @@ const swaggerJSON = `{
         "summary": "Obtiene la configuración inicial del POS",
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseInitialConfiguration" } } } }
+        }
+      }
+    },
+    "/configuration/consecutivos-unificados": {
+      "get": {
+        "tags": ["Configuration"],
+        "summary": "Obtiene consecutivos unificados de COM y TIEN",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseUnifiedConsecutives" } } } }
         }
       }
     },
@@ -659,6 +669,30 @@ const swaggerJSON = `{
       "PromoterDuty": { "type": "object", "properties": { "personas_id": { "type": "integer" }, "nombre": { "type": "string" }, "estado": { "type": "string" }, "id_perfiles": { "type": "integer" }, "descripcion": { "type": "string" } } },
       "ResponseConfig": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/Config" } } } ] },
       "ResponsePromoterDutyList": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/PromoterDuty" } } } } ] },
+      "UnifiedConsecutive": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "tipo_documento": { "type": "string" },
+          "prefijo": { "type": "string" },
+          "fecha_inicio": { "type": "string" },
+          "fecha_fin": { "type": "string" },
+          "consecutivo_inicial": { "type": "integer", "format": "int64" },
+          "consecutivo_final": { "type": "integer", "format": "int64" },
+          "consecutivo_actual": { "type": "integer", "format": "int64" },
+          "estado": { "type": "string" },
+          "destino": { "type": "string" }
+        }
+      },
+      "UnifiedConsecutivesData": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "total": { "type": "integer" },
+          "data": { "type": "array", "items": { "$ref": "#/components/schemas/UnifiedConsecutive" } }
+        }
+      },
+      "ResponseUnifiedConsecutives": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UnifiedConsecutivesData" } } } ] },
 
       "InitialConfiguration": {
         "type": "object",

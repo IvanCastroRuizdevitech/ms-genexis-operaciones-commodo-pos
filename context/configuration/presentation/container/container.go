@@ -17,6 +17,7 @@ var GetPromoterDutyRepository irepositories.IGetPromoterDutyRepository
 var GetInitialConfigurationRepository irepositories.IGetInitialConfigurationRepository
 var GetPrinterIPRepository irepositories.IGetPrinterIPRepository
 var UpdatePrinterIPRepository irepositories.IUpdatePrinterIPRepository
+var GetUnifiedConsecutivesRepository irepositories.IGetUnifiedConsecutivesRepository
 var PrinterTester irepositories.IPrinterTester
 
 // REPOSITORIES HTTPP
@@ -27,6 +28,7 @@ var GetPromoterDutyUseCase iusecase.IGetPromoterDuty
 var GetInitialConfigurationUseCase iusecase.IGetInitialConfiguration
 var GetPrinterIPUseCase iusecase.IGetPrinterIP
 var UpdatePrinterIPUseCase iusecase.IUpdatePrinterIP
+var GetUnifiedConsecutivesUseCase iusecase.IGetUnifiedConsecutives
 var PrintTestAfterUpdateUseCase iusecase.IPrintTestAfterUpdate
 
 // SERVICE
@@ -35,6 +37,7 @@ var GetPromoterDutyClient iservice.IGetPromoterDuty
 var GetInitialConfigurationClient iservice.IGetInitialConfiguration
 var GetPrinterIPClient iservice.IGetPrinterIP
 var UpdatePrinterIPClient iservice.IUpdatePrinterIP
+var GetUnifiedConsecutivesClient iservice.IGetUnifiedConsecutives
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
@@ -95,6 +98,16 @@ func buildUpdatePrinterIP() {
 	}
 }
 
+func buildGetUnifiedConsecutives() {
+	if GetUnifiedConsecutivesClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetUnifiedConsecutivesRepository = &repositories.GetUnifiedConsecutivesRepository{Connection: dbConn}
+	GetUnifiedConsecutivesUseCase = &usecase.GetUnifiedConsecutives{Repository: GetUnifiedConsecutivesRepository}
+	GetUnifiedConsecutivesClient = &service.GetUnifiedConsecutivesClient{UseCase: GetUnifiedConsecutivesUseCase}
+}
+
 func ResolveGetParametersContainer() iservice.IGetParameters {
 
 	buildGetParameters()
@@ -120,4 +133,9 @@ func ResolveGetPrinterIPContainer() iservice.IGetPrinterIP {
 func ResolveUpdatePrinterIPContainer() iservice.IUpdatePrinterIP {
 	buildUpdatePrinterIP()
 	return UpdatePrinterIPClient
+}
+
+func ResolveGetUnifiedConsecutivesContainer() iservice.IGetUnifiedConsecutives {
+	buildGetUnifiedConsecutives()
+	return GetUnifiedConsecutivesClient
 }
