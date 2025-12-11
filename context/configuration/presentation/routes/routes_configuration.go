@@ -25,6 +25,10 @@ func LoadConfigurationRoutes(router *gin.RouterGroup) {
 			"/printer-ip",
 			handler_configuration.GetPrinterIPHandler,
 		)
+		configurationGroup.GET(
+			"/consecutivos-unificados",
+			handler_configuration.GetUnifiedConsecutivesHandler,
+		)
 		configurationGroup.PUT(
 			"/printer-ip",
 			handler_configuration.UpdatePrinterIPHandler,
