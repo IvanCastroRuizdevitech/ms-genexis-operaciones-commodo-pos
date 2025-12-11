@@ -6,10 +6,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"ms-genexis-pos-operaciones/context/configuration/domain/value_object/constants"
 	"net/http"
-	"os"
-	"strconv"
-	"time"
 )
 
 // PrinterTesterHTTP implements IPrinterTester using an HTTP call to the /printer microservice.
@@ -30,20 +28,13 @@ func (p *PrinterTesterHTTP) PrintTest(ctx context.Context, host string, port int
 		Extra:    map[string]any{"imageBase64": ""},
 	}
 
-	url := os.Getenv("MICRO_PRINTER_URL")
-	if url == "" {
-		url = "http://localhost:18887/printer"
-	}
-
-	timeout := parseTimeout(os.Getenv("PRINTER_TIMEOUT_MS"))
-	client := &http.Client{Timeout: timeout}
-
+	client := &http.Client{}
 	payload, err := json.Marshal(body)
 	if err != nil {
 		return err
 	}
 
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, url, bytes.NewReader(payload))
+	req, err := http.NewRequestWithContext(ctx, http.MethodPost, constants.MICRO_PRINTER_URL, bytes.NewReader(payload))
 	if err != nil {
 		return err
 	}
@@ -61,14 +52,4 @@ func (p *PrinterTesterHTTP) PrintTest(ctx context.Context, host string, port int
 	}
 
 	return nil
-}
-
-func parseTimeout(msStr string) time.Duration {
-	if msStr == "" {
-		return 3 * time.Second
-	}
-	if ms, err := strconv.Atoi(msStr); err == nil && ms > 0 {
-		return time.Duration(ms) * time.Millisecond
-	}
-	return 3 * time.Second
 }
