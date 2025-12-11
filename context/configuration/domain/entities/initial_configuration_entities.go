@@ -7,20 +7,25 @@ type InitialConfiguration struct {
 }
 
 type InitialConfigurationDataResponse struct {
-	Equipo             *Equipment           `json:"equipo,omitempty"`
-	Jornada            *Journal             `json:"jornada,omitempty"`
-	Empresas           []Company            `json:"empresas,omitempty"`
-	Promotor           *Promoter            `json:"promotor,omitempty"`
-	Parametros         map[string]Parameter `json:"parametros,omitempty"`
-	Surtidores         []Dispenser          `json:"surtidores,omitempty"`
-	MediosPagos        []PaymentMethod      `json:"medios_pagos,omitempty"`
-	TurnoActivo        bool                 `json:"turno_activo"`
-	SurtidoresDetalles []DispenserDetail    `json:"surtidores_detalles,omitempty"`
+	Equipo             *Equipment        `json:"equipo,omitempty"`
+	Jornada            *Journal          `json:"jornada,omitempty"`
+	Empresas           []Company         `json:"empresas,omitempty"`
+	Promotor           *Promoter         `json:"promotor,omitempty"`
+	Parametros         *ParametrosPOS    `json:"parametros,omitempty"`
+	Surtidores         []Dispenser       `json:"surtidores,omitempty"`
+	MediosPagos        []PaymentMethod   `json:"medios_pagos,omitempty"`
+	TurnoActivo        bool              `json:"turno_activo"`
+	SurtidoresDetalles []DispenserDetail `json:"surtidores_detalles,omitempty"`
 }
 
-type Parameter struct {
-	Tipo  int    `json:"tipo"`
-	Valor string `json:"valor"`
+type ParametrosPOS struct {
+	POSID                   string `json:"POS_ID"`
+	VersionPOS              string `json:"version_pos"`
+	POSPrincipal            string `json:"POS_PRINCIPAL"`
+	ObligatorioFE           string `json:"OBLIGATORIO_FE"`
+	MontoMinimoFE           string `json:"MONTO_MINIMO_FE"`
+	TipoAutorizacion        string `json:"tipo_autorizacion"`
+	SolicitarLecturasTanque string `json:"solicitar_lecturas_tanques"`
 }
 
 type Equipment struct {
