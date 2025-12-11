@@ -97,6 +97,9 @@ func buildTestTemplate() []string {
 	t = append(t, "  IMPRESION FINALIZADA\n\n")
 	t = append(t, "************************************************\n\n")
 	t = append(t, "\n\n\n\n")
+	t = append(t, "\n\n\n\n")
+	t = append(t, "\n\n\n\n")
+	t = append(t, "\n\n\n\n")
 	t = append(t, "\x1d\x56\x00")
 	return t
 }
