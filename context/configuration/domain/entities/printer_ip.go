@@ -18,6 +18,8 @@ type PrinterIPUpdateRequest struct {
 
 // PrinterIPUpdateResult carries the raw response from the update function and any parsed JSON if available.
 type PrinterIPUpdateResult struct {
-	Raw    string         `json:"raw_result"`
-	Parsed map[string]any `json:"parsed,omitempty"`
+	Raw       string         `json:"raw_result"`
+	Parsed    map[string]any `json:"parsed,omitempty"`
+	Formatted map[string]any `json:"formatted,omitempty"`
+	Message   string         `json:"message,omitempty"`
 }

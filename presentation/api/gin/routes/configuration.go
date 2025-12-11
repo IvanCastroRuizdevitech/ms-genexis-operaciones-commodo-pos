@@ -1,6 +1,8 @@
 package api_routes
 
 import (
+	"time"
+
 	routes_configuration "ms-genexis-pos-operaciones/context/configuration/presentation/routes"
 	routes_creditcustomers "ms-genexis-pos-operaciones/context/creditcustomers/presentation/routes"
 	routes_envelopes "ms-genexis-pos-operaciones/context/envelopes/presentation/routes"
@@ -10,7 +12,6 @@ import (
 	routes_shift "ms-genexis-pos-operaciones/context/shift/presentation/routes"
 	routes_users "ms-genexis-pos-operaciones/context/users/presentation/routes"
 	"ms-genexis-pos-operaciones/domain/constants"
-	"time"
 
 	"github.com/gin-gonic/gin"
 	cors "github.com/itsjamie/gin-cors"
@@ -42,6 +43,7 @@ func GinConfig() (*gin.Engine, error) {
 	if enableSwaggerDocs {
 		registerSwaggerRoutes(router)
 	}
+
 	api := router.Group(constants.API_PATH)
 	routes_shift.LoadShiftRoutes(api)
 	routes_envelopes.LoadEnvelopesRoutes(api)
