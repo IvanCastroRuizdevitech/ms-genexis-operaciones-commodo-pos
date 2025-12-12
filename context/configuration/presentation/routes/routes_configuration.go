@@ -40,5 +40,10 @@ func LoadConfigurationRoutes(router *gin.RouterGroup) {
 			presentation_api_middlewares.ValidateBodyStruct[entities.AdminValidationRequest](),
 			handler_configuration.ValidateAdminPersonHandler,
 		)
+		configurationGroup.POST(
+			"/procesar-notificacion",
+			presentation_api_middlewares.ValidateBodyStruct[entities.ProcessNotificationRequest](),
+			handler_configuration.ProcessNotificationHandler,
+		)
 	}
 }
