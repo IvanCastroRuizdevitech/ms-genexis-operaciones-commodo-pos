@@ -20,6 +20,7 @@ var UpdatePrinterIPRepository irepositories.IUpdatePrinterIPRepository
 var GetUnifiedConsecutivesRepository irepositories.IGetUnifiedConsecutivesRepository
 var PrinterTester irepositories.IPrinterTester
 var ValidateAdminPersonRepository irepositories.IValidateAdminPersonRepository
+var ProcessNotificationRepository irepositories.IProcessNotificationRepository
 
 // REPOSITORIES HTTPP
 
@@ -32,6 +33,7 @@ var UpdatePrinterIPUseCase iusecase.IUpdatePrinterIP
 var GetUnifiedConsecutivesUseCase iusecase.IGetUnifiedConsecutives
 var PrintTestAfterUpdateUseCase iusecase.IPrintTestAfterUpdate
 var ValidateAdminPersonUseCase iusecase.IValidateAdminPerson
+var ProcessNotificationUseCase iusecase.IProcessNotification
 
 // SERVICE
 var GetParametersClient iservice.IGetParameters
@@ -41,6 +43,7 @@ var GetPrinterIPClient iservice.IGetPrinterIP
 var UpdatePrinterIPClient iservice.IUpdatePrinterIP
 var GetUnifiedConsecutivesClient iservice.IGetUnifiedConsecutives
 var ValidateAdminPersonClient iservice.IValidateAdminPerson
+var ProcessNotificationClient iservice.IProcessNotification
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
@@ -121,6 +124,16 @@ func buildValidateAdminPerson() {
 	ValidateAdminPersonClient = &service.ValidateAdminPersonClient{UseCase: ValidateAdminPersonUseCase}
 }
 
+func buildProcessNotification() {
+	if ProcessNotificationClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	ProcessNotificationRepository = &repositories.ProcessNotificationRepository{Connection: dbConn}
+	ProcessNotificationUseCase = &usecase.ProcessNotification{Repository: ProcessNotificationRepository}
+	ProcessNotificationClient = &service.ProcessNotificationClient{UseCase: ProcessNotificationUseCase}
+}
+
 func ResolveGetParametersContainer() iservice.IGetParameters {
 
 	buildGetParameters()
@@ -156,4 +169,9 @@ func ResolveGetUnifiedConsecutivesContainer() iservice.IGetUnifiedConsecutives {
 func ResolveValidateAdminPersonContainer() iservice.IValidateAdminPerson {
 	buildValidateAdminPerson()
 	return ValidateAdminPersonClient
+}
+
+func ResolveProcessNotificationContainer() iservice.IProcessNotification {
+	buildProcessNotification()
+	return ProcessNotificationClient
 }
