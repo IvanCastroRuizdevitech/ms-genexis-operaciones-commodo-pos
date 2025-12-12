@@ -19,6 +19,7 @@ var GetPrinterIPRepository irepositories.IGetPrinterIPRepository
 var UpdatePrinterIPRepository irepositories.IUpdatePrinterIPRepository
 var GetUnifiedConsecutivesRepository irepositories.IGetUnifiedConsecutivesRepository
 var PrinterTester irepositories.IPrinterTester
+var ValidateAdminPersonRepository irepositories.IValidateAdminPersonRepository
 
 // REPOSITORIES HTTPP
 
@@ -30,6 +31,7 @@ var GetPrinterIPUseCase iusecase.IGetPrinterIP
 var UpdatePrinterIPUseCase iusecase.IUpdatePrinterIP
 var GetUnifiedConsecutivesUseCase iusecase.IGetUnifiedConsecutives
 var PrintTestAfterUpdateUseCase iusecase.IPrintTestAfterUpdate
+var ValidateAdminPersonUseCase iusecase.IValidateAdminPerson
 
 // SERVICE
 var GetParametersClient iservice.IGetParameters
@@ -38,6 +40,7 @@ var GetInitialConfigurationClient iservice.IGetInitialConfiguration
 var GetPrinterIPClient iservice.IGetPrinterIP
 var UpdatePrinterIPClient iservice.IUpdatePrinterIP
 var GetUnifiedConsecutivesClient iservice.IGetUnifiedConsecutives
+var ValidateAdminPersonClient iservice.IValidateAdminPerson
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
@@ -108,6 +111,16 @@ func buildGetUnifiedConsecutives() {
 	GetUnifiedConsecutivesClient = &service.GetUnifiedConsecutivesClient{UseCase: GetUnifiedConsecutivesUseCase}
 }
 
+func buildValidateAdminPerson() {
+	if ValidateAdminPersonClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	ValidateAdminPersonRepository = &repositories.ValidateAdminPersonRepository{Connection: dbConn}
+	ValidateAdminPersonUseCase = &usecase.ValidateAdminPerson{Repository: ValidateAdminPersonRepository}
+	ValidateAdminPersonClient = &service.ValidateAdminPersonClient{UseCase: ValidateAdminPersonUseCase}
+}
+
 func ResolveGetParametersContainer() iservice.IGetParameters {
 
 	buildGetParameters()
@@ -138,4 +151,9 @@ func ResolveUpdatePrinterIPContainer() iservice.IUpdatePrinterIP {
 func ResolveGetUnifiedConsecutivesContainer() iservice.IGetUnifiedConsecutives {
 	buildGetUnifiedConsecutives()
 	return GetUnifiedConsecutivesClient
+}
+
+func ResolveValidateAdminPersonContainer() iservice.IValidateAdminPerson {
+	buildValidateAdminPerson()
+	return ValidateAdminPersonClient
 }
