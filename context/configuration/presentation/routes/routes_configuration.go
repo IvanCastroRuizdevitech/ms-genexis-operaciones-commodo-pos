@@ -31,6 +31,10 @@ func LoadConfigurationRoutes(router *gin.RouterGroup) {
 			"/consecutivos-unificados",
 			handler_configuration.GetUnifiedConsecutivesHandler,
 		)
+		configurationGroup.GET(
+			"/tipos-notificacion",
+			handler_configuration.GetNotificationTypesHandler,
+		)
 		configurationGroup.PUT(
 			"/printer-ip",
 			handler_configuration.UpdatePrinterIPHandler,

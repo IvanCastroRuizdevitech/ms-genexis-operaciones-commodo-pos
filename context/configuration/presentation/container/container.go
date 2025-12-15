@@ -21,6 +21,7 @@ var GetUnifiedConsecutivesRepository irepositories.IGetUnifiedConsecutivesReposi
 var PrinterTester irepositories.IPrinterTester
 var ValidateAdminPersonRepository irepositories.IValidateAdminPersonRepository
 var ProcessNotificationRepository irepositories.IProcessNotificationRepository
+var GetNotificationTypesRepository irepositories.IGetNotificationTypesRepository
 
 // REPOSITORIES HTTPP
 
@@ -34,6 +35,7 @@ var GetUnifiedConsecutivesUseCase iusecase.IGetUnifiedConsecutives
 var PrintTestAfterUpdateUseCase iusecase.IPrintTestAfterUpdate
 var ValidateAdminPersonUseCase iusecase.IValidateAdminPerson
 var ProcessNotificationUseCase iusecase.IProcessNotification
+var GetNotificationTypesUseCase iusecase.IGetNotificationTypes
 
 // SERVICE
 var GetParametersClient iservice.IGetParameters
@@ -44,6 +46,7 @@ var UpdatePrinterIPClient iservice.IUpdatePrinterIP
 var GetUnifiedConsecutivesClient iservice.IGetUnifiedConsecutives
 var ValidateAdminPersonClient iservice.IValidateAdminPerson
 var ProcessNotificationClient iservice.IProcessNotification
+var GetNotificationTypesClient iservice.IGetNotificationTypes
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
@@ -134,6 +137,16 @@ func buildProcessNotification() {
 	ProcessNotificationClient = &service.ProcessNotificationClient{UseCase: ProcessNotificationUseCase}
 }
 
+func buildGetNotificationTypes() {
+	if GetNotificationTypesClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetNotificationTypesRepository = &repositories.GetNotificationTypesRepository{Connection: dbConn}
+	GetNotificationTypesUseCase = &usecase.GetNotificationTypes{Repository: GetNotificationTypesRepository}
+	GetNotificationTypesClient = &service.GetNotificationTypesClient{UseCase: GetNotificationTypesUseCase}
+}
+
 func ResolveGetParametersContainer() iservice.IGetParameters {
 
 	buildGetParameters()
@@ -174,4 +187,9 @@ func ResolveValidateAdminPersonContainer() iservice.IValidateAdminPerson {
 func ResolveProcessNotificationContainer() iservice.IProcessNotification {
 	buildProcessNotification()
 	return ProcessNotificationClient
+}
+
+func ResolveGetNotificationTypesContainer() iservice.IGetNotificationTypes {
+	buildGetNotificationTypes()
+	return GetNotificationTypesClient
 }
