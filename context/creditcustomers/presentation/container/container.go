@@ -16,6 +16,9 @@ var GetDispenserDetailsClient iservice.IGetDispenserDetailsService
 var GetDispenserDetailsByFamiliesRepository irepositories.IGetDispenserDetailsByFamiliesRepository
 var GetDispenserDetailsByFamiliesUseCase iusecase.IGetDispenserDetailsByFamilies
 var GetDispenserDetailsByFamiliesClient iservice.IGetDispenserDetailsByFamiliesService
+var UpdateTransactionByAuthorizationRepository irepositories.IUpdateTransactionByAuthorizationRepository
+var UpdateTransactionByAuthorizationUseCase iusecase.IUpdateTransactionByAuthorization
+var UpdateTransactionByAuthorizationClient iservice.IUpdateTransactionByAuthorizationService
 
 func buildGetDispenserDetails() {
 	if GetDispenserDetailsClient != nil {
@@ -35,6 +38,15 @@ func buildGetDispenserDetailsByFamilies() {
 	GetDispenserDetailsByFamiliesClient = &service.GetDispenserDetailsByFamiliesService{UseCase: GetDispenserDetailsByFamiliesUseCase}
 }
 
+func buildUpdateTransactionByAuthorization() {
+	if UpdateTransactionByAuthorizationClient != nil {
+		return
+	}
+	UpdateTransactionByAuthorizationRepository = &repositories.UpdateTransactionByAuthorizationRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+	UpdateTransactionByAuthorizationUseCase = &usecase.UpdateTransactionByAuthorization{Repository: UpdateTransactionByAuthorizationRepository}
+	UpdateTransactionByAuthorizationClient = &service.UpdateTransactionByAuthorizationService{UseCase: UpdateTransactionByAuthorizationUseCase}
+}
+
 func ResolveGetDispenserDetailsContainer() iservice.IGetDispenserDetailsService {
 	buildGetDispenserDetails()
 	return GetDispenserDetailsClient
@@ -43,4 +55,9 @@ func ResolveGetDispenserDetailsContainer() iservice.IGetDispenserDetailsService 
 func ResolveGetDispenserDetailsByFamiliesContainer() iservice.IGetDispenserDetailsByFamiliesService {
 	buildGetDispenserDetailsByFamilies()
 	return GetDispenserDetailsByFamiliesClient
+}
+
+func ResolveUpdateTransactionByAuthorizationContainer() iservice.IUpdateTransactionByAuthorizationService {
+	buildUpdateTransactionByAuthorization()
+	return UpdateTransactionByAuthorizationClient
 }
