@@ -10,3 +10,9 @@ type DispenserDetailsFunctionResponse struct {
 	Total   int             `json:"total"`
 	Data    json.RawMessage `json:"data"`
 }
+
+// DispenserDetailsByFamiliesRequest wraps the families filter for
+// fnc_obtener_surtidores_detalles_por_familias().
+type DispenserDetailsByFamiliesRequest struct {
+	FamiliesIDs []int32 `json:"families_ids" binding:"required"`
+}
