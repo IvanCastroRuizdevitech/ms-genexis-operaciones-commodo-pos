@@ -13,5 +13,9 @@ func LoadCreditCustomersRoutes(router *gin.RouterGroup) {
 			"/dispenser-details",
 			handler_creditcustomers.GetDispenserDetailsHandler,
 		)
+		creditCustomersGroup.POST(
+			"/dispenser-details/families",
+			handler_creditcustomers.GetDispenserDetailsByFamiliesHandler,
+		)
 	}
 }

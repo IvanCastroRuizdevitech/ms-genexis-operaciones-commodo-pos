@@ -13,6 +13,9 @@ import (
 var GetDispenserDetailsRepository irepositories.IGetDispenserDetailsRepository
 var GetDispenserDetailsUseCase iusecase.IGetDispenserDetails
 var GetDispenserDetailsClient iservice.IGetDispenserDetailsService
+var GetDispenserDetailsByFamiliesRepository irepositories.IGetDispenserDetailsByFamiliesRepository
+var GetDispenserDetailsByFamiliesUseCase iusecase.IGetDispenserDetailsByFamilies
+var GetDispenserDetailsByFamiliesClient iservice.IGetDispenserDetailsByFamiliesService
 
 func buildGetDispenserDetails() {
 	if GetDispenserDetailsClient != nil {
@@ -23,7 +26,21 @@ func buildGetDispenserDetails() {
 	GetDispenserDetailsClient = &service.GetDispenserDetailsService{UseCase: GetDispenserDetailsUseCase}
 }
 
+func buildGetDispenserDetailsByFamilies() {
+	if GetDispenserDetailsByFamiliesClient != nil {
+		return
+	}
+	GetDispenserDetailsByFamiliesRepository = &repositories.GetDispenserDetailsByFamiliesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+	GetDispenserDetailsByFamiliesUseCase = &usecase.GetDispenserDetailsByFamilies{Repository: GetDispenserDetailsByFamiliesRepository}
+	GetDispenserDetailsByFamiliesClient = &service.GetDispenserDetailsByFamiliesService{UseCase: GetDispenserDetailsByFamiliesUseCase}
+}
+
 func ResolveGetDispenserDetailsContainer() iservice.IGetDispenserDetailsService {
 	buildGetDispenserDetails()
 	return GetDispenserDetailsClient
+}
+
+func ResolveGetDispenserDetailsByFamiliesContainer() iservice.IGetDispenserDetailsByFamiliesService {
+	buildGetDispenserDetailsByFamilies()
+	return GetDispenserDetailsByFamiliesClient
 }
