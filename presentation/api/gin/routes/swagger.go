@@ -279,6 +279,15 @@ const swaggerJSON = `{
         }
       }
     },
+    "/credit-customers/price-families": {
+      "get": {
+        "tags": ["CreditCustomers"],
+        "summary": "Listado de familias de precios",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseCreditPriceFamilies" } } } }
+        }
+      }
+    },
     "/credit-customers/transactions/by-authorization": {
       "patch": {
         "tags": ["CreditCustomers"],
@@ -1105,6 +1114,13 @@ const swaggerJSON = `{
         "allOf": [
           { "$ref": "#/components/schemas/ResponseBase" },
           { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/IdentifierType" } } } }
+        ]
+      },
+      "PriceFamily": { "type": "object", "additionalProperties": true },
+      "ResponseCreditPriceFamilies": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/PriceFamily" } } } }
         ]
       },
       "UpdateTransactionByAuthorizationRequest": {
