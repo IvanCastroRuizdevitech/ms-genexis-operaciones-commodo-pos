@@ -17,5 +17,9 @@ func LoadCreditCustomersRoutes(router *gin.RouterGroup) {
 			"/dispenser-details/families",
 			handler_creditcustomers.GetDispenserDetailsByFamiliesHandler,
 		)
+		creditCustomersGroup.PATCH(
+			"/transactions/by-authorization",
+			handler_creditcustomers.UpdateTransactionByAuthorizationHandler,
+		)
 	}
 }
