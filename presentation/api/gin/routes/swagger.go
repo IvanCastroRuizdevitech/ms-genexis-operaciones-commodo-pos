@@ -59,6 +59,7 @@ const swaggerJSON = `{
     { "name": "Envelopes", "description": "Operaciones de sobres" },
     { "name": "Home", "description": "Panel principal y notificaciones" },
     { "name": "Configuration", "description": "Parámetros y configuración" },
+    { "name": "CreditCustomers", "description": "Operaciones de clientes credito" },
     { "name": "Reports", "description": "Reportes" },
     { "name": "Sales", "description": "Operaciones de ventas" },
     { "name": "Users", "description": "Gestión de usuarios y tags" }
@@ -192,6 +193,96 @@ const swaggerJSON = `{
         }
       }
     },
+    "/configuration/printer-ip": {
+      "get": {
+        "tags": ["Configuration"],
+        "summary": "Obtiene IP de impresora",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PrinterIPResult" } } } }
+        }
+      },
+      "put": {
+        "tags": ["Configuration"],
+        "summary": "Actualiza IP de impresora",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PrinterIPUpdateRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PrinterIPUpdateResponse" } } } }
+        }
+      }
+    },
+    "/configuration/tipos-notificacion": {
+      "get": {
+        "tags": ["Configuration"],
+        "summary": "Obtiene tipos de notificacion",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseNotificationTypes" } } } }
+        }
+      }
+    },
+    "/configuration/person-validation-admin": {
+      "post": {
+        "tags": ["Configuration"],
+        "summary": "Validacion de credenciales admin",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AdminValidationRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/AdminValidationResponse" } } } }
+        }
+      }
+    },
+    "/configuration/procesar-notificacion": {
+      "post": {
+        "tags": ["Configuration"],
+        "summary": "Procesa notificacion",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ProcessNotificationRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseProcessNotification" } } } }
+        }
+      }
+    },
+    "/credit-customers/dispenser-details": {
+      "get": {
+        "tags": ["CreditCustomers"],
+        "summary": "Listado de detalles de surtidores",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseCreditDispenserDetails" } } } }
+        }
+      }
+    },
+    "/credit-customers/dispenser-details/families": {
+      "post": {
+        "tags": ["CreditCustomers"],
+        "summary": "Listado de detalles de surtidores por familias",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/DispenserDetailsByFamiliesRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseCreditDispenserDetails" } } } }
+        }
+      }
+    },
+    "/credit-customers/transactions/by-authorization": {
+      "patch": {
+        "tags": ["CreditCustomers"],
+        "summary": "Actualiza transaccion por autorizacion",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateTransactionByAuthorizationRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseUpdateTransactionByAuthorization" } } } }
+        }
+      }
+    },
     "/reports/day-closing-report/{fecha}": {
       "get": {
         "tags": ["Reports"],
@@ -322,6 +413,29 @@ const swaggerJSON = `{
         }
       }
     },
+    "/sales/dispenser/active-transaction": {
+      "post": {
+        "tags": ["Sales"],
+        "summary": "Obtiene o crea transaccion activa por surtidor y cara",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ActiveDispenserFaceTransactionRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseActiveDispenserFaceTransaction" } } } }
+        }
+      }
+    },
+    "/sales/reprint-sale/{movementId}": {
+      "get": {
+        "tags": ["Sales"],
+        "summary": "Reimpresion de venta",
+        "parameters": [ { "name": "movementId", "in": "path", "required": true, "schema": { "type": "integer" }, "description": "ID del movimiento" } ],
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseReprintSaleResult" } } } }
+        }
+      }
+    },
     "/sales/dispenser/{dispenserId}/face/{face}/transactions": {
       "get": {
         "tags": ["Sales"],
@@ -370,6 +484,32 @@ const swaggerJSON = `{
         "summary": "Obtiene tanques/bodegas disponibles",
         "responses": {
           "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseTanks" } } } }
+        }
+      }
+    },
+    "/reports/shift-summary": {
+      "post": {
+        "tags": ["Reports"],
+        "summary": "Resumen de turnos",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ShiftSummaryRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseShiftSummary" } } } }
+        }
+      }
+    },
+    "/reports/shift-consolidated": {
+      "post": {
+        "tags": ["Reports"],
+        "summary": "Consolidado de turnos",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ShiftConsolidatedRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseShiftConsolidated" } } } }
         }
       }
     },
@@ -847,7 +987,234 @@ const swaggerJSON = `{
       "TankPrintEventResult": { "type": "object", "properties": { "created": { "type": "boolean" } } },
       "ResponseMovementTypes": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/MovementType" } } } } ] },
       "ResponseTanks": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/TankBodega" } } } } ] },
-      "ResponseTankPrintEvent": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TankPrintEventResult" } } } ] }
+      "ResponseTankPrintEvent": { "allOf": [ { "$ref": "#/components/schemas/ResponseBase" }, { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/TankPrintEventResult" } } } ] },
+      "PrinterIPPayload": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer" },
+          "codigo": { "type": "string" },
+          "valor": { "type": "string" }
+        }
+      },
+      "PrinterIPResult": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "data": { "$ref": "#/components/schemas/PrinterIPPayload" }
+        }
+      },
+      "PrinterIPUpdateRequest": {
+        "type": "object",
+        "properties": { "ip": { "type": "string" } },
+        "required": ["ip"]
+      },
+      "PrinterIPUpdateResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer" },
+          "success": { "type": "boolean" },
+          "data": { "type": "object", "additionalProperties": true },
+          "mensaje": { "type": "string" }
+        }
+      },
+      "AdminValidationRequest": {
+        "type": "object",
+        "properties": {
+          "usuario": { "type": "string" },
+          "clave": { "type": "string" },
+          "tag": { "type": "string" }
+        }
+      },
+      "AdminValidationResponse": {
+        "type": "object",
+        "properties": {
+          "status": { "type": "integer" },
+          "success": { "type": "boolean" },
+          "authenticated": { "type": "boolean" },
+          "message": { "type": "string" }
+        }
+      },
+      "ProcessNotificationRequest": {
+        "type": "object",
+        "properties": {
+          "tipo_notificacion": { "type": "integer", "format": "int64" },
+          "data": { "type": "string" },
+          "prioridad": { "type": "boolean" }
+        },
+        "required": ["tipo_notificacion", "data", "prioridad"]
+      },
+      "ProcessNotificationResult": {
+        "type": "object",
+        "properties": {
+          "codigo_respuesta": { "type": "integer" },
+          "estado": { "type": "string" },
+          "id_notificacion": { "type": "integer", "format": "int64" }
+        }
+      },
+      "ResponseProcessNotification": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/ProcessNotificationResult" } } }
+        ]
+      },
+      "NotificationTypesResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "total": { "type": "integer" },
+          "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } },
+          "error": { "type": "string" }
+        }
+      },
+      "ResponseNotificationTypes": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/NotificationTypesResponse" } } }
+        ]
+      },
+      "DispenserDetailsFunctionResponse": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "total": { "type": "integer" },
+          "data": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+        }
+      },
+      "DispenserDetailsByFamiliesRequest": {
+        "type": "object",
+        "properties": { "families_ids": { "type": "array", "items": { "type": "integer" } } },
+        "required": ["families_ids"]
+      },
+      "ResponseCreditDispenserDetails": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/DispenserDetailsFunctionResponse" } } }
+        ]
+      },
+      "UpdateTransactionByAuthorizationRequest": {
+        "type": "object",
+        "properties": {
+          "i_autorizacion": { "type": "string", "format": "uuid" },
+          "i_surtidor": { "type": "integer" },
+          "i_cara": { "type": "integer" },
+          "i_grado": { "type": "integer" },
+          "i_documento_cliente": { "type": "string" },
+          "i_placa_vehiculo": { "type": "string" },
+          "i_monto_maximo": { "type": "number" },
+          "i_cantidad_maxima": { "type": "number" },
+          "i_cliente_nombre": { "type": "string" },
+          "i_vehiculo_odometro": { "type": "string" },
+          "i_trama": { "type": "object", "additionalProperties": true },
+          "i_estado_transaccion": { "type": "integer" },
+          "i_documento_conductor": { "type": "string" },
+          "i_conductor_nombre": { "type": "string" },
+          "i_cliente_tipo_identificacion_id": { "type": "integer" }
+        },
+        "required": [
+          "i_autorizacion",
+          "i_surtidor",
+          "i_cara",
+          "i_grado",
+          "i_documento_cliente",
+          "i_placa_vehiculo",
+          "i_monto_maximo",
+          "i_cantidad_maxima",
+          "i_cliente_nombre",
+          "i_vehiculo_odometro",
+          "i_trama",
+          "i_estado_transaccion",
+          "i_documento_conductor",
+          "i_conductor_nombre",
+          "i_cliente_tipo_identificacion_id"
+        ]
+      },
+      "UpdateTransactionByAuthorizationResult": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "status": { "type": "integer" },
+          "message": { "type": "string" },
+          "error": { "type": "string" }
+        }
+      },
+      "ResponseUpdateTransactionByAuthorization": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdateTransactionByAuthorizationResult" } } }
+        ]
+      },
+      "ShiftSummaryRequest": {
+        "type": "object",
+        "properties": {
+          "pos": { "type": "integer" },
+          "fecha_inicio": { "type": "string" },
+          "fecha_fin": { "type": "string" }
+        },
+        "required": ["pos", "fecha_inicio", "fecha_fin"]
+      },
+      "ShiftConsolidatedRequest": {
+        "type": "object",
+        "properties": {
+          "fecha_inicio": { "type": "string" },
+          "fecha_fin": { "type": "string" }
+        },
+        "required": ["fecha_inicio", "fecha_fin"]
+      },
+      "ShiftSummary": {
+        "type": "array",
+        "items": { "type": "object", "additionalProperties": true }
+      },
+      "ShiftConsolidated": {
+        "type": "array",
+        "items": { "type": "object", "additionalProperties": true }
+      },
+      "ResponseShiftSummary": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/ShiftSummary" } } }
+        ]
+      },
+      "ResponseShiftConsolidated": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/ShiftConsolidated" } } }
+        ]
+      },
+      "ActiveDispenserFaceTransactionRequest": {
+        "type": "object",
+        "properties": {
+          "surtidor": { "type": "integer" },
+          "cara": { "type": "integer" },
+          "codigo": { "type": "string" },
+          "grado": { "type": "integer" },
+          "proveedores_id": { "type": "integer" },
+          "monto_maximo": { "type": "number" },
+          "cantidad_maxima": { "type": "number" },
+          "trama": { "type": "object", "additionalProperties": true },
+          "promotor_id": { "type": "integer" }
+        },
+        "required": ["surtidor", "cara", "codigo", "grado", "proveedores_id", "monto_maximo", "cantidad_maxima", "trama", "promotor_id"]
+      },
+      "ActiveDispenserFaceTransactionResult": {
+        "type": "object",
+        "additionalProperties": true
+      },
+      "ResponseActiveDispenserFaceTransaction": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/ActiveDispenserFaceTransactionResult" } } }
+        ]
+      },
+      "ReprintSaleResult": {
+        "type": "object",
+        "properties": { "info": { "type": "object", "additionalProperties": true } }
+      },
+      "ResponseReprintSaleResult": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/ReprintSaleResult" } } }
+        ]
+      }
     }
   }
 }`
