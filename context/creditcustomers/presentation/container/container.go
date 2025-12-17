@@ -22,6 +22,9 @@ var GetPriceFamiliesClient iservice.IGetPriceFamiliesService
 var GetDispenserDetailsByFamiliesRepository irepositories.IGetDispenserDetailsByFamiliesRepository
 var GetDispenserDetailsByFamiliesUseCase iusecase.IGetDispenserDetailsByFamilies
 var GetDispenserDetailsByFamiliesClient iservice.IGetDispenserDetailsByFamiliesService
+var InsertPreAuthorizationCustomerRepository irepositories.IInsertPreAuthorizationCustomerRepository
+var InsertPreAuthorizationCustomerUseCase iusecase.IInsertPreAuthorizationCustomer
+var InsertPreAuthorizationCustomerClient iservice.IInsertPreAuthorizationCustomerService
 var UpdateTransactionByAuthorizationRepository irepositories.IUpdateTransactionByAuthorizationRepository
 var UpdateTransactionByAuthorizationUseCase iusecase.IUpdateTransactionByAuthorization
 var UpdateTransactionByAuthorizationClient iservice.IUpdateTransactionByAuthorizationService
@@ -62,6 +65,15 @@ func buildGetPriceFamilies() {
 	GetPriceFamiliesClient = &service.GetPriceFamiliesService{UseCase: GetPriceFamiliesUseCase}
 }
 
+func buildInsertPreAuthorizationCustomer() {
+	if InsertPreAuthorizationCustomerClient != nil {
+		return
+	}
+	InsertPreAuthorizationCustomerRepository = &repositories.InsertPreAuthorizationCustomerRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+	InsertPreAuthorizationCustomerUseCase = &usecase.InsertPreAuthorizationCustomer{Repository: InsertPreAuthorizationCustomerRepository}
+	InsertPreAuthorizationCustomerClient = &service.InsertPreAuthorizationCustomerService{UseCase: InsertPreAuthorizationCustomerUseCase}
+}
+
 func buildUpdateTransactionByAuthorization() {
 	if UpdateTransactionByAuthorizationClient != nil {
 		return
@@ -89,6 +101,11 @@ func ResolveGetIdentifierTypesContainer() iservice.IGetIdentifierTypesService {
 func ResolveGetPriceFamiliesContainer() iservice.IGetPriceFamiliesService {
 	buildGetPriceFamilies()
 	return GetPriceFamiliesClient
+}
+
+func ResolveInsertPreAuthorizationCustomerContainer() iservice.IInsertPreAuthorizationCustomerService {
+	buildInsertPreAuthorizationCustomer()
+	return InsertPreAuthorizationCustomerClient
 }
 
 func ResolveUpdateTransactionByAuthorizationContainer() iservice.IUpdateTransactionByAuthorizationService {

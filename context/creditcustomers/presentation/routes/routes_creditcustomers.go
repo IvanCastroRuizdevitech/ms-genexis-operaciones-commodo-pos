@@ -25,6 +25,10 @@ func LoadCreditCustomersRoutes(router *gin.RouterGroup) {
 			"/price-families",
 			handler_creditcustomers.GetPriceFamiliesHandler,
 		)
+		creditCustomersGroup.POST(
+			"/pre-authorization",
+			handler_creditcustomers.InsertPreAuthorizationCustomerHandler,
+		)
 		creditCustomersGroup.PATCH(
 			"/transactions/by-authorization",
 			handler_creditcustomers.UpdateTransactionByAuthorizationHandler,
