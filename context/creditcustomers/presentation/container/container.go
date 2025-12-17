@@ -13,6 +13,9 @@ import (
 var GetDispenserDetailsRepository irepositories.IGetDispenserDetailsRepository
 var GetDispenserDetailsUseCase iusecase.IGetDispenserDetails
 var GetDispenserDetailsClient iservice.IGetDispenserDetailsService
+var GetIdentifierTypesRepository irepositories.IGetIdentifierTypesRepository
+var GetIdentifierTypesUseCase iusecase.IGetIdentifierTypes
+var GetIdentifierTypesClient iservice.IGetIdentifierTypesService
 var GetDispenserDetailsByFamiliesRepository irepositories.IGetDispenserDetailsByFamiliesRepository
 var GetDispenserDetailsByFamiliesUseCase iusecase.IGetDispenserDetailsByFamilies
 var GetDispenserDetailsByFamiliesClient iservice.IGetDispenserDetailsByFamiliesService
@@ -38,6 +41,15 @@ func buildGetDispenserDetailsByFamilies() {
 	GetDispenserDetailsByFamiliesClient = &service.GetDispenserDetailsByFamiliesService{UseCase: GetDispenserDetailsByFamiliesUseCase}
 }
 
+func buildGetIdentifierTypes() {
+	if GetIdentifierTypesClient != nil {
+		return
+	}
+	GetIdentifierTypesRepository = &repositories.GetIdentifierTypesRepository{Connection: presentation_container.ResolveDatabaseConnectionToLecWithPgx()}
+	GetIdentifierTypesUseCase = &usecase.GetIdentifierTypes{Repository: GetIdentifierTypesRepository}
+	GetIdentifierTypesClient = &service.GetIdentifierTypesService{UseCase: GetIdentifierTypesUseCase}
+}
+
 func buildUpdateTransactionByAuthorization() {
 	if UpdateTransactionByAuthorizationClient != nil {
 		return
@@ -55,6 +67,11 @@ func ResolveGetDispenserDetailsContainer() iservice.IGetDispenserDetailsService 
 func ResolveGetDispenserDetailsByFamiliesContainer() iservice.IGetDispenserDetailsByFamiliesService {
 	buildGetDispenserDetailsByFamilies()
 	return GetDispenserDetailsByFamiliesClient
+}
+
+func ResolveGetIdentifierTypesContainer() iservice.IGetIdentifierTypesService {
+	buildGetIdentifierTypes()
+	return GetIdentifierTypesClient
 }
 
 func ResolveUpdateTransactionByAuthorizationContainer() iservice.IUpdateTransactionByAuthorizationService {

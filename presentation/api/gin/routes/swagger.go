@@ -270,6 +270,15 @@ const swaggerJSON = `{
         }
       }
     },
+    "/credit-customers/identifier-types": {
+      "get": {
+        "tags": ["CreditCustomers"],
+        "summary": "Listado de tipos de identificador",
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseCreditIdentifierTypes" } } } }
+        }
+      }
+    },
     "/credit-customers/transactions/by-authorization": {
       "patch": {
         "tags": ["CreditCustomers"],
@@ -1089,6 +1098,13 @@ const swaggerJSON = `{
         "allOf": [
           { "$ref": "#/components/schemas/ResponseBase" },
           { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/DispenserDetailsFunctionResponse" } } }
+        ]
+      },
+      "IdentifierType": { "type": "object", "additionalProperties": true },
+      "ResponseCreditIdentifierTypes": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "type": "array", "items": { "$ref": "#/components/schemas/IdentifierType" } } } }
         ]
       },
       "UpdateTransactionByAuthorizationRequest": {

@@ -3,6 +3,7 @@ package constants
 const (
 	QUERY_GET_DISPENSER_DETAILS               = "select * from public.fnc_obtener_surtidores_detalles();"
 	QUERY_GET_DISPENSER_DETAILS_BY_FAMILIES   = "select * from public.fnc_obtener_surtidores_detalles_por_familias($1);"
+	QUERY_GET_IDENTIFIER_TYPES               = "select * from clientes_credito.tbl_tipos_identificadores tti;"
 	QUERY_UPDATE_TRANSACTION_BY_AUTHORIZATION = "" +
 		"select * from public.fnc_actualizar_transaccion_por_autorizacion(" +
 		"$1::uuid, " +
