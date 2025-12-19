@@ -14,4 +14,5 @@ const (
 	QUERY_FUEL_ENTRY_REPORT                        = "select * from procesos.fnc_re_imprimir_factura_entrada($1::bigint, $2::boolean, $3::boolean) as data;"
 	QUERY_GET_DISPENSER_DETAILS                    = "select * from genexis_operaciones.fnc_obtener_surtidores_detalles();"
 	QUERY_UPSERT_ACTIVE_DISPENSER_FACE_TRANSACTION = "select * from genexis_operaciones.fnc_transaccion_surtidor_cara_vigente($1::int, $2::int, $3::varchar, $4::int, $5::int, $6::numeric, $7::numeric, $8::json, $9::int);"
+	QUERY_GET_VEHICLE_TYPES                        = "select * from fidelizacion.fnc_obtener_tipos_vehiculos();"
 )
