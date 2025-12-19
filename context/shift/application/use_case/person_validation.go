@@ -10,12 +10,12 @@ type PersonValidation struct {
 	Repository irepositories.IValidatePersonRepository
 }
 
-func (p *PersonValidation) Execute(info *entities.PersonValidationRequest) (*entities.PersonShift, error) {
-	person, err := p.Repository.ValidatePerson(info)
+func (p *PersonValidation) Execute(info *entities.PersonValidationRequest, requireAdmin bool) (*entities.PersonValidationResult, error) {
+	result, err := p.Repository.ValidatePerson(info, requireAdmin)
 	if err != nil {
 		log.Println("PersonValidation: ", err)
 		return nil, err
 	}
 
-	return person, nil
+	return result, nil
 }
