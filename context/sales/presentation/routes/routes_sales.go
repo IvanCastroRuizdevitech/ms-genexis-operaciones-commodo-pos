@@ -62,6 +62,10 @@ func LoadSalesRoutes(router *gin.RouterGroup) {
 			"/dispenser-details",
 			handler_sales.GetDispenserDetailsHandler,
 		)
+		salesGroup.GET(
+			"/vehicle-types",
+			handler_sales.GetVehicleTypesHandler,
+		)
 		salesGroup.POST(
 			"/fuel-entry-report",
 			presentation_api_middlewares.ValidateBodyStruct[entities_sales.FuelEntryReportRequest](),

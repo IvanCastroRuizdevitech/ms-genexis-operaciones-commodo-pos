@@ -18,6 +18,18 @@ type DispenserDetail struct {
 	FamiliaID            int             `json:"familia_id" db:"familia_id"`
 }
 
+type VehicleType struct {
+	Id          int             `json:"id"`
+	Descripcion string          `json:"descripcion"`
+	Codigo      json.RawMessage `json:"codigo"`
+}
+
+type VehicleTypesResponse struct {
+	Success bool          `json:"success"`
+	Total   int           `json:"total"`
+	Data    []VehicleType `json:"data"`
+}
+
 type PendingSale struct {
 	Numero                               int       `json:"numero" db:"numero"`
 	RazonSocial                          string    `json:"razon_social" db:"razon_social"`
