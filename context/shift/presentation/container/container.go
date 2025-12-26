@@ -18,6 +18,7 @@ var getDailyIncomeMeasurementsRepository irepositories.IGetDailyIncomeMeasuremen
 var getFuelPumpsRepository irepositories.IGetFuelPumpsRepository
 var personValidationRepository irepositories.IValidatePersonRepository
 var createEnvelopeRepository irepositories.ICreateEnvelopeRepository
+var getPersonByIDRepository irepositories.IGetPersonByIDRepository
 
 // REPOSITORIES HTTPP
 var sendOpeningShiftRepositoryHttp irepositories.ISendOpeningShiftRepositoryHttp
@@ -29,6 +30,7 @@ var getDailyIncomeMeasurementsUseCase iusecase.IGetDailyIncomeMeasurements
 var getFuelPumpsUseCase iusecase.IGetFuelPumps
 var personValidationUseCase iusecase.IPersonValidation
 var createEnvelopeUseCase iusecase.ICreateEnvelope
+var getPersonByIDUseCase iusecase.IGetPersonByID
 
 // SERVICE
 var openingShift iservice.IOpeningShift
@@ -36,6 +38,7 @@ var dailyIncomeMeasurementsService *service.DailyIncomeMeasurementsClient
 var fuelPumpsService *service.FuelPumpsClient
 var personValidationService *service.PersonValidationClient
 var createEnvelopeService iservice.ICreateEnvelope
+var getPersonByIDService *service.GetPersonByIDClient
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
@@ -69,6 +72,12 @@ func ensureFuelPumpsRepository(dbConn dbclient.DatabaseConnectionInterface) {
 func ensureCreateEnvelopeRepository(dbConn dbclient.DatabaseConnectionInterface) {
 	if createEnvelopeRepository == nil {
 		createEnvelopeRepository = &repositories.CreateEnvelopeRepository{Connection: dbConn}
+	}
+}
+
+func ensurePersonByIDRepository(dbConn dbclient.DatabaseConnectionInterface) {
+	if getPersonByIDRepository == nil {
+		getPersonByIDRepository = &repositories.GetPersonByIDRepository{Connection: dbConn}
 	}
 }
 
@@ -143,6 +152,18 @@ func buildCreateEnvelope() {
 	createEnvelopeService = &service.CreateEnvelopeClient{CreateEnvelope: createEnvelopeUseCase}
 }
 
+func buildPersonByID() {
+	if getPersonByIDService != nil {
+		return
+	}
+	dbConn := resolveDB()
+	ensurePersonByIDRepository(dbConn)
+	if getPersonByIDUseCase == nil {
+		getPersonByIDUseCase = &usecase.GetPersonByID{Repository: getPersonByIDRepository}
+	}
+	getPersonByIDService = &service.GetPersonByIDClient{GetPersonByID: getPersonByIDUseCase}
+}
+
 func ResolveOpeningShiftContainer() iservice.IOpeningShift {
 	buildOpeningShift()
 	return openingShift
@@ -166,4 +187,9 @@ func ResolvePersonValidationContainer() *service.PersonValidationClient {
 func ResolveCreateEnvelopeContainer() iservice.ICreateEnvelope {
 	buildCreateEnvelope()
 	return createEnvelopeService
+}
+
+func ResolveGetPersonByIDContainer() *service.GetPersonByIDClient {
+	buildPersonByID()
+	return getPersonByIDService
 }
