@@ -59,14 +59,18 @@ type PendingSale struct {
 	Sincronizado                         int       `json:"sincronizado" db:"sincronizado"`
 	IndPendienteAsignarCliente           bool      `json:"ind_pendiente_asignar_cliente" db:"ind_pendiente_asignar_cliente"`
 	Proceso                              string    `json:"proceso" db:"proceso"`
-	IdTransaccionDatafono                float64   `json:"id_transaccion_datafono" db:"id_transaccion_datafono"`
-	CodigoAutorizacionDatafono           string    `json:"codigo_autorizacion_datafono" db:"codigo_autorizacion_datafono"`
+	IdTransaccionDatafono                *float64  `json:"id_transaccion_datafono" db:"id_transaccion_datafono"`
+	CodigoAutorizacionDatafono           *string   `json:"codigo_autorizacion_datafono" db:"codigo_autorizacion_datafono"`
 	IdTransaccionEstadoDatafono          int16     `json:"id_transaccion_estado_datafono" db:"id_transaccion_estado_datafono"`
 	DescripcionTransaccionEstadoDatafono string    `json:"descripcion_transaccion_estado_datafono" db:"descripcion_transaccion_estado_datafono"`
 	IndPendienteResolverDatafono         bool      `json:"ind_pendiente_resolver_datafono" db:"ind_pendiente_resolver_datafono"`
 	IndPendienteResolverAdblue           bool      `json:"ind_pendiente_resolver_adblue" db:"ind_pendiente_resolver_adblue"`
 	EstadoPagos                          string    `json:"estado_pagos" db:"estado_pagos"`
 	Integracion                          int64     `json:"integracion" db:"integracion"`
+	Fidelizada                           bool      `json:"fidelizada" db:"fidelizada"`
+	RemotoID                             int64     `json:"remoto_id" db:"remoto_id"`
+	Prefijo                              string    `json:"prefijo" db:"prefijo"`
+	PlacaVehiculo                        *string   `json:"placa_vehiculo" db:"placa_vehiculo"`
 }
 
 type DatafonoCancellationsInProgress struct {
