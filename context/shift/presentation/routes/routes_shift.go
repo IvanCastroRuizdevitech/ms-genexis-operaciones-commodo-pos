@@ -26,6 +26,10 @@ func LoadShiftRoutes(router *gin.RouterGroup) {
 			presentation_api_middlewares.ValidateBodyStruct[entities.PersonValidationRequest](),
 			handler_shift.PersonValidationHandler,
 		)
+		shiftGroup.POST("/person-by-id",
+			presentation_api_middlewares.ValidateBodyStruct[entities.PersonByIDRequest](),
+			handler_shift.GetPersonByIDHandler,
+		)
 		shiftGroup.POST("/envelope",
 			presentation_api_middlewares.ValidateBodyStruct[entities.EnvelopeRequest](),
 			handler_shift.CreateEnvelopeHandler,
