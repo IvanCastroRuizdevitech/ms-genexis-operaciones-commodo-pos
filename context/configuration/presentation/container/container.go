@@ -22,6 +22,7 @@ var PrinterTester irepositories.IPrinterTester
 var ValidateAdminPersonRepository irepositories.IValidateAdminPersonRepository
 var ProcessNotificationRepository irepositories.IProcessNotificationRepository
 var GetNotificationTypesRepository irepositories.IGetNotificationTypesRepository
+var GetSynchronizationRepository irepositories.IGetSynchronizationRepository
 
 // REPOSITORIES HTTPP
 
@@ -36,6 +37,7 @@ var PrintTestAfterUpdateUseCase iusecase.IPrintTestAfterUpdate
 var ValidateAdminPersonUseCase iusecase.IValidateAdminPerson
 var ProcessNotificationUseCase iusecase.IProcessNotification
 var GetNotificationTypesUseCase iusecase.IGetNotificationTypes
+var GetSynchronizationUseCase iusecase.IGetSynchronization
 
 // SERVICE
 var GetParametersClient iservice.IGetParameters
@@ -47,6 +49,7 @@ var GetUnifiedConsecutivesClient iservice.IGetUnifiedConsecutives
 var ValidateAdminPersonClient iservice.IValidateAdminPerson
 var ProcessNotificationClient iservice.IProcessNotification
 var GetNotificationTypesClient iservice.IGetNotificationTypes
+var GetSynchronizationClient iservice.IGetSynchronization
 
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
@@ -147,6 +150,16 @@ func buildGetNotificationTypes() {
 	GetNotificationTypesClient = &service.GetNotificationTypesClient{UseCase: GetNotificationTypesUseCase}
 }
 
+func buildGetSynchronization() {
+	if GetSynchronizationClient != nil {
+		return
+	}
+	dbConn := resolveDB()
+	GetSynchronizationRepository = &repositories.GetSynchronizationRepository{Connection: dbConn}
+	GetSynchronizationUseCase = &usecase.GetSynchronization{Repository: GetSynchronizationRepository}
+	GetSynchronizationClient = &service.GetSynchronizationClient{GetSynchronization: GetSynchronizationUseCase}
+}
+
 func ResolveGetParametersContainer() iservice.IGetParameters {
 
 	buildGetParameters()
@@ -192,4 +205,9 @@ func ResolveProcessNotificationContainer() iservice.IProcessNotification {
 func ResolveGetNotificationTypesContainer() iservice.IGetNotificationTypes {
 	buildGetNotificationTypes()
 	return GetNotificationTypesClient
+}
+
+func ResolveGetSynchronizationContainer() iservice.IGetSynchronization {
+	buildGetSynchronization()
+	return GetSynchronizationClient
 }
