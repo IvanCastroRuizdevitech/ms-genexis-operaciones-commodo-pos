@@ -3,6 +3,7 @@ package handler_configuration
 import (
 	"log"
 	"net/http"
+	"time"
 
 	"ms-genexis-pos-operaciones/context/configuration/domain/entities"
 	container_configuration "ms-genexis-pos-operaciones/context/configuration/presentation/container"
@@ -19,8 +20,17 @@ func GetSynchronizationHandler(ctx *gin.Context) {
 	}
 
 	params := raw.(entities.SynchronizationQuery)
-	fechaInicio := params.FechaInicio.Format("2006-01-02 15:04:05")
-	fechaFin := params.FechaFin.Format("2006-01-02 15:04:05")
+	if _, err := time.Parse("2006-01-02", params.FechaInicio); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "fecha_inicio debe tener formato YYYY-MM-DD"})
+		return
+	}
+	if _, err := time.Parse("2006-01-02", params.FechaFin); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "fecha_fin debe tener formato YYYY-MM-DD"})
+		return
+	}
+
+	fechaInicio := params.FechaInicio + " 00:00:00"
+	fechaFin := params.FechaFin + " 23:59:59"
 
 	response, err := container_configuration.ResolveGetSynchronizationContainer().Execute(
 		params.IDSincronizacion,
