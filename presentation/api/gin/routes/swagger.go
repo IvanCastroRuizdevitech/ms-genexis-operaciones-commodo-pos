@@ -590,25 +590,6 @@ const swaggerJSON = `{
           "jornadas_id": { "type": "integer" }
         }
       },
-      "PersonValidationData": {
-        "type": "object",
-        "properties": {
-          "id": { "type": "integer", "format": "int64" },
-          "nombre": { "type": "string" },
-          "perfiles_id": { "type": "integer", "format": "int64" },
-          "tipo_perfil": { "type": "integer", "format": "int32" },
-          "jornadas_id": { "type": "integer", "format": "int64" }
-        }
-      },
-      "PersonValidationResult": {
-        "type": "object",
-        "properties": {
-          "success": { "type": "boolean" },
-          "authenticated": { "type": "boolean" },
-          "message": { "type": "string" },
-          "data": { "$ref": "#/components/schemas/PersonValidationData" }
-        }
-      },
       "PersonValidationRequest": {
         "type": "object",
         "properties": {
@@ -621,7 +602,7 @@ const swaggerJSON = `{
       "ResponsePersonShift": {
         "allOf": [
           { "$ref": "#/components/schemas/ResponseShift" },
-          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/PersonValidationResult" } } }
+          { "type": "object", "properties": { "data": { "type": "object", "additionalProperties": true } } }
         ]
       },
 
