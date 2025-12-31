@@ -49,5 +49,10 @@ func LoadConfigurationRoutes(router *gin.RouterGroup) {
 			presentation_api_middlewares.ValidateBodyStruct[entities.ProcessNotificationRequest](),
 			handler_configuration.ProcessNotificationHandler,
 		)
+		configurationGroup.GET(
+			"/synchronization",
+			presentation_api_middlewares.BindAndValidateQuery[entities.SynchronizationQuery](),
+			handler_configuration.GetSynchronizationHandler,
+		)
 	}
 }

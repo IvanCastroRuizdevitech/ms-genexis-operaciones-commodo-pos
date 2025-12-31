@@ -10,5 +10,6 @@ const (
 	QUERY_VALIDATE_ADMIN_PERSON         = "select * from procesos.fnc_validacion_personal_eds_admin($1, $2, $3);"
 	QUERY_PROCESS_NOTIFICATION          = "call public.prc_procesar_notificacion($1::bigint, $2::text, $3::bool, $4::json);"
 	QUERY_GET_NOTIFICATION_TYPES        = "select * from public.fnc_obtener_tipo_notificacion();"
+	QUERY_GET_SYNCHRONIZATION           = "select public.obtener_sincronizacion($1::integer, $2::timestamp, $3::timestamp);"
 	MICRO_PRINTER_URL                   = "http://127.0.0.1:8054/printer"
 )

@@ -23,6 +23,7 @@ var updateTransmissionStatusRepository irepositories.IUpdateTransmissionStatusRe
 var processPendingTransmissionsUseCase iusecase.IProcessPendingTransmissions
 var processPendingTransmissionsService iservice.IPendingTransmissionsProcessor
 
+
 func resolveDB() dbclient.DatabaseConnectionInterface {
 	return presentation_container.ResolveDatabaseConnectionToLecWithPgx()
 }
@@ -65,6 +66,7 @@ func buildProcessPendingTransmissions() {
 	}
 	processPendingTransmissionsService = &service.PendingTransmissionsProcessor{ProcessPendingTransmissions: processPendingTransmissionsUseCase}
 }
+
 
 func ResolveLoadErrorNotificationContainer() iservice.ILoadErrorNotification {
 	buildLoadErrorNotification()
