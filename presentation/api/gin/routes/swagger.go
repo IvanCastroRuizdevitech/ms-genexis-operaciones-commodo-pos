@@ -109,7 +109,7 @@ const swaggerJSON = `{
           "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PersonValidationRequest" } } }
         },
         "responses": {
-          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponsePersonShift" } } } }
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/PersonValidationResult" } } } }
         }
       }
     },
@@ -602,7 +602,7 @@ const swaggerJSON = `{
       "ResponsePersonShift": {
         "allOf": [
           { "$ref": "#/components/schemas/ResponseShift" },
-          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/PersonShift" } } }
+          { "type": "object", "properties": { "data": { "type": "object", "additionalProperties": true } } }
         ]
       },
 

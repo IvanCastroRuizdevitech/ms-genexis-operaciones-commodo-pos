@@ -2,7 +2,6 @@ package service
 
 import (
 	"net/http"
-	"time"
 
 	"ms-genexis-pos-operaciones/context/shift/domain/entities"
 	iusecase "ms-genexis-pos-operaciones/context/shift/domain/ports/application/use_case"
@@ -12,10 +11,10 @@ type PersonValidationClient struct {
 	ValidatePerson iusecase.IPersonValidation
 }
 
-func (s *PersonValidationClient) ExecutePersonValidation(info *entities.PersonValidationRequest, requireAdmin bool) (*entities.ResponseShift, error) {
+func (s *PersonValidationClient) ExecutePersonValidation(info *entities.PersonValidationRequest, requireAdmin bool) (*entities.PersonValidationResult, int, error) {
 	result, err := s.ValidatePerson.Execute(info, requireAdmin)
 	if err != nil {
-		return nil, err
+		return nil, http.StatusInternalServerError, err
 	}
 
 	status := http.StatusOK
@@ -27,10 +26,5 @@ func (s *PersonValidationClient) ExecutePersonValidation(info *entities.PersonVa
 		status = http.StatusForbidden
 	}
 
-	return &entities.ResponseShift{
-		Status:      status,
-		Message:     result.Message,
-		ProcessDate: time.Now().Format("2006-01-02 15:04:05"),
-		Data:        result,
-	}, nil
+	return result, status, nil
 }

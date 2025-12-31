@@ -28,11 +28,11 @@ func PersonValidationHandler(ctx *gin.Context) {
 		requireAdmin = parsedRequireAdmin
 	}
 
-	response, err := container_shift.ResolvePersonValidationContainer().ExecutePersonValidation(&body, requireAdmin)
+	response, status, err := container_shift.ResolvePersonValidationContainer().ExecutePersonValidation(&body, requireAdmin)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, errorMsgs(err, http.StatusInternalServerError))
 		return
 	}
 
-	ctx.JSON(response.Status, response)
+	ctx.JSON(status, response)
 }
