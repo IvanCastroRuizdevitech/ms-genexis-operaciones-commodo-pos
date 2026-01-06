@@ -1,10 +1,9 @@
 package presentation
 
 import (
-	container_shift "ms-genexis-pos-operaciones/context/shift/presentation/container"
+	container_comanda "ms-genexis-pos-operaciones/context/comanda/presentation/container"
 )
 
 func Run() {
-
-	container_shift.ResolveOpeningShiftContainer()
+	container_comanda.ResolveUpdateComandaStatusContainer()
 }

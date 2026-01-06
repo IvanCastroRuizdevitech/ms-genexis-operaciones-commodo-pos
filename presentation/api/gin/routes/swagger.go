@@ -55,6 +55,7 @@ const swaggerJSON = `{
   },
   "servers": [{ "url": "/api/v1", "description": "Base path" }],
   "tags": [
+    { "name": "Comanda", "description": "Operaciones de comandas" },
     { "name": "Shift", "description": "Operaciones de turnos" },
     { "name": "Envelopes", "description": "Operaciones de sobres" },
     { "name": "Home", "description": "Panel principal y notificaciones" },
@@ -65,6 +66,19 @@ const swaggerJSON = `{
     { "name": "Users", "description": "Gestión de usuarios y tags" }
   ],
   "paths": {
+    "/comanda/update-commando": {
+      "post": {
+        "tags": ["Comanda"],
+        "summary": "Actualiza estado de una comanda",
+        "requestBody": {
+          "required": true,
+          "content": { "application/json": { "schema": { "$ref": "#/components/schemas/UpdateComandaStatusRequest" } } }
+        },
+        "responses": {
+          "200": { "description": "OK", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ResponseUpdateComandaStatus" } } } }
+        }
+      }
+    },
     "/shift/opening": {
       "post": {
         "tags": ["Shift"],
@@ -615,6 +629,29 @@ const swaggerJSON = `{
           "error": { "type": "string" }
         },
         "required": ["status", "process_date"]
+      },
+
+      "UpdateComandaStatusRequest": {
+        "type": "object",
+        "properties": {
+          "p_comanda_id": { "type": "integer", "format": "int64" },
+          "p_nuevo_estado_id": { "type": "integer", "format": "int32" }
+        },
+        "required": ["p_comanda_id", "p_nuevo_estado_id"]
+      },
+      "UpdateComandaStatusResult": {
+        "type": "object",
+        "properties": {
+          "success": { "type": "boolean" },
+          "message": { "type": "string" },
+          "status": { "type": "integer" }
+        }
+      },
+      "ResponseUpdateComandaStatus": {
+        "allOf": [
+          { "$ref": "#/components/schemas/ResponseBase" },
+          { "type": "object", "properties": { "data": { "$ref": "#/components/schemas/UpdateComandaStatusResult" } } }
+        ]
       },
 
       "TransmissionProcessSummary": {
