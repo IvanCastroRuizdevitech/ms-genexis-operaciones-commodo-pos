@@ -4,7 +4,7 @@
 - Iniciar el proyecto con : air
 
 # Compilar
-- GOOS=linux GOARCH=arm64 go build -o ms-genexis-operaciones-pos main.go
+- GOOS=linux GOARCH=arm64 go build -o ms-genexis-operaciones-commodo-pos main.go
 
 ## Swagger
 - Endpoints (solo en desarrollo):
