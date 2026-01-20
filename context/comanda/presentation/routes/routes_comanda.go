@@ -12,7 +12,7 @@ func LoadComandaRoutes(router *gin.RouterGroup) {
 	comandaGroup := router.Group("/comanda")
 	{
 		comandaGroup.POST(
-			"/update-commando",
+			"/update-comanda",
 			presentation_api_middlewares.ValidateBodyStruct[entities_comanda.UpdateComandaStatusRequest](),
 			handler_comanda.UpdateComandaStatusHandler,
 		)

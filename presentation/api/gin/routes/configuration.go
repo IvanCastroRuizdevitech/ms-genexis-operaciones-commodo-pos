@@ -4,6 +4,7 @@ import (
 	"time"
 
 	routes_comanda "ms-genexis-pos-operaciones/context/comanda/presentation/routes"
+	routes_configuration "ms-genexis-pos-operaciones/context/configuration/presentation/routes"
 	"ms-genexis-pos-operaciones/domain/constants"
 
 	"github.com/gin-gonic/gin"
@@ -37,6 +38,7 @@ func GinConfig() (*gin.Engine, error) {
 	api := router.Group(constants.API_PATH)
 
 	routes_comanda.LoadComandaRoutes(api)
+	routes_configuration.LoadConfigurationRoutes(api)
 
 	return router, nil
 }
